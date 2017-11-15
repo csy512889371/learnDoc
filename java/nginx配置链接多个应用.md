@@ -73,10 +73,10 @@ http {
 ## 二、映射server1
 
 80 端口映射到 8080 tomcat 的ROOT 下
-![image](https://github.com/csy512889371/reactLearn/blob/master/img/todomvc.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/nginx_server1.png)
 
 ## 三、映射server2
 
 80/server2 端口映射到 9080 tomcat 的webApp/server2下
-![image](https://github.com/csy512889371/reactLearn/blob/master/img/todomvc.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/nginx_server2.png)
 
