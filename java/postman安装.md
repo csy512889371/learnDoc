@@ -5,6 +5,7 @@ v4.9.2
 ![image](https://github.com/csy512889371/reactLearn/blob/master/img/tools/postman2.png)
 # 下载地址
 
+http://download.csdn.net/download/qq_27384769/10134551
 
 # 安装步骤
 
