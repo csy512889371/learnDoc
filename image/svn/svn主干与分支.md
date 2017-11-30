@@ -29,9 +29,11 @@
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn5.png)
 
 > 为CMISTESTMain 在FZ/chrunck/下创建分支
+
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn6.png)
 
 > 右键 team =>分支
+
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn7.png)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
@@ -44,5 +46,5 @@
 ### 将分支代码同步到主干
 分别对主干和分支的代码进行修改
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image022.png) 
-> 主干项目右键点击team
+
 
