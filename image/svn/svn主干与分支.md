@@ -28,10 +28,10 @@
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn4.png)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn5.png)
 
-为CMISTESTMain 在FZ/chrunck/下创建分支
+> 为CMISTESTMain 在FZ/chrunck/下创建分支
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn6.png)
 
-右键 team =>分支
+> 右键 team =>分支
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn7.png)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
@@ -44,17 +44,5 @@
 ### 将分支代码同步到主干
 分别对主干和分支的代码进行修改
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image022.png) 
-主干项目右键点击team
+> 主干项目右键点击team
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image024.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image026.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image028.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image030.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image032.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image034.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image036.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image038.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image040.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image050.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image052.png) 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image054.png) 
