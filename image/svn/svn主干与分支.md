@@ -1,4 +1,60 @@
 # SVN分支使用使用说明
 
-# 背景
+## 背景
 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn1.png)
+
+>* 一个大项目在开发中可能会拆分成几个小项目分别开发，
+>* 共通的部分做完后再统一合并。
+>* 在开发中，共通的部分修改后，其它人要保持同步。
+
+这种情况反应到SVN的分支/合并功能上，再贴切不过了。
+
+>* SVN可以为一个版本库中的内容(主干)建立一个分支.分支和主干完全独立，就相当于把代码再复制一份，重新添加到版本库中。
+>* SVN提供另一个功能，就是把主干做出的修改合并到分支中，以及把分支修改的内容合并到主干中。
+>* 当然，我们也可以把主干的版本库的路径切换到分支上，然后更新，来实现把分支的修改更新到主干；以及修改分支路径来同步主干的修改。但过程复杂，还容易出错。
+>* SVN 的分支功能还提供一些合并的测试，可以在不改动版本路径的情况下完成上面的需求。
+
+## SVN目录结构说明
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn2.png)
+>* cmisVersion/trunck表示主干用于存放主干代码。 
+>* CMISVersion/Branch分支,分为FZ(福州)、NP(南平)、FJSW
+
+## 创建NP、FZ、FJSW分支
+
+### eclipse检出 CMISTEST项目
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn3.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn4.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn5.png)
+
+为CMISTESTMain 在FZ/chrunck/下创建分支
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn6.png)
+
+右键 team =>分支
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn7.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn9.png)
+### 将分支代码导入到eclipse
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn10.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn11.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn12.png)
+
+### 将分支代码同步到主干
+分别对主干和分支的代码进行修改
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image022.png) 
+主干项目右键点击team
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image024.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image026.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image028.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image030.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image032.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image034.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image036.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image038.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image040.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image050.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image052.png) 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image054.png) 
