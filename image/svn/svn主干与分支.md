@@ -21,30 +21,12 @@
 >* cmisVersion/trunck表示主干用于存放主干代码。 
 >* CMISVersion/Branch分支,分为FZ(福州)、NP(南平)、FJSW
 
-## 创建NP、FZ、FJSW分支
 
 ### eclipse检出 CMISTEST项目
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn3.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn4.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn5.png)
 
-> 为CMISTESTMain 在FZ/chrunck/下创建分支
-
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn6.png)
-
-> 右键 team =>分支
-
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn7.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn8.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn9.png)
 ### 将分支代码导入到eclipse
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn10.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn11.png)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/svn12.png)
 
 ### 将分支代码同步到主干
-分别对主干和分支的代码进行修改
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/svn/image022.png) 
+
 
 
