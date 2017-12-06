@@ -2,10 +2,9 @@
 
 ## 一、SSO原理
 
-
-1.业务资源请求，判断Token是否存在，如果存在这判断Token是否有效。有效者访问业务系统。
-2.Token不存在或者Token失效。1。提供登录页面 2.用户登录通过后，生成Token 3.将token<->user 存入redis 4.将token写入所有域的Cookie中 5.页面重定向回原始请求URL
-3.Token 验证时从redis中获取判断token是否有效。
+>* 1.业务资源请求，判断Token是否存在，如果存在这判断Token是否有效。有效者访问业务系统。
+>* 2.Token不存在或者Token失效。**1。**提供登录页面 **2.**用户登录通过后，生成Token **3.**将token<->user 存入redis **4.**将token写入所有域的Cookie中 5.页面重定向回原始请求URL
+>* 3.Token 验证时从redis中获取判断token是否有效。
 
 其中跨域读写cookie是最重要的环节。
 
