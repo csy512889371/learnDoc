@@ -11,7 +11,7 @@
 
 ## 要实现的内容简单描述。
 
-![image](https://github.com/csy512889371/reactLearn/blob/master/img/learn/ss0_cookie.jpeg =400x400)
+![image](https://github.com/csy512889371/reactLearn/blob/master/img/learn/ss0_cookie.jpeg){:height="100px" width="400px"}
 
 页面结构
 >* www.a.com/sso/index.jsp 是登录后才能看的到的页面.内嵌跨域<iframe src="www.b.com/sso/uc.jsp">
