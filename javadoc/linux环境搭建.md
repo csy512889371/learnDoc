@@ -419,12 +419,12 @@ Percona监控工具初探
 
 ### 配置
 
-安装
+> 安装
 
 ```shell
 #docker pull percona/pmm-server:1.1.3
 ```
-创建PMM 数据容器
+> 创建PMM 数据容器
 ```shell
 docker create \
  -v /opt/prometheus/data \
@@ -436,7 +436,7 @@ docker create \
 
 ```
 
-运行PMM server容器
+> 运行PMM server容器
 
 ```shell
 docker run -d \
@@ -448,7 +448,7 @@ docker run -d \
 
 ```
 
-参数说明
+> 参数说明
 
 ```shell
 docker: Docker 的二进制执行文件。
@@ -458,19 +458,191 @@ run:与前面的 docker 组合来运行一个容器。
 percona/pmm-server:1.1.3指定要运行的镜像，Docker首先从本地主机上查找镜像是否存在，如果不存在，Docker 就会从镜像仓库 Docker Hub 下载公共镜像。
 
 ```
-安装PMM客户端
+> 安装PMM客户端
 ```shell
 sudo yum install pmm-client
 
 pmm-admin config --server 127.0.0.1
 ```
 
-配置MySQL监控：
+> 配置MySQL监控：
 
 ```shell
 sudo pmm-admin add mysql --user root --password Csy@123456 --host 127.0.0.1 --port 3306
 ```
 
+> PMM Landing page
+```shell
+http://192.168.1.188/
+```
 
+> Query AnalytiCs(QAN web app)
+
+```shell
+http://192.168.1.188/qan/
+http://192.168.1.188/graph/
+
+```
+
+> Metrics Manitor(Grafana)
+
+```shell
+User name: admin
+Password:admin
+
+```
+> Orchestrator
+
+```shell
+http://192.168.1.188/orchestrator
+```
+
+## 安装redis
+
+
+### 文档
+
+docker安装redis 指定配置文件且设置了密码
+
+>* http://www.cnblogs.com/cgpei/p/7151612.html
+
+Redis 社区
+
+>* http://www.redis.cn/download.html
+
+Redis conf 配置详解
+>* http://blog.csdn.net/neubuffer/article/details/17003909
+
+### Redis config 配置
+
+daemonize  no
+
+>* 默认情况下，redis 不是在后台运行的，如果需要在后台运行，把该项的值更改为yes。
+
+
+pidfile  /var/run/redis.pid
+
+>* 当Redis 在后台运行的时候，Redis 默认会把pid 文件放在/var/run/redis.pid，你可以配置到其他地址。当运行多个redis 服务时，需要指定不同的pid 文件和端口
+
+port 
+
+>* 监听端口，默认为6379
+
+#bind 127.0.0.1
+>* 指定Redis 只接收来自于该IP 地址的请求，如果不进行设置，那么将处理所有请求，在生产环境中为了安全最好设置该项。默认注释掉，不开启
+
+### 配置
+
+
+获取最新redis镜像
+>* docker pull redis:latest
+
+创建目录
+
+```shell
+mkdir /data
+mkdir /etc/redis
+
+```
+
+启动redis
+
+```shell
+
+第一种方式.
+sudo docker run -t -i redis:latest
+-i：标准输入给容器    -t：分配一个虚拟终端
+第二种.后台运行
+docker run --name redis4.0.1 -p 7001:6379 -d redis:latest redis-server --appendonly yes
+第三种方式：
+docker run -p 7001:6379 --name redis4.0.1 \
+ --restart always \
+ -v $PWD/redis.conf:/etc/redis/redis.conf -v $PWD/data:/data -d \
+ redis:latest redis-server /etc/redis/redis.conf --appendonly yes
+
+```
+进入容器
+
+```shell
+PID=$(docker inspect --format "{{ .State.Pid }}" <container>)
+nsenter --target $PID --mount --uts --ipc --net --pid
+
+```
+
+redis-cli就可以连上redis了
+```shell
+Redis-cli
+```
+
+
+输出日志
+
+```shell
+Docker logs –f container
+```
+
+## 安装active MQ
+
+### 文档
+
+ActiveMQ此例简单介绍基于docker的activemq安装与集群搭建
+
+>* http://blog.csdn.net/metar_he/article/details/56674598
+
+后台访问
+>* http://192.168.1.189:8161/admin/send.jsp
+
+### 配置
+
+下载
+```shell
+docker pull webcenter/activemq
+```
+
+配置
+
+```shell
+
+docker run --name activemq -p 61616:61616 -p 8161:8161 -e ACTIVEMQ_ADMIN_LOGIN=admin -e ACTIVEMQ_ADMIN_PASSWORD=123 --restart=always -d webcenter/activemq
+```
+
+
+## 安装tomcat 7
+
+Docker 仓库搜索
+>* # docker search tomcat
+
+拉取Docker Hub里的镜像
+
+>* #docker pull tomcat:8
+
+>* 可以看到，星数最高的是官方的tomcat，有关官方tomcat的镜像可以访问 https://hub.docker.com/r/library/tomcat/
+
+>* 运行我们的web应用.假设我们应用是www,目录位置在/app/deploy/shjtweb
+
+```shell
+#docker run --privileged=true --name shjtweb --restart always -v /app/deploy/shjtweb:/usr/local/tomcat/webapps/ROOT  -d -p 8080:8080 tomcat:8
+```
+解压
+>* unzip jtiism-uwp-web.rar
+
+停止容器
+```shell
+# 停止一个容器
+docker stop shjtweb
+
+```
+
+启动容器
+```shell
+# 停止一个容器
+docker start shjtweb
+
+```
+
+## 安装zookeeper
+Docker 仓库搜索
+
+> https://hub.docker.com/explore/
 
 
