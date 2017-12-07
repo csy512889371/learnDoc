@@ -194,3 +194,222 @@ vi /etc/sysconfig/iptables #编辑防火墙配置文件
 systemctl restart iptables.service #重启防火墙使配置生效
 systemctl enable iptables.service #设置防火墙开机启动
 ```
+
+## Docker安装
+
+
+### Docker参考文档
+
+
+从入门到实践 
+>* https://yeasy.gitbooks.io/docker_practice/content/image/rmi.html
+
+CentOS 7.2部署Percona Monitoring and Management
+
+>* http://www.linuxidc.com/Linux/2017-02/141015.htm
+
+配置 Docker 加速器
+>* 注册DaoCloud 网址：https://dashboard.daocloud.io/
+
+Docker 容器使用
+>* http://www.runoob.com/docker/docker-container-usage.html
+
+查看Docker的底层信息
+
+>* docker inspect 07cb215742fd
+停止应用容器
+>* docker stop 07cb215742fd
+
+查找镜像
+>* https://hub.docker.com/
+
+高效应用开发
+
+>* https://m.aliyun.com/yunqi/wenzhang/tag/tagid_20917
+
+云茜社区
+>* https://yq.aliyun.com/
+
+Docker常用命令
+>* http://blog.csdn.net/zhang__jiayu/article/details/42611469
+
+### 配置 Docker CE
+
+卸载旧版本
+
+```shell
+$ sudo yum remove docker \
+                  docker-common \
+                  docker-selinux \
+                  docker-engine
+
+```
+
+执行以下命令安装依赖包：
+
+```shell
+$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+```
+国内源
+
+```shell
+$ sudo yum-config-manager \
+    --add-repo \
+    https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+
+```
+
+如果需要最新版本的 Docker CE 请使用以下命令：
+
+```shell
+$ sudo yum-config-manager --enable docker-ce-edge
+$ sudo yum-config-manager --enable docker-ce-test
+
+```
+安装 Docker CE
+
+```shell
+更新 yum 软件源缓存，并安装 docker-ce。
+
+$ sudo yum makecache fast
+$ sudo yum install docker-ce
+
+```
+
+使用脚本自动安装
+
+```shell
+$ curl -fsSL get.docker.com -o get-docker.sh
+$ sudo sh get-docker.sh --mirror Aliyun
+执行这个命令后，脚本就会自动的将一切准备工作做好，并且把 Docker CE 的 edge 版本安装在系统中。
+
+```
+启动 Docker CE
+
+```shell
+$ sudo systemctl enable docker
+$ sudo systemctl start docker
+
+```
+
+建立 docker 用户组
+
+
+```shell
+默认情况下，docker 命令会使用 Unix socket 与 Docker 引擎通讯。而只有 root 用户和 docker 组的用户才可以访问 Docker 引擎的 Unix socket。出于安全考虑，一般 Linux 系统上不会直接使用 root 用户。因此，更好地做法是将需要使用 docker 的用户加入 docker 用户组。
+
+建立 docker 组：
+
+$ sudo groupadd docker
+将当前用户加入 docker 组：
+
+$ sudo usermod -aG docker $USER
+
+```
+
+镜像加速
+```shell
+对于使用 systemd 的系统，用 systemctl enable docker 启用服务后，编辑 /etc/systemd/system/multi-user.target.wants/docker.service 文件，找到 ExecStart= 这一行，在这行最后添加加速器地址 --registry-mirror=<加速器地址>，如：
+
+ExecStart=/usr/bin/dockerd --registry-mirror=https://jxus37ad.mirror.aliyuncs.com
+注：对于 1.12 以前的版本，dockerd 换成 docker daemon。
+
+重新加载配置并且重新启动。
+
+$ sudo systemctl daemon-reload
+$ sudo systemctl restart docker
+
+```
+
+信息版本
+
+```shell
+# docker version
+```
+查看信息
+
+```shell
+# docker info
+```
+
+查看我们正在运行的容器
+```shell
+# docker ps -a
+```
+查看映射端口
+```shell
+docker port pmm-server
+```
+
+查看应用进程日志
+
+```shell
+docker logs -f pmm-server
+```
+查看应用进程
+
+```shell
+docker top pmm-server
+```
+
+重启
+```shell
+docker start pmm-server
+```
+停止
+
+```shell
+docker stop pmm-server
+```
+我们可以使用 docker rm 命令来删除不需要的容器
+
+```shell
+docker rm pmm-server
+```
+列出镜像列表
+
+```shell
+docker images
+
+REPOSTITORY：表示镜像的仓库源
+TAG：镜像的标签
+IMAGE ID：镜像ID
+CREATED：镜像创建时间
+SIZE：镜像大小
+
+```
+
+
+查询出Pid
+```shell
+docker inspect --format "{{ .State.Pid}}" <container-id>
+
+```
+然后通过得到的Pid执行
+```shell
+nsenter --target 6537 --mount --uts --ipc --net --pid
+```
+输出日志
+
+```shell
+Docker logs –f container
+```
+
+> 进入具体的容器
+
+```shell
+Docker exec –it container /bin/bash
+```
+
+> 退出容器
+
+```shell
+exit
+```
+
+## 安装percona PMM 监控
+
+
+
+
+
