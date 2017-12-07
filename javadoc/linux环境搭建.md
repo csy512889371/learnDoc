@@ -610,11 +610,11 @@ docker run --name activemq -p 61616:61616 -p 8161:8161 -e ACTIVEMQ_ADMIN_LOGIN=a
 ## 安装tomcat 7
 
 Docker 仓库搜索
->* # docker search tomcat
+>*  docker search tomcat
 
 拉取Docker Hub里的镜像
 
->* #docker pull tomcat:8
+>* docker pull tomcat:8
 
 >* 可以看到，星数最高的是官方的tomcat，有关官方tomcat的镜像可以访问 https://hub.docker.com/r/library/tomcat/
 
