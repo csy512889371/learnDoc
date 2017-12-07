@@ -111,7 +111,7 @@ redhat/0.1-3/percona-release-0.1-3.noarch.rpm
 https://www.percona.com/downloads/percona-release/redhat/
 ```
 
-安装Percona 5.7
+> 安装Percona 5.7
 
 ```shell
 查看默认启动的服务
@@ -121,19 +121,19 @@ https://www.percona.com/downloads/percona-release/redhat/
 # netstat -lntp
 ```
 
-启动数据库并设置开机启动
+> 启动数据库并设置开机启动
 
 ```shell
 # service mysqld restart 
 #systemctl start  mysqld.service
 ```
 
-获取默认密码
+> 获取默认密码
 
 ```shell
 # cat /var/log/mysqld.log  | grep "A temporary password" | awk -F " " '{print$11}'
 ```
-访问mysql
+> 访问mysql
 
 ```shell
 mysql -uroot -pQzc%ooeze8.u
@@ -158,33 +158,37 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'Csy@123456' WITH GRANT 
 
 > CentOS 7.0默认使用的是firewall作为防火墙，这里改为iptables防火墙。
 
+
+> 1、关闭firewall：
 ```shell
-1、关闭firewall：
 systemctl stop firewalld.service
 systemctl disable firewalld.service
 systemctl mask firewalld.service
-
-2、安装iptables防火墙
+```
+> 2、安装iptables防火墙
+```shell
 yum install iptables-services -y
-
-3.启动设置防火墙
+```
+> 3.启动设置防火墙
+```shell
 
 # systemctl enable iptables
 # systemctl start iptables
-
-4.查看防火墙状态
-
+```
+> 4.查看防火墙状态
+```shell
 systemctl status iptables
-
-5编辑防火墙，增加端口
+```
+> 5编辑防火墙，增加端口
+```shell
 vi /etc/sysconfig/iptables #编辑防火墙配置文件
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
 :wq! #保存退出
-
-3.重启配置，重启系统
+```
+> 3.重启配置，重启系统
+```shell
 systemctl restart iptables.service #重启防火墙使配置生效
 systemctl enable iptables.service #设置防火墙开机启动
-
 ```
