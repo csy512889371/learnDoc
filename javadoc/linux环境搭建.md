@@ -101,7 +101,8 @@ DNS1=192.168.1.1
 ## 安装percona
 
 下载地址
->* http://repo.percona.com/centos/7/os/x86_64/ Percona-Server-server-57-5.7.19-17.1.el7.x86_64.rpm
+>* http://repo.percona.com/centos/7/os/x86_64/ 
+>* Percona-Server-server-57-5.7.19-17.1.el7.x86_64.rpm
 
 安装数据库源
 ```shell
