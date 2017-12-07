@@ -245,12 +245,12 @@ $ sudo yum remove docker \
 
 ```
 
-执行以下命令安装依赖包：
+> 执行以下命令安装依赖包：
 
 ```shell
 $ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
 ```
-国内源
+> 国内源
 
 ```shell
 $ sudo yum-config-manager \
@@ -259,24 +259,24 @@ $ sudo yum-config-manager \
 
 ```
 
-如果需要最新版本的 Docker CE 请使用以下命令：
+> 如果需要最新版本的 Docker CE 请使用以下命令：
 
 ```shell
 $ sudo yum-config-manager --enable docker-ce-edge
 $ sudo yum-config-manager --enable docker-ce-test
 
 ```
-安装 Docker CE
+> 安装 Docker CE
 
 ```shell
-更新 yum 软件源缓存，并安装 docker-ce。
+> 更新 yum 软件源缓存，并安装 docker-ce。
 
 $ sudo yum makecache fast
 $ sudo yum install docker-ce
 
 ```
 
-使用脚本自动安装
+> 使用脚本自动安装
 
 ```shell
 $ curl -fsSL get.docker.com -o get-docker.sh
@@ -284,7 +284,7 @@ $ sudo sh get-docker.sh --mirror Aliyun
 执行这个命令后，脚本就会自动的将一切准备工作做好，并且把 Docker CE 的 edge 版本安装在系统中。
 
 ```
-启动 Docker CE
+> 启动 Docker CE
 
 ```shell
 $ sudo systemctl enable docker
@@ -292,7 +292,7 @@ $ sudo systemctl start docker
 
 ```
 
-建立 docker 用户组
+>* 建立 docker 用户组
 
 
 ```shell
@@ -307,7 +307,7 @@ $ sudo usermod -aG docker $USER
 
 ```
 
-镜像加速
+> 镜像加速
 ```shell
 对于使用 systemd 的系统，用 systemctl enable docker 启用服务后，编辑 /etc/systemd/system/multi-user.target.wants/docker.service 文件，找到 ExecStart= 这一行，在这行最后添加加速器地址 --registry-mirror=<加速器地址>，如：
 
@@ -321,52 +321,53 @@ $ sudo systemctl restart docker
 
 ```
 
-信息版本
+> 信息版本
 
 ```shell
 # docker version
 ```
-查看信息
+> 查看信息
 
 ```shell
 # docker info
 ```
 
-查看我们正在运行的容器
+> 查看我们正在运行的容器
 ```shell
 # docker ps -a
 ```
-查看映射端口
+
+> 查看映射端口
 ```shell
 docker port pmm-server
 ```
 
-查看应用进程日志
+> 查看应用进程日志
 
 ```shell
 docker logs -f pmm-server
 ```
-查看应用进程
+> 查看应用进程
 
 ```shell
 docker top pmm-server
 ```
 
-重启
+> 重启
 ```shell
 docker start pmm-server
 ```
-停止
+> 停止
 
 ```shell
 docker stop pmm-server
 ```
-我们可以使用 docker rm 命令来删除不需要的容器
+> 我们可以使用 docker rm 命令来删除不需要的容器
 
 ```shell
 docker rm pmm-server
 ```
-列出镜像列表
+> 列出镜像列表
 
 ```shell
 docker images
@@ -380,16 +381,16 @@ SIZE：镜像大小
 ```
 
 
-查询出Pid
+> 查询出Pid
 ```shell
 docker inspect --format "{{ .State.Pid}}" <container-id>
 
 ```
-然后通过得到的Pid执行
+> 然后通过得到的Pid执行
 ```shell
 nsenter --target 6537 --mount --uts --ipc --net --pid
 ```
-输出日志
+> 输出日志
 
 ```shell
 Docker logs –f container
@@ -409,6 +410,66 @@ exit
 
 ## 安装percona PMM 监控
 
+MySQL性能监控软件：慢查询分析利器
+>* http://www.sohu.com/a/160166744_505802
+
+Percona监控工具初探
+>* http://blog.csdn.net/woshiaotian/article/details/53304408
+
+
+### 配置
+
+安装
+
+```shell
+#docker pull percona/pmm-server:1.1.3
+```
+创建PMM 数据容器
+```shell
+docker create \
+ -v /opt/prometheus/data \
+ -v /opt/consul-data \
+ -v /var/lib/mysql \
+ -v /var/lib/grafana \
+ --name pmm-data \
+ percona/pmm-server:1.1.3 /bin/true
+
+```
+
+运行PMM server容器
+
+```shell
+docker run -d \
+ -p 80:80 \
+ --volumes-from pmm-data \
+ --name pmm-server \
+ --restart always \
+ percona/pmm-server:1.1.3
+
+```
+
+参数说明
+
+```shell
+docker: Docker 的二进制执行文件。
+run:与前面的 docker 组合来运行一个容器。
+-d:让容器在后台运行。
+-P:将容器内部使用的网络端口映射到我们使用的主机上。
+percona/pmm-server:1.1.3指定要运行的镜像，Docker首先从本地主机上查找镜像是否存在，如果不存在，Docker 就会从镜像仓库 Docker Hub 下载公共镜像。
+
+```
+安装PMM客户端
+```shell
+sudo yum install pmm-client
+
+pmm-admin config --server 127.0.0.1
+```
+
+配置MySQL监控：
+
+```shell
+sudo pmm-admin add mysql --user root --password Csy@123456 --host 127.0.0.1 --port 3306
+```
 
 
 
