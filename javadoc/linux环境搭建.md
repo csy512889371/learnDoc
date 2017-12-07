@@ -111,13 +111,15 @@ redhat/0.1-3/percona-release-0.1-3.noarch.rpm
 https://www.percona.com/downloads/percona-release/redhat/
 ```
 
-> 安装Percona 5.7
+### 安装Percona 5.7
 
+
+> 查看默认启动的服务
 ```shell
-查看默认启动的服务
 # systemctl list-unit-files|grep enabled
-
-查看监听端口
+```
+> 查看监听端口
+```shell
 # netstat -lntp
 ```
 
@@ -139,7 +141,7 @@ https://www.percona.com/downloads/percona-release/redhat/
 mysql -uroot -pQzc%ooeze8.u
 ```
 
-Percona 5.7安装完默认会产生个随机的密码，存在日志中。
+### Percona 5.7安装完默认会产生个随机的密码，存在日志中。
 
 > 设置密码
 ```shell
@@ -156,8 +158,7 @@ GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'Csy@123456' WITH GRANT 
 
 ```
 
-> CentOS 7.0默认使用的是firewall作为防火墙，这里改为iptables防火墙。
-
+### CentOS 7.0默认使用的是firewall作为防火墙，这里改为iptables防火墙。
 
 > 1、关闭firewall：
 ```shell
