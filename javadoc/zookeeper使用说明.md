@@ -1,6 +1,6 @@
 # zookeeper使用说明
 
-# 概要说明
+# 一、概要说明
 
 >* 配置的集中管理
 >* 集群管理
@@ -10,7 +10,7 @@ znode 可以被监控，包括这个目录节点中存储的数据的修改，�
 这个功能是zookeeper对于应用最重要的特性，通过这个特性可以实现的功能包括配置的**集中管理**，**集群管理**，**分布式锁**等等
 
 
-# Zookeeper介绍
+# 二、Zookeeper介绍
 
 ## 介绍
 
@@ -115,7 +115,7 @@ ZooInspector
 运行  F:\tools\zk\ZooInspector\build\zookeeper-dev-ZooInspector.jar
 ```
 
-## zooKeeper基本API
+# 三、zooKeeper基本API
 
 ```java
 
@@ -123,7 +123,8 @@ zk = new ZooKeeper(address, sessionTimeout,null);
 zk.exists("/tmp_root_path", true) //exists()方法仅仅监控对应节点的一次数据变化，无论是数据修改还是删除！
 zk.getData(event.getPath(), true, null);
 ```
-创建节点
+
+> 创建节点
 
 ```java
 // 创建一个总的目录ktv，并不控制权限，这里需要用持久化节点，不然下面的节点创建容易出错
@@ -149,7 +150,7 @@ zk.create(ROOT + "/北京KTV", "北京KTV".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSA
 zk.create(ROOT + "/北京KTV-分店", "北京KTV-分店".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
 ```
 
-## 配置服务
+# 四、配置服务
 
 > ConnectionWatcher 建立链接
 
@@ -429,7 +430,7 @@ public class ConfigWatcher implements Watcher{
 ```
 
 
-# ZooKeeper实现共享锁
+# 五、ZooKeeper实现共享锁
 
 ## 分布式锁概述
 
@@ -468,7 +469,7 @@ public class ConfigWatcher implements Watcher{
 
 # 当前问题与方案
 
-## 羊群效应
+## 1.羊群效应
 
 ### 问题
 
@@ -485,7 +486,7 @@ public class ConfigWatcher implements Watcher{
 >* 在我们的例子中，如果客户端创建了znode /leader/lock-1、/leader/lock-2和／leader/lock-3，那么只有当/leader/lock-2消失时才需要通知／leader/lock-3对照的客户端；/leader/lock-1消失或有新的znode /leader/lock-4加入时，不需要通知该客户端。
 
 
-## 可恢复的异常
+## 2.可恢复的异常
 
 ### 问题
 
@@ -507,14 +508,14 @@ public class ConfigWatcher implements Watcher{
 >* 由于顺序号对于父节点来说是唯一的，但对于子节点名并不唯一，因此采用这样的命名方式可以诖子节点在保持创建顺序的同时能够确定自己的创建者。
 
 
-## 不可恢复的异常
+## 3.不可恢复的异常
 
 >* 如果一个客户端的ZooKeeper会话过期，那么它所创建的短暂znode将会被删除，已持有的锁会被释放，或是放弃了申请锁的位置。
 >* 使用锁的应用程序应当意识到它已经不再持有锁，应当清理它的状态，然后通过创建并尝试申请一个新的锁对象来重新启动。
 >* 注意，这个过程是由应用程序控制的，而不是锁，因为锁是不能预知应用程序需要如何清理自己的状态。
 
 
-## ZooKeeper实现共享锁
+## 4.ZooKeeper实现共享锁
 
 >* 实现正确地实现一个分布式锁是一件棘手的事，因为很难对所有类型的故障都进行正确的解释处理。
 >* ZooKeeper带有一个JavaWriteLock，客户端可以很方便地使用它。
