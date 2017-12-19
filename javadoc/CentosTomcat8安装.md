@@ -6,6 +6,8 @@ docker search tomcat
 mkdir /var/www
 mkdir /var/www/blogServer
 
+chmod 777 /var/www/blogServer
+
 docker run --privileged=true --name blogServer --restart always -v /var/www/blogServer:/usr/local/tomcat/webapps/ROOT  -d -p 8080:8080 tomcat:8
 
 ```
@@ -18,9 +20,6 @@ docker port blogServer
 
 查看应用进程日志
 docker logs -f blogServer
-
-停止应用进程
-docker top blogServer
 
 
 重启	
