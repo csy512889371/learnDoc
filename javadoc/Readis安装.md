@@ -80,3 +80,20 @@ nsenter --target 3368 --mount --uts --ipc --net --pid
 exit
 
 ```
+## redis 4.1配置文件
+
+> 配置文件修改
+```xml
+把下面对应的注释掉
+# bind 127.0.0.1 
+
+Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程，设置为no
+daemonize no
+
+保护模式
+protected-mode no 
+```
+
+
+
+
