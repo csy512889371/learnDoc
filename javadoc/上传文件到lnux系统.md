@@ -14,9 +14,9 @@ WinSCP 是一个在 Windows 环境下使用 SSH 的开源图形化 SFTP 客户�
 * 端口：默认 22。
 * 密码：云服务器的用户名对应的密码。
 * 用户名：云服务器的系统用户名。
-** SUSE/CentOS/Debian 系统：root
-** Windows 系统：Administrator
-** Ubuntu 系统：ubuntu
+>* SUSE/CentOS/Debian 系统：root
+>* Windows 系统：Administrator
+>* Ubuntu 系统：ubuntu
 
 ## 信息填写完毕之后单击 **登录**
 
