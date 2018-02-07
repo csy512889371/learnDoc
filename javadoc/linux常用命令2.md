@@ -83,8 +83,8 @@ Load是用来度量服务器工作量的大小，即计算机cpu任务执行队�
 ## 排查步骤如下：
 * 确认crontab是否正常运行。
 
-- 1) 可以运行命令crontab -e添加如下测试条目*/1 * * * * /bin/date >> /tmp/crontest 2>&1 &，然后观察/tmp/crontest文件。
-- 2) 如果有问题，建议使用ps aux|grep cron查找cron的pid，kill -9 PID结束cron进程，然后通过/etc/init.d/cron start重新启动cron。
+1) 可以运行命令crontab -e添加如下测试条目*/1 * * * * /bin/date >> /tmp/crontest 2>&1 &，然后观察/tmp/crontest文件。
+2) 如果有问题，建议使用ps aux|grep cron查找cron的pid，kill -9 PID结束cron进程，然后通过/etc/init.d/cron start重新启动cron。
 
 * 确认cron条目中的脚本路径为绝对路径。
 * 查看运行cron的用户帐号是否正确，同时查看/etc/cron.deny中是否包含此账户。
