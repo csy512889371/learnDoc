@@ -383,3 +383,8 @@ public void transfer(final String from, final String to, final double amount) {
 
 使用 DTS 开发需要关注的就是以上内容。对于参与者来说，最关键的是业务上如何实现两阶段处理来保证最终一致性，对于发起方来说，主要是要配置 DTS 的表。
 
+# 参考资料
+
+[SOFA框架 .pptx](https://github.com/csy512889371/learnDoc/blob/master/javadoc/2018/SOFA%E6%A1%86%E6%9E%B6%20.pptx)
+
+
