@@ -69,3 +69,9 @@
 >（TCC操作中的Confirm操作和Cancel操作，其实也可以看作是补偿操作）
 
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/fbs/8.png)
+
+## 流程图
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/fbs1/tcc.png)
+
+* 如果try阶段异常则进入cancel阶段
+* 如果try阶段成功则进入confirm阶段，且进入confirm阶段的事务只会向前推进。不会cancel。如果confirm失败则走恢复事务的流程。达到最大重试次数后则需要人工干预。
