@@ -10,6 +10,8 @@
 [cookie跨域读写](https://github.com/csy512889371/learnDoc/tree/master/sso-cookie)
 
 
+# python 博客
+http://www.cnblogs.com/liuxiaowei/category/1034666.html
 
 
 
