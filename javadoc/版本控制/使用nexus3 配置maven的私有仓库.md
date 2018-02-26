@@ -106,12 +106,13 @@ application-port=8082
 
 # 三、配置与说明
 
-1.png
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/maven/1.png)
+
 
 1) 创建一个仓库（Create Repositories）
 
-2.png
-3.png
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/maven/2.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/maven/3.png)
 
 2) 发布maven项目
 
