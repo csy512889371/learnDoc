@@ -61,17 +61,17 @@ Re-enter new password:
 
 将生成的秘钥拷贝到/etc/openldap/slapd.conf，rootpwd和秘钥之间用tab键隔开
 
-![image](1.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/1.png)
 
 接着修改如下：
 
-![image](2.png)
-![image](3.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/2.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/3.png)
 
 
 启动LDAP的slapd服务，并设置自启动
 
-![image](4.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/4.png)
 
 赋予配置目录相应的权限：
 ```shell
@@ -103,7 +103,7 @@ config file testing succeeded
 cat /etc/openldap/slapd.d/cn\=config/olcDatabase\=\{2\}bdb.ldif
 ```
 
-![image](5.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/5.png)
 
 授权新配置文件：
 ```shell
@@ -132,14 +132,14 @@ yum install -y phpldapadmin
 vim /etc/httpd/conf.d/phpldapadmin.conf
 ```
 
-![image](6.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/6.png)
 
 ```shell
 vim /etc/phpldapadmin/config.php
 ```
 
 将如下第一个注释去掉，第二加上注释：
-![image](7.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/7.png)
 
 重启服务：
 ```shell
@@ -147,7 +147,7 @@ vim /etc/phpldapadmin/config.php
 ```
 访问如下：
 
-![image](8.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/8.png)
 
 * 这样是登录不了的，需要做如下配置：
 * 服务器随便找个目录然后执行：vi root.ldif
@@ -167,13 +167,12 @@ objectclass: organizationalRole
 ```shell
 ldapadd -x -D "cn=xxxx,dc=service,dc=com" -W -f root.ldif
 ```
-![image](9.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/9.png)
 
 
 * 然后再去登录服务器：
 * 账号：cn=xxxx,dc=service,dc=com
 * 密码：123456
 
-![image](9.png)
-
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/10.png)
 
