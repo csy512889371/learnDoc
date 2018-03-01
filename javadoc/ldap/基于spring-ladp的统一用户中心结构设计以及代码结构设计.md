@@ -1,4 +1,4 @@
-# 基于spring-security-oauth2的mysql数据表设计
+# 基于spring-ladp的统一用户中心结构设计以及代码结构设计
 
 ## 一、	目录设计
 
