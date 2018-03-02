@@ -63,7 +63,7 @@
 
 ### 1、增加公司
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -72,7 +72,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -82,7 +82,7 @@ Request Parameter
 ### 2、删除公司
 
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -91,7 +91,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -99,7 +99,7 @@ Request Parameter
 	
 
 ### 3、增加部门
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -109,7 +109,7 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -118,7 +118,7 @@ Request Parameter
 			
 ### 4、删除部门
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -127,7 +127,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -136,7 +136,7 @@ Request Parameter
 
 ### 5、增加人员
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -145,7 +145,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -161,7 +161,7 @@ Request Parameter
 	
 ### 6、	删除人员	
 				
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -171,7 +171,7 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -179,7 +179,7 @@ Request Parameter
 
 ### 7、	人员注册
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -189,7 +189,7 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -205,7 +205,7 @@ Request Parameter
 
 ### 8、人员登录
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -215,14 +215,14 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
 | login_name | String | y | 登录名称 |
 | user_password | String | y | 登录密码 |					
 			
-Response Parameter
+> Response Parameter
 
 | parameter | type | comment |
 | -------- | :------ | :------ |
@@ -237,7 +237,7 @@ Response Parameter
 		
 ### 9、人员迁移	
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -246,7 +246,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 	
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -255,7 +255,7 @@ Request Parameter
 
 ### 10、添加层级人员
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -265,7 +265,7 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -275,7 +275,7 @@ Request Parameter
 
 ### 11、查询人员信息的具体路径
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -285,20 +285,20 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
 | login_name | String | y | 登录名称 |
 
-Response Parameter
+> Response Parameter
 
 | parameter | type | comment |
 | -------- | :------ | :------ |
 | path | String | 路径 |
 
 ## 12、人员的所有下一级
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -308,13 +308,13 @@ Request describe
 | Conten-Type | application/json;charset=UTF-8 |
 
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
 | rdn | String | y | 人员的具体路径(包括登录名称) |
 
-Response Parameter
+> Response Parameter
 
 | parameter | type | comment |
 | -------- | :------ | :------ |
@@ -323,7 +323,7 @@ Response Parameter
 
 ## 11、删除层级人员
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -332,7 +332,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -340,7 +340,7 @@ Request Parameter
 
 ## 12、更改密码
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
@@ -349,7 +349,7 @@ Request describe
 | Accept | application/json |
 | Conten-Type | application/json;charset=UTF-8 |
 
-Request Parameter
+> Request Parameter
 
 | parameter | type | require | comment |
 | -------- | :------ | :------ | :------ |
@@ -360,7 +360,7 @@ Request Parameter
 
 ### 13、找回密码
 
-Request describe
+> Request describe
 
 | Item | value |
 | -------- | :------ |
