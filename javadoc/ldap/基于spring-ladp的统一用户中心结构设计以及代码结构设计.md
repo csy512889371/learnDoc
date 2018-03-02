@@ -47,14 +47,14 @@
 自行注册人员放到模拟公司的目录下，等所属公司组织结构建立完毕，将此人员迁移到所属公司(或者删除此人员，所属公司新建此人员)。
 
 模拟公司如下
-![image](a1.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/a1.png)
 
 ### 2 人员添加
 
 人员添加需要指定具体目录。
 
 例如：要在“财务部”下添加人员，需要指定ou=财务部,o=用友超客
-![image](a2.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/ldap/a2.png)
 
 目前我们的人员上下级关系全部用人员去处理，不用添加部门上下级关系。
 
