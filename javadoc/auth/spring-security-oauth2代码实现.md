@@ -1,7 +1,7 @@
 # spring-security-oauth2代码实现
 
 # 代码地址
-* 
+* https://github.com/csy512889371/learndemo/tree/master/ctoedu-oauth
 
 # 如何使用
 1) 需要认证的项目中 引入上面项目的pom
@@ -73,3 +73,10 @@
 ```
 
 
+5) 获取token
+
+http://localhost:8080/xxservice/oauth/token?client_id=client&grant_type=client_credentials&client_secret=ctoedu
+
+6) 请求接口带上token
+
+http://localhost:8080/xxservice/getInfo/1?access_token=safdioiidfoasdifuao
