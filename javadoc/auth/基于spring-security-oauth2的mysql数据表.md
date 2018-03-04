@@ -113,4 +113,15 @@ DEFAULT CHARACTER SET = utf8;
 
 ```
 
+## 说明
 
+
+* oauth_access_token 生成的token
+* oauth_client_details 客户端信息
+* oauth_code 授权码
+* oauth_refresh_token 刷新token
+
+```sql
+INSERT INTO `oauth2`.`oauth_client_details` (`client_id`, `resource_ids`, `client_secret`, `scope`, `authorized_grant_types`, `web_server_redirect_uri`, `authorities`, `access_token_validity`, `refresh_token_validity`, `additional_information`, `autoapprove`) VALUES ('client', NULL, 'ctoedu', 'write,read', 'client_credentials', 'http://localhost:8080', NULL, NULL, NULL, NULL, NULL);
+
+```
