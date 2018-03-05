@@ -3,7 +3,7 @@
 
 ## 一、spring boot默认的日志系统
 
-2017-10-22 20:12:10.136  INFO 1264 --- [           main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.String(true)
+> 2017-10-22 20:12:10.136  INFO 1264 --- [           main] s.d.spring.web.caching.CachingAspect     : Caching aspect applied for cache modelDependencies with key java.lang.String(true)
 
 * 1、2017-10-22 20:12:10.136   时间日期  精确到毫秒
 * 2、INFO  日志级别-error warn debug info
@@ -20,6 +20,7 @@
 2、在application.properties中配置debug=true，该属性设置为true的时候，核心logger会输出更多的内容，但是自己的应用日志不会输出。
 
 spring boot默认配置只会输出到控制台，并不会记录到文件中，我们再生产环境使用时需要以文件方式记录，可以通过增加如下配置，来将日志输出到文件：
+
 1、logging.file :设置文件，可以使绝对路径，也可以是相对路径。
 2、logging.path：设置目录，会在该目录下创建spring.log文件，并写入日志内容。
 3、日志文件会在10mb大小的时候被切断，产生新的日志文件。
