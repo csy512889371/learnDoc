@@ -359,17 +359,7 @@ public class ApplicationTests {
 
 	@Test
 	public void testAdd() throws Exception {
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。");
-		System.out.println("Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。"+computeService.add(100, 200));
+		System.out.println("cn.ctoedu: Dubbo消费结果为：。。。。。。。。。。。。。。。。。。。。。。。。。。。。。。"+computeService.add(100, 200));
 		Assert.assertEquals("compute-service:add", new Integer(3), computeService.add(1, 2));
 		//Assert.assertEquals("compute-service:add", new Integer(5), computeService.add(1, 2));
 	}
