@@ -56,6 +56,9 @@ Serial Old是Serial收集器的老年代版本，它同样使用一个单线程�
 ### 5、ParallelOld（并行GC）收集器
 Serial Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法
 
+### 6、图片
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/vm/3.png)
 
 
 
