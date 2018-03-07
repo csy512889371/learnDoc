@@ -76,7 +76,7 @@ service rabbitmq-server start
 
 出现的错误以及解决办法如下
 
-![image](1.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/mq/rabbitmq1.png)
 
 常用的几个命令:
 
@@ -90,7 +90,7 @@ service rabbitmq-server start
 * 执行：/usr/sbin/rabbitmq-plugins enable rabbitmq_management 添加可视化插件
 * 页面访问：http://10.211.55.9:15672/
 
-![image](2.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/mq/rabbitmq2.png)
 
 
 添加访问账号和密码：
