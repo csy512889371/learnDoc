@@ -42,7 +42,7 @@
 
 ## 图
 
-![image](![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/vm/1.png))
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/vm/1.png)
 
 
 
