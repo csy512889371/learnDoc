@@ -40,8 +40,9 @@
 * 它是方法区的一部分。Class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项信息是常量池（ConstantPool Table）,用于存放编译期生成的各种字面量和符号引用
 * 这部分内容将在类加载后存放到方法区的运行时常量池中
 
+## 图
 
-
+![image](![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/vm/1.png))
 
 
 
