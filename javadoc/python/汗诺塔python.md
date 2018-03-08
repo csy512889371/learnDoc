@@ -7,8 +7,8 @@
 * 第二个参数 借力点 buffer
 * 第三个参数 终点
 
-![image]()
-![image]()
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/python/1.png)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/python/2.png)
 
 Python编写的汉诺塔算法的代码：
 ```python
