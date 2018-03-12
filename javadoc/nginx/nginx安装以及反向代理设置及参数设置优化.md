@@ -1,9 +1,9 @@
 # nginx安装以及反向代理设置及参数设置优化
 
 ## 一、	介绍
-Nginx是多进程单线程模型，即启动的工作进程只有一个进程响应客户端请求，不像apache可以在一个进程内启动多个线程响应可请求，因此在内存占用上比apache小的很多。Nginx维持一万个非活动会话只要2.5M内存。Nginx和Mysql是CPU密集型的，就是对CPU的占用比较大，默认session在本地文件保存，支持将session保存在memcache，但是memcache默认支持最大1M的课hash对象。
-  nginx的版本分为开发版、稳定版和过期版，nginx以功能丰富著称，它即可以作为http服务器，也可以作为反向代理服务器或者邮件服务器，能够快速的响应静态网页的请求，支持FastCGI/SSL/Virtual Host/URL Rwrite/Gzip/HTTP Basic Auth等功能，并且支持第三方的功能扩展。
-  nginx安装可以使用yum或源码安装，推荐使用源码，一是yum的版本比较旧，二是使用源码可以自定义功能，方便业务的上的使用，源码安装需要提前准备标准的编译器，GCC的全称是（GNU Compiler collection），其有GNU开发，并以GPL即LGPL许可，是自由的类UNIX即苹果电脑Mac OS X操作系统的标准编译器，因为GCC原本只能处理C语言，所以原名为GNU C语言编译器，后来得到快速发展，可以处理C++,Fortran，pascal，objective-C，java以及Ada等其他语言，此外还需要Automake工具，以完成自动创建Makefile的工作，Nginx的一些模块需要依赖第三方库，比如pcre（支持rewrite），zlib（支持gzip模块）和openssl（支持ssl模块）
+* Nginx是多进程单线程模型，即启动的工作进程只有一个进程响应客户端请求，不像apache可以在一个进程内启动多个线程响应可请求，因此在内存占用上比apache小的很多。Nginx维持一万个非活动会话只要2.5M内存。Nginx和Mysql是CPU密集型的，就是对CPU的占用比较大，默认session在本地文件保存，支持将session保存在memcache，但是memcache默认支持最大1M的课hash对象。
+* nginx的版本分为开发版、稳定版和过期版，nginx以功能丰富著称，它即可以作为http服务器，也可以作为反向代理服务器或者邮件服务器，能够快速的响应静态网页的请求，支持FastCGI/SSL/Virtual Host/URL Rwrite/Gzip/HTTP Basic Auth等功能，并且支持第三方的功能扩展。
+* nginx安装可以使用yum或源码安装，推荐使用源码，一是yum的版本比较旧，二是使用源码可以自定义功能，方便业务的上的使用，源码安装需要提前准备标准的编译器，GCC的全称是（GNU Compiler collection），其有GNU开发，并以GPL即LGPL许可，是自由的类UNIX即苹果电脑Mac OS X操作系统的标准编译器，因为GCC原本只能处理C语言，所以原名为GNU C语言编译器，后来得到快速发展，可以处理C++,Fortran，pascal，objective-C，java以及Ada等其他语言，此外还需要Automake工具，以完成自动创建Makefile的工作，Nginx的一些模块需要依赖第三方库，比如pcre（支持rewrite），zlib（支持gzip模块）和openssl（支持ssl模块）
 
 ## 二、	下载nginx
 
