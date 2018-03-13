@@ -12,7 +12,7 @@
 * 2.Logstash是一个完全开源的工具，他可以对你的日志进行收集、分析，并将其存储供以后使用（如，搜索）。
 * 3.kibana 也是一个开源和免费的工具，他Kibana可以为 Logstash 和 ElasticSearch 提供的日志分析友好的 Web 界面，可以帮助您汇总、分析和搜索重要数据日志。
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/1.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/1.png)
 
 * 在需要收集日志的所有服务上部署logstash，作为logstash agent（logstash shipper）用于监控并过滤收集日志，
 * 将过滤后的内容发送到logstash indexer，logstash indexer将日志收集在一起交给全文搜索服务ElasticSearch，
@@ -47,7 +47,7 @@ cd /data/program/software/elasticsearch-2.2.0
 
 执行结果： 
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/2.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/2.png)
 
 安装elasticsearch的kopf插件 
 
@@ -58,7 +58,7 @@ cd /data/program/software/elasticsearch-2.2.0
 执行结果： 
 
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/3.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/3.png)
 
 
 创建elasticsearch的data和logs目录
@@ -132,12 +132,12 @@ su search
 
 启动成功后浏览器访问如下：
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/4.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/4.png)
 
 
 通过安装head插件可以查看集群的一些信息，访问地址及结果如下：
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/5.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/elk/5.png)
 
 
 # 三、安装Kibana

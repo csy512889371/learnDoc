@@ -95,12 +95,12 @@ SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".
 #./kafka-console-producer.sh --broker-list 10.211.55.7:9092 --topic test
 ```
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/kafka/2.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/kafka/2.png)
 
 2.4 开启消费者并接收消息
 #./kafka-console-consumer.sh --zookeeper 10.211.55.8:2181 --topic test --from-beginning
 
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/kafka/3.bmp)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/kafka/3.png)
 
 
 
