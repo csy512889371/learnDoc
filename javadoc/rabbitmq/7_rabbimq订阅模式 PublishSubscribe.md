@@ -147,7 +147,7 @@ public class Recv2 {
 		channel.basicConsume(QUEUE_NAME, autoAck, consumer);
 	}
 }
-···
+```
 
 ## 测试
 
