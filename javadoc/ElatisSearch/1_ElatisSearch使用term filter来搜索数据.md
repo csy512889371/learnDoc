@@ -2,7 +2,7 @@
 
 ## 1、根据用户ID、是否隐藏、帖子ID、发帖日期来搜索帖子
 
-###（1）插入一些测试帖子数据
+### 1）插入一些测试帖子数据
 
 ```xml
 POST /forum/article/_bulk
@@ -54,7 +54,7 @@ GET /forum/_mapping/article
 
 现在es 5.2版本，type=text，默认会设置两个field，一个是field本身，比如articleID，就是分词的；还有一个的话，就是field.keyword，articleID.keyword，默认不分词，会最多保留256个字符
 
-###（2）根据用户ID搜索帖子
+### 2）根据用户ID搜索帖子
 
 ```xml
 GET /forum/article/_search
@@ -75,7 +75,7 @@ GET /forum/article/_search
 * 比如说，如果对搜索文本进行分词的话，“helle world” --> “hello”和“world”，两个词分别去倒排索引中匹配
 * term，“hello world” --> “hello world”，直接去倒排索引中匹配“hello world”
 
-###（3）搜索没有隐藏的帖子
+### 3）搜索没有隐藏的帖子
 
 ```xml
 GET /forum/article/_search
@@ -92,7 +92,7 @@ GET /forum/article/_search
 }
 ```
 
-###（4）根据发帖日期搜索帖子
+### 4）根据发帖日期搜索帖子
 
 ```xml
 GET /forum/article/_search
@@ -109,7 +109,7 @@ GET /forum/article/_search
 }
 ```
 
-###（5）根据帖子ID搜索帖子
+### 5）根据帖子ID搜索帖子
 
 ```xml
 
@@ -193,7 +193,7 @@ GET /forum/article/_search
 * 所以term filter，对text过滤，可以考虑使用内置的field.keyword来进行匹配。
 * 但是有个问题，默认就保留256个字符。所以尽可能还是自己去手动建立索引，指定not_analyzed吧。在最新版本的es中，不需要指定not_analyzed也可以，将type=keyword即可。
 
-###（6）查看分词
+### 6）查看分词
 
 ```xml
 GET /forum/_analyze
@@ -206,7 +206,7 @@ GET /forum/_analyze
 * 默认是analyzed的text类型的field，建立倒排索引的时候，就会对所有的articleID分词，分词以后，原本的articleID就没有了，只有分词后的各个word存在于倒排索引中。
 * term，是不对搜索文本分词的，XHDK-A-1293-#fJ3 --> XHDK-A-1293-#fJ3；但是articleID建立索引的时候，XHDK-A-1293-#fJ3 --> xhdk，a，1293，fj3
 
-###（7）重建索引
+### 7）重建索引
 
 ```xml
 DELETE /forum
@@ -236,7 +236,7 @@ POST /forum/article/_bulk
 
 ```
 
-###（8）重新根据帖子ID和发帖日期进行搜索
+### 8）重新根据帖子ID和发帖日期进行搜索
 
 ```xml
 
