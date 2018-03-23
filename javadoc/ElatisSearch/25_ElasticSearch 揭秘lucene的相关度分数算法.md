@@ -120,8 +120,11 @@ score(q,d)  =
 
 
 公式：
+
 ```java
+
 queryNorm = 1 / √sumOfSquaredWeights
+
 ```
 
 * 1、sumOfSquaredWeights = 所有term的IDF分数之和，开一个平方根，然后做一个平方根分之1
