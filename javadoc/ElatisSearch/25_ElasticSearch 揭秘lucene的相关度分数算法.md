@@ -111,8 +111,8 @@ score(q,d)  =
 * 6、t.getBoost() is the boost that has been applied to the query (new).
 * 6、getBoost表明该field的权值越大,越重要
 
-* 7. norm(t,d) is the field-length norm, combined with the index-time field-level boost, if any. (new).
-* 7. 字段长度归约是为了让内容较短的字段发挥更大的作用,而内容较长的字段权重相对降低
+* 7、 norm(t,d) is the field-length norm, combined with the index-time field-level boost, if any. (new).
+* 7、 字段长度归约是为了让内容较短的字段发挥更大的作用,而内容较长的字段权重相对降低
 
 ### 4、queryNorm(query normalization factor)
 
