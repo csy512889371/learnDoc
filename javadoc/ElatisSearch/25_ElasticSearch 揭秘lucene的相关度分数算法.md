@@ -76,10 +76,10 @@ score(q,d)  =
 ### 2、公式解释
 
 * 1. score(q,d) score(q,d) is the relevance score of document d for query q.
-* 1. 1这个公式的最终结果，就是说是一个query（叫做q），对一个doc（叫做d）的最终的总评分
+* 1. 这个公式的最终结果，就是说是一个query（叫做q），对一个doc（叫做d）的最终的总评分
 
 * 2. queryNorm(q) is the query normalization factor (new).
-* 2. 1queryNorm，是用来让一个doc的分数处于一个合理的区间内，不要太离谱，举个例子，一个doc分数是10000，一个doc分数是0.1，你们说好不好，肯定不好
+* 2. queryNorm，是用来让一个doc的分数处于一个合理的区间内，不要太离谱，举个例子，一个doc分数是10000，一个doc分数是0.1，你们说好不好，肯定不好
 
 * 3. coord(q,d) is the coordination factor (new).
 * 3. 简单来说，就是对更加匹配的doc，进行一些分数上的成倍的奖励
