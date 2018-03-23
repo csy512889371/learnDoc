@@ -82,10 +82,10 @@ score(q,d)  =
 * 2. 1queryNorm，是用来让一个doc的分数处于一个合理的区间内，不要太离谱，举个例子，一个doc分数是10000，一个doc分数是0.1，你们说好不好，肯定不好
 
 * 3. coord(q,d) is the coordination factor (new).
-* 3.1 简单来说，就是对更加匹配的doc，进行一些分数上的成倍的奖励
+* 3. 简单来说，就是对更加匹配的doc，进行一些分数上的成倍的奖励
 
 * 4. The sum of the weights for each term t in the query q for document d.
-* 4.1 求和
+* 4. 求和
 
 ### 3、对求进行解释
 
@@ -103,16 +103,16 @@ score(q,d)  =
 * 3. query中每个term对doc的分数，进行求和，多个term对一个doc的分数，组成一个vector space，然后计算吗，就在这一步
 
 * 4. tf(t in d) is the term frequency for term t in document d.
-*   4. 计算每一个term对doc的分数的时候，就是TF/IDF算法
+* 4. 计算每一个term对doc的分数的时候，就是TF/IDF算法
 
 * 5. idf(t) is the inverse document frequency for term t.
-* 5.1 计算IDF算法
+* 5. 计算IDF算法
 
 * 6. t.getBoost() is the boost that has been applied to the query (new).
-* 6.1 getBoost表明该field的权值越大,越重要
+* 6. getBoost表明该field的权值越大,越重要
 
 * 7. norm(t,d) is the field-length norm, combined with the index-time field-level boost, if any. (new).
-* 7.1 字段长度归约是为了让内容较短的字段发挥更大的作用,而内容较长的字段权重相对降低
+* 7. 字段长度归约是为了让内容较短的字段发挥更大的作用,而内容较长的字段权重相对降低
 
 ### 4、queryNorm(query normalization factor)
 
@@ -126,9 +126,9 @@ queryNorm = 1 / √sumOfSquaredWeights
 
 * 1. sumOfSquaredWeights = 所有term的IDF分数之和，开一个平方根，然后做一个平方根分之1
 * 2. 主要是为了将分数进行规范化 
-*   2.1: 开平方根，首先数据就变小了 
-*   2.2: 然后还用1去除以这个平方根，分数就会很小 
-*   2.3: 1.几 / 零点几
+* 2.1 开平方根，首先数据就变小了 
+* 2.2 然后还用1去除以这个平方根，分数就会很小 
+* 2.3 1.几 / 零点几
 * 3. 分数就不会出现几万，几十万，那样的离谱的分数
 
 ### 5、coord (query coodination)
