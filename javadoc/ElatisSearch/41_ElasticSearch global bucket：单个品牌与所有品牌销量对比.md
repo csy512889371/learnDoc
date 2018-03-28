@@ -9,7 +9,7 @@
 * 一个结果，是对所有数据执行聚合的
 
 ## 二、查询
-
+```
 GET /tvs/sales/_search 
 {
   "size": 0, 
@@ -38,7 +38,7 @@ GET /tvs/sales/_search
     }
   }
 }
-
+```
 global：就是global bucket，就是将所有数据纳入聚合的scope，而不管之前的query
 
 ## 二、结果

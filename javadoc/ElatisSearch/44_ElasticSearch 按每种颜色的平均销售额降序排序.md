@@ -57,7 +57,7 @@ GET /tvs/sales/_search
 ```
 
 ## 2、结果
-
+```
 {
   "took": 2,
   "timed_out": false,
@@ -101,4 +101,4 @@ GET /tvs/sales/_search
     }
   }
 }
-
+```
