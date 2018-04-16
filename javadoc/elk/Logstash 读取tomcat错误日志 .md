@@ -11,7 +11,7 @@
 
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/logstach/1.jpg)
 ![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/logstach/2.jpg)
-![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/logstach/3.jpg)
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/logstach/3.png)
 
 ## 例子
 
