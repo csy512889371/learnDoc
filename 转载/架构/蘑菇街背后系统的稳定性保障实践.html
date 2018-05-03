@@ -1,0 +1,1011 @@
+<!DOCTYPE html><!--[if IE]>  <html class="ie"> <![endif]-->
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>
+		</title>
+		<link rel="stylesheet" type="text/css" href="蘑菇街背后系统的稳定性保障实践_files/style.css" />
+	</head>
+	<body>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_02.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_02.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 14.0626em; left:6.336em;"><span class="stl_07 stl_08 stl_09">ArchSummit</span><span class="stl_10 stl_08 stl_09">全球架构师峰会 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.4605em; left:20.1983em;"><span class="stl_11 stl_08 stl_09">深圳站</span><span class="stl_12 stl_08 stl_09">2016 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.734em; left:8.9958em;"><span class="stl_13 stl_08 stl_14">蘑菇街背后系统稳定性保障实践 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_05.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_05.svg" type="image/svg+xml" />
+				</object>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_07.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_07.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.5883em;"><span class="stl_15 stl_08 stl_16" style="word-spacing:-0.0054em;">About Me &nbsp;</span></div>
+					<div class="stl_01" style="top: 9.7124em; left:2.818em;"><span class="stl_17 stl_08 stl_18">普通程序猿 &nbsp;</span></div>
+					<div class="stl_01" style="top: 11.9924em; left:3.748em;"><span class="stl_19 stl_08 stl_18" style="word-spacing:0.0551em;">2</span><span class="stl_17 stl_08 stl_18" style="word-spacing:0.0551em;">年</span><span class="stl_19 stl_08 stl_18" style="word-spacing:0.0551em;">-</span><span class="stl_17 stl_08 stl_18" style="word-spacing:0.0551em;">至今 蘑菇街，花名苏武 &nbsp;</span></div>
+					<div class="stl_01" style="top: 11.9924em; left:2.818em;"><span class="stl_19 stl_08 stl_18">1</span></div>
+					<div class="stl_01" style="top: 14.2724em; left:2.818em;"><span class="stl_17 stl_08 stl_18">经历数次蘑菇街系统改造，多为打杂 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.554em; left:2.818em;"><span class="stl_17 stl_08 stl_18">目前专注于系统稳定性相关工作 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_14.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_14.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:27.3283em;"><span class="stl_20 stl_08 stl_21">提纲 &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.1583em; left:7.366em;"><span class="stl_22 stl_23 stl_18">往年大促遇到的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.5991em; left:7.366em;"><span class="stl_24 stl_23 stl_25">问题的总结和思考 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.8512em; left:7.366em;"><span class="stl_22 stl_23 stl_26">新思路下双</span><span class="stl_27 stl_28 stl_26">11</span><span class="stl_22 stl_23 stl_26">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 34.4867em; left:7.366em;"><span class="stl_22 stl_23 stl_18">总结 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_15.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_15.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:17.9883em;"><span class="stl_20 stl_08 stl_14">往年大促遇到的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:3.6em;"><span class="stl_29 stl_08 stl_30" style="word-spacing:-0.0067em;">CASE1: 13</span><span class="stl_31 stl_08 stl_30" style="word-spacing:-0.0067em;">年双</span><span class="stl_29 stl_08 stl_30" style="word-spacing:-0.0067em;">11</span><span class="stl_31 stl_08 stl_30" style="word-spacing:-0.0067em;">当天</span><span class="stl_29 stl_08 stl_30" style="word-spacing:-0.0067em;">14</span><span class="stl_31 stl_08 stl_30" style="word-spacing:-0.0067em;">：</span><span class="stl_29 stl_08 stl_30" style="word-spacing:-0.0067em;">20</span><span class="stl_31 stl_08 stl_30" style="word-spacing:-0.0067em;">，一个活动</span><span class="stl_29 stl_08 stl_30" style="word-spacing:-0.0067em;">sql</span><span class="stl_31 stl_08 stl_30" style="word-spacing:-0.0067em;">导致蘑菇街主数据库</span><span class="stl_32 stl_08 stl_30" style="word-spacing:-0.0067em;">慢</span><span class="stl_33 stl_08 stl_30" style="word-spacing:-0.0067em;">sql &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.6371em; left:3.6em;"><span class="stl_31 stl_08 stl_34">急剧增加，前端访问</span><span class="stl_29 stl_08 stl_34">hang</span><span class="stl_31 stl_08 stl_34">住，交易下跌</span><span class="stl_29 stl_08 stl_34">80%1</span><span class="stl_31 stl_08 stl_34">个小时 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.435em; left:3.6em;"><span class="stl_35 stl_08 stl_36" style="word-spacing:-0.0074em;">CASE2: 14</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">年双</span><span class="stl_35 stl_08 stl_36" style="word-spacing:-0.0074em;">11</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">大促</span><span class="stl_35 stl_08 stl_36" style="word-spacing:-0.0074em;">23</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">：</span><span class="stl_35 stl_08 stl_36" style="word-spacing:-0.0074em;">50</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">后，</span><span class="stl_38 stl_08 stl_36" style="word-spacing:-0.0074em;">访问量过大</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">雪崩，全站不可访问</span><span class="stl_35 stl_08 stl_36" style="word-spacing:-0.0074em;">15</span><span class="stl_37 stl_08 stl_36" style="word-spacing:-0.0074em;">分 &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.4388em; left:3.6em;"><span class="stl_31 stl_08 stl_18">钟</span></div>
+					<div class="stl_01" style="top: 24.2388em; left:3.6em;"><span class="stl_29 stl_08 stl_39" style="word-spacing:-0.0086em;">CASE3: 15</span><span class="stl_31 stl_08 stl_39" style="word-spacing:-0.0086em;">年</span><span class="stl_29 stl_08 stl_39" style="word-spacing:-0.0086em;">321</span><span class="stl_31 stl_08 stl_39" style="word-spacing:-0.0086em;">大促零点使用优惠券，更新使用数导致</span><span class="stl_32 stl_08 stl_39" style="word-spacing:-0.0086em;">数据库行级锁</span><span class="stl_31 stl_08 stl_39" style="word-spacing:-0.0086em;">问 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.2367em; left:3.6em;"><span class="stl_37 stl_08 stl_25">题，下单下跌</span><span class="stl_35 stl_08 stl_25">80%10</span><span class="stl_37 stl_08 stl_25">分钟 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.0413em; left:3.6em;"><span class="stl_29 stl_08 stl_25" style="word-spacing:-0.0017em;">CASE4: 15</span><span class="stl_31 stl_08 stl_25" style="word-spacing:-0.0017em;">年</span><span class="stl_29 stl_08 stl_25" style="word-spacing:-0.0017em;">321</span><span class="stl_31 stl_08 stl_25" style="word-spacing:-0.0017em;">大促零点下单</span><span class="stl_32 stl_08 stl_25" style="word-spacing:-0.0017em;">数据库写入量过大</span><span class="stl_31 stl_08 stl_25" style="word-spacing:-0.0017em;">，导致数据库</span><span class="stl_29 stl_08 stl_25" style="word-spacing:-0.0017em;">hang</span><span class="stl_31 stl_08 stl_25" style="word-spacing:-0.0017em;">住， &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.0413em; left:3.6em;"><span class="stl_31 stl_08 stl_40">下单下跌</span><span class="stl_29 stl_08 stl_40">100%15</span><span class="stl_31 stl_08 stl_40">分钟 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_16.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_16.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">问题的总结 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:3.6em;"><span class="stl_43 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 20.494em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 22.894em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_25">当前的系统架构应对大促</span><span class="stl_32 stl_08 stl_25">有风险</span><span class="stl_29 stl_08 stl_25">(CASE1</span><span class="stl_31 stl_08 stl_25">，</span><span class="stl_29 stl_08 stl_25">CASE3) &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_44">当前的系统相互之间的依赖和调用关系</span><span class="stl_32 stl_08 stl_44">不清楚</span><span class="stl_29 stl_08 stl_44">(CASE1</span><span class="stl_31 stl_08 stl_44">，</span><span class="stl_29 stl_08 stl_44">CASE3) &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:5.852em;"><span class="stl_31 stl_08 stl_25">对大促系统峰值</span><span class="stl_32 stl_08 stl_25">没有</span><span class="stl_31 stl_08 stl_25">有效的评估</span><span class="stl_29 stl_08 stl_25">(CASE2</span><span class="stl_31 stl_08 stl_25">，</span><span class="stl_29 stl_08 stl_25">CASE4) &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:5.852em;"><span class="stl_37 stl_08 stl_45">对系统能支撑多少峰值</span><span class="stl_38 stl_08 stl_45">未知</span><span class="stl_35 stl_08 stl_45">(CASE2) &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:5.852em;"><span class="stl_31 stl_08 stl_09">真出了问题，</span><span class="stl_32 stl_08 stl_09">不能短时间</span><span class="stl_31 stl_08 stl_09">内有效的应对 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:5.852em;"><span class="stl_31 stl_08 stl_46">缺少完整的稳定性保障方法论，混乱 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_17.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_17.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">问题的思考 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">问题处理的原则 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 20.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:8.4817em;"><span class="stl_31 stl_08 stl_44">解决具体问题，抽象问题后解决一类问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">有沉淀，有流程，不能乱 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:8.4817em;"><span class="stl_37 stl_08 stl_47">工具化，系统化代替人工操作，提高效率 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_39">最终总结方法论，作为指导思想 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_28.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_28.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_14">新思路下双</span><span class="stl_15 stl_08 stl_14">11</span><span class="stl_20 stl_08 stl_14">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.9862em; left:26.4783em;"><span class="stl_48 stl_23 stl_18">系统容量评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.8445em; left:16.8417em;"><span class="stl_48 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.8445em; left:37.3em;"><span class="stl_48 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.9104em; left:27.8158em;"><span class="stl_48 stl_23 stl_18">大促保障 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5587em; left:19.2158em;"><span class="stl_48 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5587em; left:33.7542em;"><span class="stl_48 stl_23 stl_18">全链路压测 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_36.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_36.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:3.498em;"><span class="stl_50 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:14.8558em;"><span class="stl_50 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:26.2117em;"><span class="stl_50 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:37.57em;"><span class="stl_50 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6926em; left:37.57em;"><span class="stl_50 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:48.9283em;"><span class="stl_50 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 23.0058em; left:5.34em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7962em; left:6.09em;"><span class="stl_48 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:6.09em;"><span class="stl_48 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:6.09em;"><span class="stl_48 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">架构风 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">险梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:28.8042em;"><span class="stl_56 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:51.52em;"><span class="stl_48 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:51.52em;"><span class="stl_48 stl_23 stl_18">级操作 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:51.52em;"><span class="stl_56 stl_23 stl_57">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.6002em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7462em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:17.4483em;"><span class="stl_56 stl_23 stl_57">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:6.09em;"><span class="stl_56 stl_23 stl_57">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:6.09em;"><span class="stl_48 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:6.09em;"><span class="stl_48 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:6.09em;"><span class="stl_48 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:51.52em;"><span class="stl_48 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:51.52em;"><span class="stl_48 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5787em; left:51.52em;"><span class="stl_48 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 24.7087em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.0787em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9702em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3302em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1687em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0602em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:51.52em;"><span class="stl_48 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:51.52em;"><span class="stl_48 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2883em; left:39.4117em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.397em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7604em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1304em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_37.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_37.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:3.498em;"><span class="stl_58 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:14.8558em;"><span class="stl_50 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:26.2117em;"><span class="stl_50 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:37.57em;"><span class="stl_50 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6926em; left:37.57em;"><span class="stl_50 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:48.9283em;"><span class="stl_50 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:5.34em;"><span class="stl_59 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 23.0058em; left:5.34em;"><span class="stl_60 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7962em; left:6.09em;"><span class="stl_61 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:6.09em;"><span class="stl_61 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:6.09em;"><span class="stl_61 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">架构风 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">险梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:28.8042em;"><span class="stl_56 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:51.52em;"><span class="stl_48 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:51.52em;"><span class="stl_48 stl_23 stl_18">级操作 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:51.52em;"><span class="stl_56 stl_23 stl_57">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.6002em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7462em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:17.4483em;"><span class="stl_56 stl_23 stl_57">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:6.09em;"><span class="stl_62 stl_23 stl_57">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:6.09em;"><span class="stl_61 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:6.09em;"><span class="stl_61 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:6.09em;"><span class="stl_61 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:51.52em;"><span class="stl_48 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:51.52em;"><span class="stl_48 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5787em; left:51.52em;"><span class="stl_48 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 24.7087em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.0787em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9702em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3302em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1687em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0602em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:51.52em;"><span class="stl_48 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:51.52em;"><span class="stl_48 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2883em; left:39.4117em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.397em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7604em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1304em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_38.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_38.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.9883em;"><span class="stl_20 stl_08 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_25">业务目标：</span><span class="stl_29 stl_08 stl_25">pv</span><span class="stl_31 stl_08 stl_25">，</span><span class="stl_29 stl_08 stl_25">uv</span><span class="stl_31 stl_08 stl_25">，</span><span class="stl_29 stl_08 stl_25">gmv</span><span class="stl_31 stl_08 stl_25">，客单价，笔单价等 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_25">系统主要需要的：下单的峰值，支付的峰值 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">峰值推导方法</span><span class="stl_29 stl_08 stl_18">1</span><span class="stl_31 stl_08 stl_18">： &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 17.835em; left:8.4817em;"><span class="stl_37 stl_08 stl_63" style="word-spacing:0.0097em;">下单峰值</span><span class="stl_35 stl_08 stl_63" style="word-spacing:0.0097em;">=</span><span class="stl_37 stl_08 stl_63" style="word-spacing:0.0097em;">天订单数</span><span class="stl_35 stl_08 stl_63" style="word-spacing:0.0097em;">/</span><span class="stl_37 stl_08 stl_63" style="word-spacing:0.0097em;">一天正常交易时段 </span><span class="stl_35 stl_08 stl_63" style="word-spacing:0.0097em;">* </span><span class="stl_37 stl_08 stl_63" style="word-spacing:0.0097em;">大促峰值影响系数 &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.8388em; left:9.7217em;"><span class="stl_29 stl_08 stl_26">gmv/</span><span class="stl_31 stl_08 stl_26">笔单价</span><span class="stl_29 stl_08 stl_26">/8</span><span class="stl_31 stl_08 stl_26">小时</span><span class="stl_29 stl_08 stl_26">*8 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_64">下单峰值</span><span class="stl_29 stl_08 stl_64">=35,000,000/70/28800*8=140 &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.8388em; left:8.4817em;"><span class="stl_29 stl_08 stl_18">=</span></div>
+					<div class="stl_01" style="top: 22.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 24.894em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.6388em; left:5.852em;"><span class="stl_31 stl_08 stl_18">峰值推导方法</span><span class="stl_29 stl_08 stl_18">2</span><span class="stl_31 stl_08 stl_18">： &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 27.0413em; left:8.4817em;"><span class="stl_31 stl_08 stl_65">下单峰值</span><span class="stl_29 stl_08 stl_65">=(</span><span class="stl_31 stl_08 stl_65">本次大促</span><span class="stl_29 stl_08 stl_65">gmv/</span><span class="stl_31 stl_08 stl_65">上次大促</span><span class="stl_29 stl_08 stl_65">gmv)*</span><span class="stl_31 stl_08 stl_65">上次大促峰值</span><span class="stl_29 stl_08 stl_65">*(</span><span class="stl_31 stl_08 stl_65">本次大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 29.0413em; left:8.4817em;"><span class="stl_31 stl_08 stl_39">促转化率</span><span class="stl_29 stl_08 stl_39">/</span><span class="stl_31 stl_08 stl_39">上次大促转化率</span><span class="stl_29 stl_08 stl_39">) &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.6965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 31.4413em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">下单峰值 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.4392em; left:8.4817em;"><span class="stl_35 stl_08 stl_18">=</span></div>
+					<div class="stl_01" style="top: 33.4392em; left:9.7223em;"><span class="stl_35 stl_08 stl_39">(3,000,000,000/2,000,000,000)*120*(0.30/0.25)=216 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_44.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_44.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:3.498em;"><span class="stl_50 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:14.8558em;"><span class="stl_58 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:26.2117em;"><span class="stl_50 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:37.57em;"><span class="stl_50 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6709em; left:37.57em;"><span class="stl_50 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:48.9283em;"><span class="stl_50 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 22.986em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7745em; left:6.09em;"><span class="stl_48 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:6.09em;"><span class="stl_48 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:6.09em;"><span class="stl_48 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:16.6983em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">全局架 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">构风险 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8645em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:51.52em;"><span class="stl_48 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:51.52em;"><span class="stl_48 stl_23 stl_18">级操作 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8645em; left:51.52em;"><span class="stl_48 stl_23 stl_18">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.616em; left:39.4117em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7245em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.0945em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.0945em; left:6.09em;"><span class="stl_48 stl_23 stl_18">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:6.09em;"><span class="stl_48 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:6.09em;"><span class="stl_48 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.1862em; left:6.09em;"><span class="stl_48 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.986em; left:16.6983em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.346em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.346em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:51.52em;"><span class="stl_48 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.1862em; left:51.52em;"><span class="stl_48 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5562em; left:51.52em;"><span class="stl_48 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 25.9477em; left:16.6983em;"><span class="stl_59 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 26.0562em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4162em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:17.4483em;"><span class="stl_61 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9477em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4162em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3077em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1462em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5162em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.8745em; left:28.8042em;"><span class="stl_56 stl_23 stl_57">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0377em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5162em; left:51.52em;"><span class="stl_48 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.8745em; left:51.52em;"><span class="stl_56 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2677em; left:39.4117em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.3762em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7362em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1045em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_50.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_50.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.9883em;"><span class="stl_20 stl_08 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.9443em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 14.5343em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 16.126em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.0529em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">双机房流量比例确定 &nbsp;</span></div>
+					<div class="stl_01" style="top: 14.6429em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">跨机房专线带宽准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.2345em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">基础服务架构，容量梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 14.3632em; left:6.038em;"><span class="stl_66 stl_23 stl_18">全局架构风险梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4149em; left:6.878em;"><span class="stl_66 stl_23 stl_18">系统上下游梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 34.4665em; left:7.708em;"><span class="stl_66 stl_23 stl_67">系统内部梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.996em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.586em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 26.176em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 23.1045em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">上下游系统依赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.6945em; left:23.5442em;"><span class="stl_48 stl_23 stl_68">确定对上游系统调用的来源和比例，确定对下游系统的调用比例 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.2845em; left:23.5442em;"><span class="stl_48 stl_23 stl_46">标识出对下游系统的强弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.2518em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 33.8418em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 35.4318em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 37.022em; left:22.7942em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 32.3604em; left:23.5442em;"><span class="stl_48 stl_23 stl_69">系统内部风险梳理：如设计问题，数据热点问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.9504em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">性能问题梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 35.5404em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">系统监控埋点梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 37.1305em; left:23.5442em;"><span class="stl_48 stl_23 stl_18">线程池隔离梳理 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_51.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_51.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.9883em;"><span class="stl_20 stl_08 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 22.894em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">难点 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">系统上下游依赖复杂 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_39">系统间请求调用比例不好计算 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:8.4817em;"><span class="stl_37 stl_08 stl_57">强弱依赖怎么判断，判断的标准 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:5.852em;"><span class="stl_31 stl_08 stl_18">解决方案 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.2922em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 25.0367em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">全链路监控系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4413em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">强弱依赖系统，自动判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.6965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_53.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_53.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.6042em;"><span class="stl_20 stl_08 stl_18">全链路监控系统 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_55.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_55.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.9883em;"><span class="stl_20 stl_08 stl_18">单次请求追踪 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_57.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_57.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:24.6583em;"><span class="stl_20 stl_08 stl_18">依赖统计 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_58.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_58.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:24.6583em;"><span class="stl_20 stl_08 stl_18">实现细节 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_29 stl_08 stl_70" style="word-spacing:0.036em;">TraceID</span><span class="stl_31 stl_08 stl_70" style="word-spacing:0.036em;">：</span><span class="stl_32 stl_08 stl_70" style="word-spacing:0.036em;">全局唯一</span><span class="stl_31 stl_08 stl_70" style="word-spacing:0.036em;">，接收请求最上层生成，透传到底；组成： </span><span class="stl_29 stl_08 stl_70" style="word-spacing:0.036em;">ip+ &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_64">进程</span><span class="stl_29 stl_08 stl_64">id+</span><span class="stl_31 stl_08 stl_64">随机数</span><span class="stl_29 stl_08 stl_64">+</span><span class="stl_31 stl_08 stl_64">秒</span><span class="stl_29 stl_08 stl_64">+</span><span class="stl_31 stl_08 stl_64">微妙 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 17.6906em; left:3.6em;"><span class="stl_43 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.0371em; left:5.852em;"><span class="stl_29 stl_08 stl_45">SpanID</span><span class="stl_31 stl_08 stl_45">：一个调用链下的多个调用的发生顺序和嵌套层次关系 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.435em; left:5.852em;"><span class="stl_35 stl_08 stl_71" style="word-spacing:-0.0059em;">TraceID</span><span class="stl_37 stl_08 stl_71" style="word-spacing:-0.0059em;">和</span><span class="stl_35 stl_08 stl_71" style="word-spacing:-0.0059em;">SpanID</span><span class="stl_37 stl_08 stl_71" style="word-spacing:-0.0059em;">传递，低侵入：</span><span class="stl_35 stl_08 stl_71" style="word-spacing:-0.0059em;">nginx module</span><span class="stl_37 stl_08 stl_71" style="word-spacing:-0.0059em;">；</span><span class="stl_35 stl_08 stl_71" style="word-spacing:-0.0059em;">php </span><span class="stl_37 stl_08 stl_71" style="word-spacing:-0.0059em;">扩展；</span><span class="stl_35 stl_08 stl_71" style="word-spacing:-0.0059em;">java &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.4388em; left:5.852em;"><span class="stl_31 stl_08 stl_44">中间件</span><span class="stl_29 stl_08 stl_44">(</span><span class="stl_33 stl_08 stl_44">ThreadLocal</span><span class="stl_32 stl_08 stl_44">透传</span><span class="stl_29 stl_08 stl_44">) &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.094em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.8388em; left:5.852em;"><span class="stl_29 stl_08 stl_63" style="word-spacing:0.0299em;">java</span><span class="stl_31 stl_08 stl_63" style="word-spacing:0.0299em;">异步调用， </span><span class="stl_29 stl_08 stl_63" style="word-spacing:0.0299em;">ThreadLocal</span><span class="stl_31 stl_08 stl_63" style="word-spacing:0.0299em;">无效，解决方案： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 24.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">业务代码自己处理和传递 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.8965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 26.6413em; left:8.4817em;"><span class="stl_31 stl_08 stl_72">提供定制的</span><span class="stl_29 stl_08 stl_72">ThreadPoolExecutor</span><span class="stl_31 stl_08 stl_72">，重写 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.6413em; left:8.4817em;"><span class="stl_29 stl_08 stl_25" style="word-spacing:-0.015em;">beforeExecute ,afterExecute</span><span class="stl_31 stl_08 stl_25" style="word-spacing:-0.015em;">进行传递和清除 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.2965em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 31.0413em; left:5.852em;"><span class="stl_29 stl_08 stl_73">java</span><span class="stl_31 stl_08 stl_73">应用写日志的压力，解决方案： &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.6947em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 33.4392em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">自己实现异步写日志 &nbsp;</span></div>
+					<div class="stl_01" style="top: 36.0982em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 35.843em; left:8.4817em;"><span class="stl_31 stl_08 stl_46">写内存，按时间或者大小刷盘，允许丢 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_59.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_59.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:24.6583em;"><span class="stl_20 stl_08 stl_64">强弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_36">定义：当一个依赖调用出现问题，可以暂时屏蔽或者可以调用备用依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_25">赖来提供有损服务的就是</span><span class="stl_32 stl_08 stl_25">弱依赖</span><span class="stl_31 stl_08 stl_25">，反之则是强依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_74">弱依赖出现问题的处理方式 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.6906em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 20.094em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 22.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 17.435em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">推送开关直接屏蔽 &nbsp;</span></div>
+					<div class="stl_01" style="top: 19.8388em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">推送开关切到备用依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_44">配置降级策略，在一段时间内调用返回失败，前端应用做友好提 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">示</span></div>
+					<div class="stl_01" style="top: 26.8965em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 26.6413em; left:5.852em;"><span class="stl_31 stl_08 stl_39">强依赖出现问题的处理方式 &nbsp;</span></div>
+					<div class="stl_01" style="top: 29.2965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 31.6965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 34.0947em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 36.4982em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 29.0413em; left:8.4817em;"><span class="stl_31 stl_08 stl_65">强依赖原则上不能出问题，在准备阶段重点梳理，多次压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.4413em; left:8.4817em;"><span class="stl_31 stl_08 stl_65">系统设计上</span><span class="stl_32 stl_08 stl_65">错误的</span><span class="stl_31 stl_08 stl_65">将弱依赖变成了强依赖，需要系统改造 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.8392em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">强依赖必须配置限流保护 &nbsp;</span></div>
+					<div class="stl_01" style="top: 36.243em; left:8.4817em;"><span class="stl_31 stl_08 stl_75">理论上还会出现问题，必须有针对强依赖出现问题的预案 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_69.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_69.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:21.9883em;"><span class="stl_20 stl_08 stl_18">强弱依赖系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 12.8728em; left:20.44em;"><span class="stl_56 stl_23 stl_57">开关控制是否开启测试 &nbsp;</span></div>
+					<div class="stl_01" style="top: 14.3662em; left:20.44em;"><span class="stl_48 stl_23 stl_75">场景：异常，返回值错误，网络延 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6762em; left:20.44em;"><span class="stl_48 stl_23 stl_46">时，网络屏蔽，开关，降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.9187em; left:5.002em;"><span class="stl_76 stl_23 stl_18" style="visibility:hidden;">强弱依赖系统控制台 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.2518em; left:4.962em;"><span class="stl_48 stl_23 stl_74">待测系统</span><span class="stl_77 stl_28 stl_74">(</span><span class="stl_48 stl_23 stl_74">启动时字节码 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6518em; left:5.202em;"><span class="stl_48 stl_23 stl_78" style="word-spacing:-0.009em;">注入</span><span class="stl_77 stl_28 stl_78" style="word-spacing:-0.009em;">,-javaagent: xxx.jar) &nbsp;</span></div>
+					<div class="stl_01" style="top: 29.6445em; left:20.44em;"><span class="stl_56 stl_23 stl_79">持续集成根据控制台的配置进 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.9587em; left:20.44em;"><span class="stl_48 stl_23 stl_46">行自动调用，每日产出报表 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.187em; left:5.468em;"><span class="stl_76 stl_23 stl_18">持续集成自动调用 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_70.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_70.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:3.498em;"><span class="stl_50 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:14.8558em;"><span class="stl_50 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:26.2117em;"><span class="stl_58 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:37.57em;"><span class="stl_50 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6709em; left:37.57em;"><span class="stl_50 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6909em; left:48.9283em;"><span class="stl_50 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 22.986em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7745em; left:6.09em;"><span class="stl_48 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:6.09em;"><span class="stl_48 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:6.09em;"><span class="stl_48 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">全局架 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">构风险 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:28.0542em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.666em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8645em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1345em; left:51.52em;"><span class="stl_48 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5045em; left:51.52em;"><span class="stl_48 stl_23 stl_18">级操作 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8645em; left:51.52em;"><span class="stl_48 stl_23 stl_18">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.616em; left:39.4117em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7245em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.0945em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.0945em; left:6.09em;"><span class="stl_48 stl_23 stl_18">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:6.09em;"><span class="stl_48 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:6.09em;"><span class="stl_48 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.1862em; left:6.09em;"><span class="stl_48 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.986em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4545em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.346em; left:28.0542em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.346em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8262em; left:51.52em;"><span class="stl_48 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.1862em; left:51.52em;"><span class="stl_48 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5562em; left:51.52em;"><span class="stl_48 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 25.9477em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 26.0562em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4162em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9477em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4162em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3077em; left:28.0542em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.7862em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1462em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5162em; left:28.8042em;"><span class="stl_61 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.8745em; left:28.8042em;"><span class="stl_62 stl_23 stl_57">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0377em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5162em; left:51.52em;"><span class="stl_48 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.8745em; left:51.52em;"><span class="stl_56 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2677em; left:39.4117em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.3762em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7362em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1045em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_71.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_71.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:3.6em;"><span class="stl_43 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">传统的压测方式 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">线下压测，线上压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_75">引流压测，日志回放压测，造数据压测，流量放大压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 17.835em; left:5.852em;"><span class="stl_37 stl_08 stl_65">问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 22.894em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 25.2922em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_39">线下压测压不准</span><span class="stl_29 stl_08 stl_39">/</span><span class="stl_31 stl_08 stl_39">线上压测很危险 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:8.4817em;"><span class="stl_31 stl_08 stl_34">关注点在单机或者单集群，多个系统串联很难 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.0367em; left:8.4817em;"><span class="stl_37 stl_08 stl_69">写操作</span><span class="stl_35 stl_08 stl_69">/</span><span class="stl_37 stl_08 stl_69">有状态系统压测困难 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_72.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_72.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:3.6em;"><span class="stl_43 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 20.494em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 22.894em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_64">线上真实环境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_46">模拟用户真实请求，</span><span class="stl_32 stl_08 stl_46">全站</span><span class="stl_31 stl_08 stl_46">性质压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:5.852em;"><span class="stl_31 stl_08 stl_30">模拟大促特点导致的</span><span class="stl_32 stl_08 stl_30">特殊的</span><span class="stl_31 stl_08 stl_30">系统行为 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:5.852em;"><span class="stl_37 stl_08 stl_45">可以根据业务模型调整压测模型 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:5.852em;"><span class="stl_31 stl_08 stl_14">处理压测带来的</span><span class="stl_32 stl_08 stl_14">脏</span><span class="stl_31 stl_08 stl_14">数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:5.852em;"><span class="stl_31 stl_08 stl_74">压测</span><span class="stl_32 stl_08 stl_74">不会</span><span class="stl_31 stl_08 stl_74">影响用户的正常请求 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_114.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_114.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_64">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 11.3948em; left:9.2417em;"><span class="stl_80 stl_23 stl_18">压测用户控制台 &nbsp;</span></div>
+					<div class="stl_01" style="top: 11.4031em; left:38.68em;"><span class="stl_81 stl_23 stl_68">接入层 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.5995em; left:38.81em;"><span class="stl_82 stl_28 stl_83">web</span><span class="stl_80 stl_23 stl_83">层 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.0606em; left:38.68em;"><span class="stl_81 stl_23 stl_68" style="visibility:hidden;">服务层 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.1759em; left:19.2042em;"><span class="stl_84 stl_28 stl_18">1</span></div>
+					<div class="stl_01" style="top: 16.1165em; left:21.3542em;"><span class="stl_80 stl_23 stl_18">脚本引擎中心 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.0418em; left:12.3983em;"><span class="stl_84 stl_28 stl_18">2</span></div>
+					<div class="stl_01" style="top: 19.809em; left:27.6158em;"><span class="stl_80 stl_23 stl_18">数据工厂 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.5479em; left:8.8483em;"><span class="stl_80 stl_23 stl_85" style="visibility:hidden;">压测调度</span><span class="stl_82 stl_28 stl_85" style="visibility:hidden;">(jenkins) &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.2302em; left:18.0383em;"><span class="stl_77 stl_28 stl_18" style="visibility:hidden;">4</span></div>
+					<div class="stl_01" style="top: 21.2302em; left:18.6315em;"><span class="stl_77 stl_28 stl_74" style="visibility:hidden;">.1 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.4402em; left:20.0658em;"><span class="stl_77 stl_28 stl_18">4</span></div>
+					<div class="stl_01" style="top: 23.4402em; left:20.659em;"><span class="stl_77 stl_28 stl_74">.2 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.742em; left:38.5942em;"><span class="stl_80 stl_23 stl_18" style="visibility:hidden;">中</span><span class="stl_80 stl_23 stl_18">间</span><span class="stl_80 stl_23 stl_18" style="visibility:hidden;">件</span><span class="stl_82 stl_28 stl_18" style="visibility:hidden;">/ &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.0348em; left:37.7917em;"><span class="stl_80 stl_23 stl_86">基础服务层 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3818em; left:10.5117em;"><span class="stl_84 stl_28 stl_18" style="visibility:hidden;">3</span></div>
+					<div class="stl_01" style="top: 24.7377em; left:25.22em;"><span class="stl_77 stl_28 stl_87">4.2 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.3018em; left:22.3142em;"><span class="stl_77 stl_28 stl_18" style="visibility:hidden;">4</span></div>
+					<div class="stl_01" style="top: 25.3018em; left:22.9074em;"><span class="stl_77 stl_28 stl_74" style="visibility:hidden;">.1 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.1518em; left:18.1817em;"><span class="stl_84 stl_28 stl_18" style="visibility:hidden;">3</span></div>
+					<div class="stl_01" style="top: 30.2606em; left:7.222em;"><span class="stl_80 stl_23 stl_18">内网施压机 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.2779em; left:8.3617em;"><span class="stl_82 stl_28 stl_72">gatling) &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0979em; left:20.1158em;"><span class="stl_82 stl_28 stl_88">CDN</span><span class="stl_80 stl_23 stl_88">节点施压机 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1365em; left:33.5758em;"><span class="stl_80 stl_23 stl_86">生产数据存储 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1365em; left:41.8158em;"><span class="stl_80 stl_23 stl_18">压测数据存储 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.2779em; left:8.062em;"><span class="stl_82 stl_28 stl_18">(</span></div>
+					<div class="stl_01" style="top: 31.2779em; left:21.8558em;"><span class="stl_82 stl_28 stl_83">(gatling) &nbsp;</span></div>
+					<div class="stl_01" style="top: 34.9567em; left:43.3542em;"><span class="stl_50 stl_23 stl_18">异常保护模块 &nbsp;</span></div>
+					<div class="stl_01" style="top: 37.4287em; left:43.2942em;"><span class="stl_50 stl_23 stl_18">全链路监控模块 &nbsp;</span></div>
+					<div class="stl_01" style="top: 39.7907em; left:43.3542em;"><span class="stl_50 stl_23 stl_18">监控系统模块 &nbsp;</span></div>
+					<div class="stl_01" style="top: 35.1309em; left:36.2942em;"><span class="stl_50 stl_23 stl_18">用户请求 &nbsp;</span></div>
+					<div class="stl_01" style="top: 37.3327em; left:36.2942em;"><span class="stl_50 stl_23 stl_18">压测请求 &nbsp;</span></div>
+					<div class="stl_01" style="top: 35.9646em; left:21.6417em;"><span class="stl_80 stl_23 stl_18">线上系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 36.1806em; left:7.722em;"><span class="stl_80 stl_23 stl_18">线上系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 39.6777em; left:36.2942em;"><span class="stl_50 stl_23 stl_14">控制</span><span class="stl_89 stl_28 stl_14">agent &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_115.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_115.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">线上系统端 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:6.602em;"><span class="stl_90 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 20.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 22.894em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_44">压测标</span><span class="stl_32 stl_08 stl_44">透传</span><span class="stl_31 stl_08 stl_44">，通过</span><span class="stl_32 stl_08 stl_44">全链路监控</span><span class="stl_31 stl_08 stl_44">系统，中间件</span><span class="stl_29 stl_08 stl_44">/</span><span class="stl_31 stl_08 stl_44">基础服务改造 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:8.4817em;"><span class="stl_38 stl_08 stl_78">影子存储</span><span class="stl_37 stl_08 stl_78">，压测标判断</span><span class="stl_35 stl_08 stl_78">(+</span><span class="stl_37 stl_08 stl_78">业务上压测请求数据判断</span><span class="stl_35 stl_08 stl_78">) &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_46">异常保护模块，保护线上请求，</span><span class="stl_32 stl_08 stl_46">熔断</span><span class="stl_31 stl_08 stl_46">压测请求 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:8.4817em;"><span class="stl_31 stl_08 stl_39">监控模块，提供数据给压测端</span><span class="stl_29 stl_08 stl_39">Agent</span><span class="stl_31 stl_08 stl_39">做异常控制 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_116.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_116.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:23.3283em;"><span class="stl_20 stl_08 stl_18">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">压测系统端 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_75">脚本引擎，固化通用部分，控制台输入变化的部分，引擎产生压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.435em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">测脚本 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.094em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 22.494em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 24.894em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 27.2965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 19.8388em; left:8.4817em;"><span class="stl_31 stl_08 stl_49">数据工厂，压测数据输入</span><span class="stl_29 stl_08 stl_49">/</span><span class="stl_31 stl_08 stl_49">输出源 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.2388em; left:8.4817em;"><span class="stl_31 stl_08 stl_46">压测链路，一个或者多个压测请求组合 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.6388em; left:8.4817em;"><span class="stl_31 stl_08 stl_34">压测场景，对压测链路的复杂组合 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.0413em; left:8.4817em;"><span class="stl_31 stl_08 stl_34">异常控制，在线上系统异常的情况下停止压测 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_117.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_117.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:3.498em;"><span class="stl_50 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:14.8558em;"><span class="stl_50 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:26.2117em;"><span class="stl_50 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:37.57em;"><span class="stl_58 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6926em; left:37.57em;"><span class="stl_58 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:48.9283em;"><span class="stl_50 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 23.0058em; left:5.34em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7962em; left:6.09em;"><span class="stl_48 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:6.09em;"><span class="stl_48 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:6.09em;"><span class="stl_48 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">架构风 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">险梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:39.4117em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:28.8042em;"><span class="stl_56 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:51.52em;"><span class="stl_48 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:51.52em;"><span class="stl_48 stl_23 stl_18">级操作 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:51.52em;"><span class="stl_56 stl_23 stl_57">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.6002em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7462em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:17.4483em;"><span class="stl_56 stl_23 stl_57">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:39.4117em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:40.1617em;"><span class="stl_62 stl_23 stl_57">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:6.09em;"><span class="stl_56 stl_23 stl_57">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:6.09em;"><span class="stl_48 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:6.09em;"><span class="stl_48 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:6.09em;"><span class="stl_48 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:51.52em;"><span class="stl_48 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:51.52em;"><span class="stl_48 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5787em; left:51.52em;"><span class="stl_48 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 24.7087em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.0787em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9702em; left:39.4117em;"><span class="stl_59 stl_28 stl_54">•</span><span class="stl_61 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3302em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1687em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0602em; left:50.7683em;"><span class="stl_52 stl_28 stl_55">•</span><span class="stl_48 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:51.52em;"><span class="stl_48 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:51.52em;"><span class="stl_48 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2883em; left:39.4117em;"><span class="stl_60 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.397em; left:40.1617em;"><span class="stl_62 stl_23 stl_57">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7604em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1304em; left:40.1617em;"><span class="stl_61 stl_23 stl_18">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_118.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_118.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:20.6583em;"><span class="stl_20 stl_08 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.8924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 20.494em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 10.6371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">开关 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">对弱依赖的处理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:8.4817em;"><span class="stl_31 stl_08 stl_46">统一的开关推送系统，统一的开关监控 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:8.4817em;"><span class="stl_37 stl_08 stl_69">多种推送方式，确保可以推送成功</span><span class="stl_35 stl_08 stl_69">(</span><span class="stl_37 stl_08 stl_69">配置中心，</span><span class="stl_35 stl_08 stl_69">http) &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:5.852em;"><span class="stl_31 stl_08 stl_18">限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.894em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 25.2922em; left:6.602em;"><span class="stl_43 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 27.6965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 30.0965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 32.4965em; left:6.602em;"><span class="stl_41 stl_42 stl_18">–</span></div>
+					<div class="stl_01" style="top: 22.6388em; left:8.4817em;"><span class="stl_31 stl_08 stl_18">保护系统不会被压垮 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.0367em; left:8.4817em;"><span class="stl_37 stl_08 stl_69">限流类型：</span><span class="stl_35 stl_08 stl_69">QPS/</span><span class="stl_37 stl_08 stl_69">并发</span><span class="stl_35 stl_08 stl_69">,</span><span class="stl_37 stl_08 stl_69">来源</span><span class="stl_35 stl_08 stl_69">/</span><span class="stl_37 stl_08 stl_69">去向 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4413em; left:8.4817em;"><span class="stl_31 stl_08 stl_26">入口层进行</span><span class="stl_29 stl_08 stl_26">QPS</span><span class="stl_31 stl_08 stl_26">的限流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 29.8413em; left:8.4817em;"><span class="stl_31 stl_08 stl_25">系统内部下游对上游</span><span class="stl_33 stl_08 stl_25">QPS</span><span class="stl_31 stl_08 stl_25">限流，上游对下游</span><span class="stl_32 stl_08 stl_25">并发</span><span class="stl_31 stl_08 stl_25">限流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.2413em; left:8.4817em;"><span class="stl_31 stl_08 stl_75">降级是对弱依赖不可用做的措施，自动在一段时间窗口内屏蔽该 &nbsp;</span></div>
+					<div class="stl_01" style="top: 34.2392em; left:8.4817em;"><span class="stl_37 stl_08 stl_65">依赖 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_119.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_119.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:12.4158em;"><span class="stl_20 stl_08 stl_49">新思路下双</span><span class="stl_15 stl_08 stl_49">11</span><span class="stl_20 stl_08 stl_49">稳定性备战流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:3.498em;"><span class="stl_50 stl_23 stl_18">系统峰值评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:14.8558em;"><span class="stl_50 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:26.2117em;"><span class="stl_50 stl_23 stl_51">全链路压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:37.57em;"><span class="stl_50 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 16.6926em; left:37.57em;"><span class="stl_50 stl_23 stl_18">准备 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.7126em; left:48.9283em;"><span class="stl_58 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:5.34em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 23.0058em; left:5.34em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.7962em; left:6.09em;"><span class="stl_48 stl_23 stl_18">根据业 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:6.09em;"><span class="stl_48 stl_23 stl_18">务目标 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:6.09em;"><span class="stl_48 stl_23 stl_18">推导 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:16.6983em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">架构风 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">险梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">打通蘑 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一开 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">关系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.6877em; left:50.7683em;"><span class="stl_59 stl_28 stl_55">•</span><span class="stl_61 stl_23 stl_55">开关， &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">菇街电 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">商主链 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:28.8042em;"><span class="stl_56 stl_23 stl_18">路</span></div>
+					<div class="stl_01" style="top: 20.1562em; left:51.52em;"><span class="stl_61 stl_23 stl_18">限流降 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.5262em; left:51.52em;"><span class="stl_61 stl_23 stl_18">级作战 &nbsp;</span></div>
+					<div class="stl_01" style="top: 22.8845em; left:51.52em;"><span class="stl_62 stl_23 stl_57">手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 24.6002em; left:16.6983em;"><span class="stl_52 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 21.7462em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:17.4483em;"><span class="stl_56 stl_23 stl_57">赖梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.6377em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">统一限 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 23.1145em; left:6.09em;"><span class="stl_56 stl_23 stl_57">主链路： &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.4787em; left:6.09em;"><span class="stl_48 stl_23 stl_18">商品， &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:6.09em;"><span class="stl_48 stl_23 stl_18">交易， &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:6.09em;"><span class="stl_48 stl_23 stl_18">下单 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">生产环 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">境压测 &nbsp;</span></div>
+					<div class="stl_01" style="top: 24.3702em; left:50.7683em;"><span class="stl_59 stl_28 stl_55">•</span><span class="stl_61 stl_23 stl_55">能预见 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.8487em; left:51.52em;"><span class="stl_61 stl_23 stl_18">的问题 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.2087em; left:51.52em;"><span class="stl_61 stl_23 stl_18">处理手 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.5787em; left:51.52em;"><span class="stl_61 stl_23 stl_18">册</span></div>
+					<div class="stl_01" style="top: 24.7087em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">系统强 &nbsp;</span></div>
+					<div class="stl_01" style="top: 26.0787em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">弱依赖 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:17.4483em;"><span class="stl_48 stl_23 stl_18">判断 &nbsp;</span></div>
+					<div class="stl_01" style="top: 25.9702em; left:39.4117em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">开关处 &nbsp;</span></div>
+					<div class="stl_01" style="top: 27.4387em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">理弱依 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">赖</span></div>
+					<div class="stl_01" style="top: 27.3302em; left:28.0542em;"><span class="stl_52 stl_28 stl_54">•</span><span class="stl_48 stl_23 stl_54">根据大 &nbsp;</span></div>
+					<div class="stl_01" style="top: 28.8087em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">促业务 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.1687em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">模型来 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">准备压 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:28.8042em;"><span class="stl_48 stl_23 stl_18">测数据 &nbsp;</span></div>
+					<div class="stl_01" style="top: 30.0602em; left:50.7683em;"><span class="stl_59 stl_28 stl_55">•</span><span class="stl_61 stl_23 stl_55">跨部门 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5404em; left:51.52em;"><span class="stl_61 stl_23 stl_18">通告流 &nbsp;</span></div>
+					<div class="stl_01" style="top: 32.9004em; left:51.52em;"><span class="stl_61 stl_23 stl_18">程</span></div>
+					<div class="stl_01" style="top: 30.2883em; left:39.4117em;"><span class="stl_53 stl_28 stl_18">•</span></div>
+					<div class="stl_01" style="top: 30.397em; left:40.1617em;"><span class="stl_56 stl_23 stl_57">限流保 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.7604em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">护系统 &nbsp;</span></div>
+					<div class="stl_01" style="top: 33.1304em; left:40.1617em;"><span class="stl_48 stl_23 stl_18">不压挂 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_120.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_120.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:24.6583em;"><span class="stl_20 stl_08 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 13.2924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 15.6924em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 18.0906em; left:3.6em;"><span class="stl_43 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 20.494em; left:3.6em;"><span class="stl_41 stl_42 stl_18">•</span></div>
+					<div class="stl_01" style="top: 13.0371em; left:5.852em;"><span class="stl_31 stl_08 stl_18">开关和限流降级手册 &nbsp;</span></div>
+					<div class="stl_01" style="top: 15.4371em; left:5.852em;"><span class="stl_31 stl_08 stl_75">能预见的所有问题的处理手册；如：某个机房不可用的整体预案 &nbsp;</span></div>
+					<div class="stl_01" style="top: 17.835em; left:5.852em;"><span class="stl_37 stl_08 stl_65">跨部门通告流程 &nbsp;</span></div>
+					<div class="stl_01" style="top: 20.2388em; left:5.852em;"><span class="stl_29 stl_08 stl_09">CASE</span><span class="stl_31 stl_08 stl_09">：某个</span><span class="stl_29 stl_08 stl_09">DB</span><span class="stl_31 stl_08 stl_09">的</span><span class="stl_29 stl_08 stl_09">master</span><span class="stl_31 stl_08 stl_09">挂掉 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_121.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_121.svg" type="image/svg+xml" />
+				</object>
+			</div>
+			<div class="stl_view">
+				<div class="stl_05 stl_06">
+					<div class="stl_01" style="top: 3.699em; left:27.3283em;"><span class="stl_20 stl_08 stl_21">总结 &nbsp;</span></div>
+					<div class="stl_01" style="top: 10.9862em; left:26.4783em;"><span class="stl_48 stl_23 stl_18">系统容量评估 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.8445em; left:16.8417em;"><span class="stl_48 stl_23 stl_18">预案整理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 18.8445em; left:37.3em;"><span class="stl_48 stl_23 stl_18">系统架构梳理 &nbsp;</span></div>
+					<div class="stl_01" style="top: 21.9104em; left:27.8158em;"><span class="stl_48 stl_23 stl_18">大促保障 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5587em; left:19.2158em;"><span class="stl_48 stl_23 stl_18">开关，限流降级 &nbsp;</span></div>
+					<div class="stl_01" style="top: 31.5587em; left:33.7542em;"><span class="stl_48 stl_23 stl_18">全链路压测 &nbsp;</span></div>
+				</div>
+			</div>
+		</div>
+		<div class="stl_02">
+			<div class="stl_03">
+				<object data="蘑菇街背后系统的稳定性保障实践_files/img_123.svg" type="image/svg+xml" class="stl_04" style="position:absolute; width:60em; height:45em;">
+					<embed src="蘑菇街背后系统的稳定性保障实践_files/img_123.svg" type="image/svg+xml" />
+				</object>
+			</div>
+		</div>
+	</body>
+</html>
