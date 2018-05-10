@@ -3,13 +3,12 @@
 
 ## 一、概述
 
-
 1、先安装JDK
 
 2、下载
 
-![官方下载地址](http://flume.apache.org/download.html)
-![官方用户手册](http://flume.apache.org/documentation.html)
+[官方下载地址](http://flume.apache.org/download.html)
+[官方用户手册](http://flume.apache.org/documentation.html)
 
 http://www.apache.org/dyn/closer.lua/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz
 
