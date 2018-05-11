@@ -70,7 +70,7 @@ telnet localhost 44444
 
 ## 其他配置
 
-log => flume => kafka
+flume => kafka
 
 配置一
 
@@ -82,23 +82,19 @@ producer.channels = c
 producer.sinks = r
 
 #source
-
-producer.sources.s.type = spooldir
+producer.sources.s.type = netcat
+producer.sources.s.bind = localhost
+producer.sources.s.port = 44444
 producer.sources.s.channels = c
-producer.sources.s.spoolDir = /root/hmbbs
-producer.sources.s.fileHeader = true
 
+producer.sinks.r.type = org.apache.flume.sink.kafka.KafkaSink
+producer.sinks.r.kafka.topic = flumeTopic
+producer.sinks.r.kafka.bootstrap.servers = localhost:9092
+producer.sinks.r.kafka.flumeBatchSize = 20
+producer.sinks.r.kafka.producer.acks = 1
+producer.sinks.r.kafka.producer.linger.ms = 1
+producer.sinks.r.kafka.producer.compression.type = snappy
 
-producer.sinks.r.type = org.apache.flume.plugins.KafkaSink
-producer.sinks.r.metadata.broker.list=192.168.215.90:9092
-producer.sinks.r.partitioner.class=org.apache.flume.plugins.SinglePartition
-producer.sinks.r.partition.key=1
-producer.sinks.r.serializer.class=kafka.serializer.StringEncoder
-producer.sinks.r.request.required.acks=0
-producer.sinks.r.max.message.size=1000000
-producer.sinks.r.producer.type=async
-producer.sinks.r.custom.encoding=UTF-8
-producer.sinks.r.custom.topic.name=test
 
 #Specify the channel for the sink
 
@@ -121,10 +117,11 @@ a1.sources.src1.channels=ch1
 # 定义 sinks
 a1.sinks.k1.type = org.apache.flume.sink.kafka.KafkaSink
 a1.sinks.k1.topic = flumeTopic
-a1.sinks.k1.brokerList = s201:9092
+a1.sinks.k1.brokerList = localhost:9092
 a1.sinks.k1.batchSize = 20
 a1.sinks.k1.requiredAcks = 1
 a1.sinks.k1.channel = ch1
+
 # 定义 channels
 a1.channels.ch1.type = memory
 a1.channels.ch1.capacity = 1000
