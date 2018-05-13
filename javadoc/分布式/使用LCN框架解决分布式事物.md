@@ -2,6 +2,11 @@
 
 ## 一、概述
 
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/88.png)
+
+
+
+
 事物特性(ACID)
 
 ### 原子性（A）
