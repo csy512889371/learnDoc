@@ -335,3 +335,72 @@ HDFS将所有存储介质抽象成性能相同的Disk
 阶段1：DataNode支持异构存储介质（HDFS-2832，完成）
 
 阶段2：为用户提供访问API（HDFS-5682，未完成）
+
+
+## 五、HDFS ACL—基于POSIX ACL的实现
+
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/157.png)
+
+
+## 六、HDFS快照—背景
+
+HDFS上文件和目录是不断变化的，快照可以帮助用户保存某个时刻的数据；
+
+HDFS快照的作用
+
+* 防止用户误操作删除数据
+* 数据备份
+
+### HDFS快照—基本使用方法
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/158.png)
+
+
+## 七、HDFS缓存
+
+
+HDFS自身不提供数据缓存功能，而是使用OS缓存容易内存浪费，eg.一个block三个副本同时被缓存
+
+多种计算框架共存，均将HDFS作为共享存储系统
+
+* MapReduce：离线计算，充分利用磁盘
+* Impala：低延迟计算，充分利用内存
+* Spark：内存计算框架
+
+
+HDFS应让多种混合计算类型共存一个集群中
+* 合理的使用内存、磁盘等资源
+* 比如，高频访问的特点文件应被尽可能长期缓存，防止置换到磁盘上
+
+
+### HDFS缓存—原理
+
+
+![image](https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/159.png)
+
+
+HDFS缓存—实现情况
+
+> 用户需通过命令显式的将一个目录或文件加入/移除缓存
+
+* 不支持块级别的缓存
+* 不支持自动化缓存
+* 可设置缓存失效时间
+
+
+> 缓存目录：仅对一级文件进行缓存
+
+* 不会递归缓存所有文件与目录
+
+> 以pool的形式组织缓存资源
+
+* 借助YARN的资源管理方式，将缓存划分到不同pool中
+* 每个pool有类linux权限管理机制、缓存上限、失效时间等
+
+> 独立管理内存，未与资源管理系统YARN集成
+
+* 用户可为每个DN设置缓存大小，该值独立于YARN
+
+
+
