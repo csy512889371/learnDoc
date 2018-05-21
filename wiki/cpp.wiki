@@ -4,9 +4,8 @@
 
 = 说明 =
 
-本页面汇总俺收集的各种 C 和 C++ 的开源代码库，不定期更新。
+本页面汇总俺收集的各种 C 和 C++ 的开源代码库
 
-如果你发现本页面的开源库有错漏之处，非常欢迎给俺提供反馈——有 GitHub 帐号的同学，可以[https://github.com/programthink/opensource/issues 给俺发 issue]；没帐号的同学，可以去[http://program-think.blogspot.com/ 俺博客]留言。
 
 ----
 
