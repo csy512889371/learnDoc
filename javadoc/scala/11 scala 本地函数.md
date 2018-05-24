@@ -2,6 +2,7 @@
 
 ## 本地函数
 
+
 ```
 import scala.io.Source
 
@@ -16,6 +17,8 @@ object FunctionOps {
     increase = (x: Int) => x + 9999
 
     val someNumbers = List(-11, -10, -5, 0, 5, 10)
+
+    //函数的几种调用方式
     someNumbers.foreach((x: Int) => print(x))
     someNumbers.filter((x: Int) => x > 0).foreach((x: Int) => print(x))
     someNumbers.filter((x) => x > 0).foreach((x: Int) => print(x))
