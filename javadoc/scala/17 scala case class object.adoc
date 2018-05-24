@@ -21,7 +21,7 @@
 
 == 例子
 
-```
+```scala
 abstract class Person
 
 case class Student(age: Int) extends Person
