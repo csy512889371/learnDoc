@@ -1,7 +1,7 @@
-# 17 scala case class object
+= 17 scala case class object
 
 
-## 概述
+== 概述
 > case class
 
 * 1、case 类在编译的时候会自动增加一个 单列对象（single object）。
@@ -13,13 +13,13 @@
 
 > case object
 
-* 1、case object Person相比于case class Person(age:Int,name:String)缺少了apply、unapply方法，因为case object
+. case object Person相比于case class Person(age:Int,name:String)缺少了apply、unapply方法，因为case object
 是没有参数输入的，所以对于apply 和unapply的方法也自然失去。
-* 2、因为class 和 object 在编译的时候，object是只有一个编译文件，而当两者加上case之后发现两者都是有2个编译文件，也就是说case object 不在像object那样仅仅是一个单列对象，而是有像类（class）一样的特性。
-* 3、都有toString,hashCode,copy,equals方法和继承了Product和Serializable（implements Product, Serializable）
+. 因为class 和 object 在编译的时候，object是只有一个编译文件，而当两者加上case之后发现两者都是有2个编译文件，也就是说case object 不在像object那样仅仅是一个单列对象，而是有像类（class）一样的特性。
+. 都有toString,hashCode,copy,equals方法和继承了Product和Serializable（implements Product, Serializable）
 
 
-## 例子
+== 例子
 
 ```
 abstract class Person
@@ -49,3 +49,39 @@ object case_class_object {
 
 }
 ```
+
+== 嵌套 case
+
+```
+abstract class Item
+
+case class Book(description: String, price: Double) extends Item
+
+case class Bundle(description: String, price: Double, items: Item*) extends Item
+
+object Pattern_Match_Case_Class_Nested {
+
+  def main(args: Array[String]) {
+    def caseclass_nested(person: Item) = person match {
+      case Bundle(_, _, art@Book(_, _), rest@_*) => println(art.description + " : " + art.price + rest)
+      //      case Bundle(_, _, Book(descr, _), _*) => println("The first description is :" + descr)
+      case _ => println("Oops!")
+    }
+
+    caseclass_nested(Bundle("1111 Special's", 30.0,
+      Book("Scala for the Spark Developer", 69.95),
+      Bundle("Hadoop", 40.0,
+        Book("Hive", 79.95),
+        Book("HBase", 32.95)
+      )
+    ))
+    caseclass_nested(Bundle("1212 Special's", 35.0,
+      Book("Spark for the Impatient", 39.95)
+    ))
+  }
+
+}
+
+```
+
+
