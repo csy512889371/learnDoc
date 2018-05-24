@@ -1,0 +1,202 @@
+= 19 scala 学习笔记
+
+== 泛型 上界
+
+. 大 （父类）> 小（子类）
+. 小（子类）< 大 （父类）
+. 泛型 上界。 定义泛型的时候如果要求T必须包含某个函数
+
+```
+class Pair[T <: Comparable[T]](val first: T, val second: T) {
+  def bigger = if (first.compareTo(second) > 0) first else second
+}
+```
+
+```
+object Typy_Variables_Bounds {
+
+  def main(args: Array[String]) {
+    val pair = new Pair("Spark", "Hadoop")
+    println(pair.bigger)
+  }
+}
+```
+
+== 下界
+
+```
+class Pair_Lower_Bound[T](val first: T, val second: T) {
+  def replaceFirst[R >: T](newFirst: R) = new Pair_Lower_Bound[R](newFirst, second)
+}
+
+
+val pair = new Pair_Lower_Bound(student, studentTwo)
+pair.replaceFirst(person)
+
+```
+
+== 视图界定
+
+<%视图界定
+
+```
+class Pair_NotPerfect[T <% Comparable[T]](val first: T, val second: T) {
+  def bigger = if (first.compareTo(second) > 0) first else second
+}
+```
+
+Int 不是Comparable的子类，使用<% 会使用隐式转换为RichInt。 其中RichInt 是Comparable 的子类
+
+```
+    val pairInt = new Pair_NotPerfect(3, 5) //Int -> RichInt
+    println(pairInt.bigger)
+```
+
+== Ordered
+
+* Ordered 在 Comparable 上做了扩展 支持 大于号> 小于号< 
+* 如 first > second
+
+```
+class Pair_Better[T <% Ordered[T]](val first: T, val second: T) {
+  def bigger = if (first > second) first else second
+}
+```
+
+其中 String 不是 Ordered 的子类，使用视图界定 把String 隐式转成RichString
+
+```
+    val pair_Better_String = new Pair_Better("Java", "Scala") //String -> RichString
+    println(pair_Better_String.bigger)
+```
+
+== 上下文 界定
+
+* 只要T有实现compare()方法, 就可隐式转换加上trait Ordering 使其支持 符号比较
+* Ordering 中有未实现的compare 方法 
+
+```
+trait Ordering[T] extends Comparator[T] with PartialOrdering[T] with Serializable {
+
+  def tryCompare(x: T, y: T) = Some(compare(x, y))
+
+  def compare(x: T, y: T): Int
+
+
+```
+
+只要T对象有compare, 就可以隐式转换为Ordering
+
+```
+class Pair_Ordering[T: Ordering](val first: T, val second: T) {
+  def bigger(implicit ordered: Ordering[T]) = {
+    if (ordered.compare(first, second) > 0) first else second
+  }
+}
+
+object Context_Bounds {
+
+  def main(args: Array[String]) {
+
+    val pair = new Pair_Ordering("Spark", "Hadoop")
+    println(pair.bigger)
+
+    val pairInt = new Pair_Ordering(3, 5)
+    println(pairInt.bigger)
+
+  }
+
+}
+```
+
+== 泛型数组创建
+
+泛型数组 在没有指定类型的时候是不允许创建的。这个时候如果想创建的化得使用Manifest。
+
+Manifest 的上下文界定，编译期先将T隐式转成Manifest来创建数组。在运行其会将其转换成具体的类型
+
+```
+import scala.reflect.ClassTag
+
+
+class A[T]
+
+object Manifest_ClassTag {
+
+  def main(args: Array[String]) {
+
+    def arrayMake[T: Manifest](first: T, second: T) = {
+      val r = new Array[T](2);
+      r(0) = first;
+      r(1) = second;
+      r
+    }
+
+    arrayMake(1, 2).foreach(println)
+
+    def mkArray[T: ClassTag](elems: T*) = Array[T](elems: _*)
+
+    mkArray(42, 13).foreach(println)
+    mkArray("Japan", "Brazil", "Germany").foreach(println)
+
+    def manif[T](x: List[T])(implicit m: Manifest[T]) = {
+      if (m <:< manifest[String])
+        println("List strings")
+      else
+        println("Some other type")
+    }
+
+    manif(List("Spark", "Hadoop"))
+    manif(List(1, 2))
+    manif(List("Scala", 3))
+
+    val m = manifest[A[String]]
+    println(m)
+    val cm = classManifest[A[String]]
+    println(cm)
+  }
+
+}
+
+
+Manifest 存在的问题，依赖路径的时候会对具体类型判断有误。使用ClassTag
+```
+
+
+ClassTag
+
+
+```
+/**
+ *
+ * A `ClassTag[T]` stores the erased class of a given type `T`, accessible via the `runtimeClass`
+ * field. This is particularly useful for instantiating `Array`s whose element types are unknown
+ * at compile time.
+ *
+ * `ClassTag`s are a weaker special case of [[scala.reflect.api.TypeTags#TypeTag]]s, in that they
+ * wrap only the runtime class of a given type, whereas a `TypeTag` contains all static type
+ * information. That is, `ClassTag`s are constructed from knowing only the top-level class of a
+ * type, without necessarily knowing all of its argument types. This runtime information is enough
+ * for runtime `Array` creation.
+ *
+ * For example:
+ * {{{
+ *   scala> def mkArray[T : ClassTag](elems: T*) = Array[T](elems: _*)
+ *   mkArray: [T](elems: T*)(implicit evidence$1: scala.reflect.ClassTag[T])Array[T]
+ *
+ *   scala> mkArray(42, 13)
+ *   res0: Array[Int] = Array(42, 13)
+ *
+ *   scala> mkArray("Japan","Brazil","Germany")
+ *   res1: Array[String] = Array(Japan, Brazil, Germany)
+ * }}}
+ *
+ * See [[scala.reflect.api.TypeTags]] for more examples, or the
+ * [[http://docs.scala-lang.org/overviews/reflection/typetags-manifests.html Reflection Guide: TypeTags]]
+ * for more details.
+ *
+ */
+
+ trait ClassTag[T] extends ClassManifestDeprecatedApis[T] with Equals with Serializable
+ 
+```
