@@ -14,12 +14,12 @@ case class::
 
 
 .case object
-====
+****
 * case object Person相比于case class Person(age:Int,name:String)缺少了apply、unapply方法，因为case object
 是没有参数输入的，所以对于apply 和unapply的方法也自然失去。
 * 因为class 和 object 在编译的时候，object是只有一个编译文件，而当两者加上case之后发现两者都是有2个编译文件，也就是说case object 不在像object那样仅仅是一个单列对象，而是有像类（class）一样的特性。
 * 都有toString,hashCode,copy,equals方法和继承了Product和Serializable（implements Product, Serializable）
-====
+****
 
 == 例子
 

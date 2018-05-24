@@ -1,0 +1,100 @@
+= 18 scala 学习笔记
+
+
+== 一、List 协变
+
+协变(+)
+
+```
+sealed abstract class List[+A] extends AbstractSeq[A]
+```
+
+list中的元素，存在子类和父类的关系，Int的夫类为Any 那么List[Int]就是List[Any]的子类. 接口编程中子类可以赋给父类。 scala 中叫协变
+
+
+```
+    val list: List[Int] = List(1, 2, 3, 4, 5)
+    val listAny: List[Any] = list
+```
+
+== 二、List伴生对象
+
+```
+object ListObjectOps {
+
+  def main(args: Array[String]) {
+    println(List.apply(1, 2, 3))
+    println(List.range(1, 5))
+    println(List.range(9, 1, -3))
+
+    val zipped = "abcde".toList zip List(1, 2, 3, 4, 5)
+
+    println(zipped)
+    println(zipped.unzip)
+
+    println(List(List('a', 'b'), List('c'), List('d', 'e')).flatten)
+    println(List.concat(List(), List('b'), List('c')))
+
+
+  }
+
+}
+```
+
+== 三、option
+
+sealed::
+sealed class必须和subclass在同一个文件内
+
+
+```
+object Option_Internal {
+
+  def main(args: Array[String]) {
+    val scores = Map("Alice" -> 99, "Spark" -> 100)
+
+    scores.get("Alicde") match {
+      case Some(score) => println(score)
+      case None => println("No score")
+    }
+
+
+  }
+
+}
+```
+
+
+== 四、 泛型
+
+ClassTag::
+.源码中的解释，在泛型中，type T是被擦除的。这个是非常有用的，在我们构建数组的时候，但是数组的类型我们也不知道，编译的时候不知道，但是运行的时候要知道，ClassTag只包含实际运行时的类的类型。
+.ClassTag会帮我们存储T的信息，如下面，传入1,2根据类型推到可以指定T是Int类型，这时候ClassTag就可以把Int类型这个信息传递给编译器。ClassTag运行时指定在编译的时候无法指定的类型信息。
+
+
+```
+import scala.collection.immutable.Queue
+import scala.reflect.ClassTag
+
+class Triple[F: ClassTag, S, T](val first: F, val second: S, val third: T)
+
+object Hello_Type_Parameterization {
+
+  def main(args: Array[String]) {
+    val triple = new Triple("Spark", 3, 3.1415)
+    val bigData = new Triple[String, String, Char]("Spark", "Hadoop", 'R')
+
+    def getData[T](list: List[T]) = list(list.length / 2)
+
+    println(getData(List("Spark", "Hadoop", 'R')))
+    val f = getData[Int] _
+    println(f(List(1, 2, 3, 4, 5, 6)))
+
+    val queue = Queue(1, 2, 3, 4, 5)
+    val queue_appended = queue enqueue 6
+    println("queue : " + queue + "   " + "queue_appended : " + queue_appended)
+
+  }
+
+}
+```
