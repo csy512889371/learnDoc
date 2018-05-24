@@ -108,6 +108,6 @@ image::https://asciidoctor.org/images/sunset.jpg[Sunset,300,200]
 
 image::https://asciidoctor.org/images/sunset.jpg[,300,200]
 
-
+[link=#]
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/docker/1.png?raw=true[ctoedu,300,200]
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/docker/1.png?raw=true[ctoedu,400,400]
