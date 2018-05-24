@@ -52,14 +52,14 @@ Spring Boot 2.0 迁移指南
 http://www.54tianzhisheng.cn/2018/03/06/SpringBoot2-Migration-Guide/
 
 
-https://zhuanlan.zhihu.com/p/28708259 编码习惯 - 接口定义 我们项目也有类似的做法
-https://zhuanlan.zhihu.com/p/28717374 编码习惯 - Controller规范 我们项目也有类似的做法
-https://zhuanlan.zhihu.com/p/28629319 编程习惯 - 日志建议
-https://zhuanlan.zhihu.com/p/29005176 编码习惯 - 异常处理
-https://zhuanlan.zhihu.com/p/29129469 编码习惯 - 参数校验和国际化规范
-https://zhuanlan.zhihu.com/p/29199049 编码习惯 - 工具类规范
-https://zhuanlan.zhihu.com/p/29191233 编码习惯 - 配置规范
-https://zhuanlan.zhihu.com/p/29390147 编码习惯 - 函数编写建议
+* https://zhuanlan.zhihu.com/p/28708259 编码习惯 - 接口定义 我们项目也有类似的做法
+** https://zhuanlan.zhihu.com/p/28717374 编码习惯 - Controller规范 我们项目也有类似的做法
+** https://zhuanlan.zhihu.com/p/28629319 编程习惯 - 日志建议
+** https://zhuanlan.zhihu.com/p/29005176 编码习惯 - 异常处理
+** https://zhuanlan.zhihu.com/p/29129469 编码习惯 - 参数校验和国际化规范
+** https://zhuanlan.zhihu.com/p/29199049 编码习惯 - 工具类规范
+** https://zhuanlan.zhihu.com/p/29191233 编码习惯 - 配置规范
+** https://zhuanlan.zhihu.com/p/29390147 编码习惯 - 函数编写建议
 
 # scala
 
