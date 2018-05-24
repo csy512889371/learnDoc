@@ -101,4 +101,15 @@ https://www.txlcn.org/index.html
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
 
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/mq/rabbitmq2.png[GitHub mascot]
+
+image::https://asciidoctor.org/images/sunset.jpg[]
+
+image::https://asciidoctor.org/images/sunset.jpg[Sunset]
+
+.A mountain sunset
+[#img-sunset]
+[caption="Figure 1: ",link=https://www.flickr.com/photos/javh/5448336655]
+image::https://asciidoctor.org/images/sunset.jpg[Sunset,300,200]
+
+image::https://asciidoctor.org/images/sunset.jpg[GitHub mascot]
+
