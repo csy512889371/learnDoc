@@ -14,7 +14,7 @@ http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
 
 
 
-# mybatis 
+= mybatis 
 
 博客地址http://www.jianshu.com/nb/5226994
 
@@ -100,3 +100,5 @@ https://www.txlcn.org/index.html
 
 http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
 
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/mq/rabbitmq2.png[GitHub mascot]
