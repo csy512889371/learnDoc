@@ -16,11 +16,11 @@ http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
 
 = mybatis 
 
-博客地址http://www.jianshu.com/nb/5226994
+- 博客地址http://www.jianshu.com/nb/5226994
 
 # dubbo启动服务之容器（Container）
 
-http://www.ccblog.cn/75.htm
+* http://www.ccblog.cn/75.htm
 
 #  推荐网站springcloud
 https://springcloud.cc/spring-cloud-dalston.html
@@ -67,12 +67,12 @@ https://list.youku.com/albumlist/show/id_25837602.html?
 
 
 
-http://tech.lede.com/2017/03/15/rd/server/SpringCloud0/ Spring Cloud技术分析（序）
-http://tech.lede.com/2017/03/15/rd/server/SpringCloud1/ Spring Cloud技术分析（1）——服务治理
-http://tech.lede.com/2017/03/29/rd/server/SpringCloud1C/ Spring Cloud技术分析（2）—— 服务治理实践
-http://tech.lede.com/2017/04/19/rd/server/SpringCloudSleuth/ Spring Cloud技术分析（3）—— 服务跟踪
-http://tech.lede.com/2017/05/16/rd/server/SpringCloudZuul/ Spring Cloud技术分析（4）—— 服务网关
-http://tech.lede.com/2017/06/12/rd/server/springCloudConfig/ Spring Cloud技术分析（5）—— 配置中心
+. http://tech.lede.com/2017/03/15/rd/server/SpringCloud0/ Spring Cloud技术分析（序）
+.. http://tech.lede.com/2017/03/15/rd/server/SpringCloud1/ Spring Cloud技术分析（1）——服务治理
+... http://tech.lede.com/2017/03/29/rd/server/SpringCloud1C/ Spring Cloud技术分析（2）—— 服务治理实践
+.... http://tech.lede.com/2017/04/19/rd/server/SpringCloudSleuth/ Spring Cloud技术分析（3）—— 服务跟踪
+..... http://tech.lede.com/2017/05/16/rd/server/SpringCloudZuul/ Spring Cloud技术分析（4）—— 服务网关
+...... http://tech.lede.com/2017/06/12/rd/server/springCloudConfig/ Spring Cloud技术分析（5）—— 配置中心
 
 
 https://ke.qq.com/course/274763 腾讯课堂 rabitmq
