@@ -2,7 +2,8 @@
 
 
 == 概述
-> case class
+
+case class::
 
 . case 类在编译的时候会自动增加一个 单列对象（single object）。
 . 产生了一个apply的方法，那么我们可以直接把对象当作方法来用，比如 Person(12,Tom),就代表已经创建一个Person的对象，同时调用了這个对象的apply方法
