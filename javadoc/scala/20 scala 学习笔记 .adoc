@@ -1,0 +1,202 @@
+= 20 scala 学习笔记 
+
+== Scala多重界定
+
+. T <: A with B T是 A 或者 B的子类
+. T >: A with B T是 A 或者 B 的父类
+. T >:A<:B T是B的子类 同时 T是B的父类 且A 之B 的子类
+. > T <% A <% B T 有多个视图界定。T 可以隐式转换为A类型 且 也可以转换为B类型
+
+== Scala类型约束
+
+```
+object Type_Contraints {
+
+  def main(args: Array[String]) {
+    def rocky[T](i: T)(implicit ev: T <:< java.io.Serializable) {
+      print("Life is short,you need spark!")
+    }
+
+    rocky("spark")
+  }
+
+}
+```
+
+ <:< 是个对象
+
+ ```
+ object Predef extends LowPriorityImplicits with DeprecatedPredef 
+
+ sealed abstract class <:<[-From, +To] extends (From => To) with Serializable
+ ```
+
+```
+/**
+   * An instance of `A <:< B` witnesses that `A` is a subtype of `B`.
+   * Requiring an implicit argument of the type `A <:< B` encodes
+   * the generalized constraint `A <: B`.
+   *
+   * @note we need a new type constructor `<:<` and evidence `conforms`,
+   * as reusing `Function1` and `identity` leads to ambiguities in
+   * case of type errors (`any2stringadd` is inferred)
+   *
+   * To constrain any abstract type T that's in scope in a method's
+   * argument list (not just the method's own type parameters) simply
+   * add an implicit argument of type `T <:< U`, where `U` is the required
+   * upper bound; or for lower-bounds, use: `L <:< T`, where `L` is the
+   * required lower bound.
+   *
+   * In part contributed by Jason Zaugg.
+   */
+```
+
+
+== Scala 型变(Variance)
+
+. T 的类型和集合的类型一致。即 B 是 A 的子类。如果 集合B 也是 集合A的子类 那么称为协变
+. B 是 A 的子类。如果 集合A 是 集合B的子类 那么称为逆变
+
+. 对于一个带类型参数的类型，比如 List[T]，如果对A及其子类型B，满足 List[B]也符合 List[A]的子类型，那么就称为covariance(协变)，如果 List[A]是 List[B]的子类型，即与原来的父子关系正相反，则称为contravariance(逆变)
+
+. 如果一个类型支持协变或逆变，则称这个类型为variance(翻译为可变的或变型)，否则称为invariant(不可变的)
+
+
+在Java里，泛型类型都是invariant，比如 List<String> 并不是 List<Object> 的子类型。Java并不支持声明点变型(declaration-site variance，即在定义一个类型时声明它为可变型，也称definition-site)，而scala支持，可以在定义类型时声明(用加号表示为协变，减号表示逆变)，如:
+
+```
+ trait List[+T] // 在类型定义时(declaration-site)声明为协变
+```
+
+这样会把List[String]作为List[Any]的子类型
+
+. 要注意variance并不会被继承，父类声明为variance，子类如果想要保持，仍需要声明
+
+
+> 使用点
+
+不过Java支持使用点变型(use-site variance)，所谓“使用点“，也就是在声明变量时
+
+```
+List<? extends Object> list = new ArrayList<String>();
+```
+scala "使用点"
+```
+val a : List[_ <: Any] = List[String]("A")
+```
+
+== Scala中链式调用风格
+
+. 为了使用链试调用的风格，使用this.type = this
+. type:在scala中任何类或对象都有type属性，type属性可能返回对象也可能返回这个类或空
+. cat.breathe返回的是cat的type，cat的type中有eat方法，所以可以用链式调用。
+
+```
+class Animal {
+  def breathe: this.type = this
+}
+
+class Cat extends Animal {
+  def eat: this.type = this
+}
+
+object Singleton_Types {
+
+  def main(args: Array[String]): Unit = {
+    val cat = new Cat
+    cat.breathe.eat
+
+  }
+
+}
+```
+
+== Scala路径依赖
+
+```
+class Outer {
+  private val x = 10
+
+  class Inner {
+    private val y = x + 10
+  }
+
+}
+
+object Path_Dependence {
+
+  def main(args: Array[String]) {
+    val outer = new Outer
+    val inner = new outer.Inner
+    val inner2: outer.Inner = new outer.Inner
+
+    val o1 = new Outer
+    val o2 = new Outer
+    val i: Outer#Inner = new o1.Inner
+
+
+  }
+
+}
+```
+
+. scala 中 在用new创建内部类时，前边必须限定外部对象(内部类实例必须要访问到外部对象引用)
+. 内部类必须依赖与外部类的实例
+. 路径依赖类型；比如上面的 A.this.B 就是一个路径依赖类型，B 前面的路径 A.this 随着不同的实例而不同，比如 a1 和 a2 就是两个不同的路径，所以a1.B 与 a2.B也是不同的类型。
+
+
+> 类型投影
+* 如果想实现java 中的不同的外部实例，同一内部实例的化 使用
+
+```
+    val i: Outer#Inner = new o1.Inner
+```
+
+== Scala结构类型
+
+* 所谓”结构类型“，指的是一组关于抽象方法、字段、类型的规格说明。 
+
+* 比如下面的init方法 只要对象中包含open方法都可以作为参数。
+
+```
+type X = {def open(): Unit}
+```
+
+type 表示 等号后面的 命名个别名。
+
+```
+class Structural {
+  def open() = print("A class instance Opened")
+}
+
+object Structural__Type {
+
+  def main(args: Array[String]) {
+    init(new {
+      def open() = println("Opened")
+    })
+    type X = {def open(): Unit}
+
+    def init(res: X) = res.open
+
+    init(new {
+      def open() = println("Opened again")
+    })
+
+    object A {
+      def open() {
+        println("A single object Opened")
+      }
+    }
+    init(A)
+
+    val structural = new Structural
+    init(structural)
+
+  }
+
+  def init(res: {def open(): Unit}) {
+    res.open
+  }
+}
+```
