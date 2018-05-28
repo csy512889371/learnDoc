@@ -1,0 +1,196 @@
+= 24 scala actor
+
+== 匿名actor
+
+```
+
+import scala.actors.Actor._
+import scala.actors.Actor
+
+object Actor_Message extends Actor {
+  def act() {
+    while (true) {
+      receive {
+        case msg => println("Message content Actor from inbox: " + msg)
+      }
+    }
+  }
+}
+
+object Actor_Messages {
+
+  def main(args: Array[String]) {
+    val actor_Message = actor {
+      while (true) {
+        receive { //apply isDefinedAt
+          case msg => println("Message content from inbox: " + msg)
+        }
+      }
+    }
+    val double_Message = actor {
+      while (true) {
+        receive {
+          case msg: Double => println("Double Number from inbox: " + msg)
+          //    		case _ => println("Something Unkown" )
+        }
+      }
+    }
+    Actor_Message.start
+    Actor_Message ! "Hadoop"
+    actor_Message ! "Spark"
+    double_Message ! Math.PI
+    double_Message ! "Hadoop"
+
+  }
+
+}
+```
+== 理解PartialFunction(偏函数)
+
+对给定的输入参数类型，函数可接受该类型的任何值。换句话说，一个(Int) => String 的函数可以接收任意Int值，并返回一个字符串。
+
+对给定的输入参数类型，偏函数只能接受该类型的某些特定的值。一个定义为(Int) => String 的偏函数可能不能接受所有Int值为输入。
+
+isDefinedAt 是PartialFunction的一个方法，用来确定PartialFunction是否能接受一个给定的参数。
+
+注意 偏函数PartialFunction 和我们前面提到的部分应用函数是无关的。
+
+
+```
+scala> val one: PartialFunction[Int, String] = { case 1 => "one" }
+one: PartialFunction[Int,String] = <function1>
+
+scala> one.isDefinedAt(1)
+res0: Boolean = true
+
+scala> one.isDefinedAt(2)
+res1: Boolean = false
+```
+
+receive 核心代码
+
+```
+val qel = mailbox.extractFirst((m: Any, replyTo: OutputChannel[Any]) => {
+        senders = replyTo :: senders
+        val matches = f.isDefinedAt(m)
+        senders = senders.tail
+        matches
+      })
+      if (null eq qel) {
+        synchronized {
+          // in mean time new stuff might have arrived
+          if (!sendBuffer.isEmpty) {
+            drainSendBuffer(mailbox)
+            // keep going
+          } else {
+            waitingFor = f
+            isSuspended = true
+            scheduler.managedBlock(blocker)
+            drainSendBuffer(mailbox)
+            // keep going
+          }
+        }
+      } else {
+        received = Some(qel.msg)
+        senders = qel.session :: senders
+        done = true
+      }
+```
+
+== case Class 
+
+```
+import scala.actors.Actor
+import scala.actors.Actor._
+
+case class Person(name: String, age: Int)
+
+class HelloActor extends Actor {
+  def act() {
+    while (true) {
+      receive {
+        case Person(name, age) => {
+          println("Name: " + name + " : " + "Age: " + age)
+          sender ! "Echo!!!"
+        }
+        case _ => println("Something else...")
+      }
+    }
+  }
+}
+
+object Actor_With_CaseClass {
+
+  def main(args: Array[String]) {
+    val hiActor = new HelloActor
+    hiActor.start
+    hiActor ! Person("Spark", 6)
+
+    self.receive { case msg => println(msg) }
+    //    self.receiveWithin(1000){case msg => println(msg)}
+  }
+
+}
+```
+
+== react loop 
+
+重用线程
+
+
+```
+import scala.actors.Actor
+import scala.actors.Actor._
+import java.net.InetAddress
+import java.net.UnknownHostException
+
+object NameResolver extends Actor {
+
+  def act() {
+    //    react {
+    //      case Net (name, actor) =>
+    //        actor ! getIp(name)
+    //        act
+    //      case "EXIT" => println("Name resolver exiting.")
+    //      case msg =>
+    //        println("Unhandled message : " + msg)
+    //      	act
+    //    }
+    loop {
+      react {
+        case Net(name, actor) =>
+          actor ! getIp(name)
+
+        case msg =>
+          println("Unhandled message : " + msg)
+
+      }
+    }
+
+
+  }
+
+  def getIp(name: String): Option[InetAddress] = {
+    try {
+      println(InetAddress.getByName(name))
+      Some(InetAddress.getByName(name))
+    } catch {
+      case _: UnknownHostException => None
+    }
+  }
+}
+
+case class Net(name: String, actor: Actor)
+
+object Actor_More_Effective {
+
+  def main(args: Array[String]) {
+    NameResolver.start
+    NameResolver ! Net("www.baidu.com", self)
+
+    println(self.receiveWithin(1000) { case x => x })
+
+  }
+
+}
+```

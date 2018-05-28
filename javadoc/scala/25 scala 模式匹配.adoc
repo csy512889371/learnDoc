@@ -1,0 +1,75 @@
+= 25 scala 模式匹配
+
+== list 模式匹配
+
+
+```
+object For_Advanced {
+
+  def main(args: Array[String]): Unit = {
+    for (i <- List(1, 2, 3, 4, 5)) {
+      println(i)
+    }
+
+    for (index@"Flink" <- List("Hadoop", "Spark", "Flink")) {
+      println(index)
+    }
+
+    for ((language, "Hadoop") <- Set("Scala" -> "Spark", "Java" -> "Hadoop")) println(language)
+    for ((k, v: Int) <- List(("Spark" -> 5), ("Hadoop" -> "Big Data"))) {
+      println(k)
+    }
+  }
+
+}
+```
+
+== 元组模式匹配
+
+```
+object Assinment_Internals {
+
+  def main(args: Array[String]) {
+    val a@b = 1000
+    println("a = " + a + ", b = " + b)
+    val (c, d) = (1000, 2000)
+    //    val (e,F) = (1000,2000)
+    val Array(g, h) = Array(1000, 2000)
+    //    val Array(i,J) = Array(1000,2000)
+    //    object Test { val 1 = 1 }
+    object Test {
+      val 1 = 2
+    }
+
+  }
+
+}
+```
+
+== 提取器
+
+
+```
+object :> {
+  def unapply[A](list: List[A]) = {
+    Some((list.init, list.last))
+  }
+}
+
+object Extractor_Advanced {
+
+  def main(args: Array[String]) {
+    (1 to 9).toList match {
+      case _ :> 9 => println("Hadoop")
+    }
+    (1 to 9).toList match {
+      case x :> 8 :> 9 => println("Spark")
+    }
+    (1 to 9).toList match {
+      case :>(:>(_, 8), 9) => println("Flink")
+    }
+
+  }
+
+}
+```
