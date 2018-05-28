@@ -1,0 +1,306 @@
+= scala 学习笔记
+
+== 复合类型
+
+
+Compound_Type 必须同时是 Compound_Type1 和 Compound_Type2 类型
+
+```
+trait Compound_Type1;
+
+trait Compound_Type2;
+
+class Compound_Type extends Compound_Type1 with Compound_Type2
+
+object Compound_Type {
+  def compound_Type(x: Compound_Type1 with Compound_Type2) = {
+    println("Compound Type in global method")
+  }
+
+  def main(args: Array[String]) {
+
+    compound_Type(new Compound_Type1 with Compound_Type2)
+    object compound_Type_oject extends Compound_Type1 with Compound_Type2
+    compound_Type(compound_Type_oject)
+
+    type compound_Type_Alias = Compound_Type1 with Compound_Type2
+
+    def compound_Type_Local(x: compound_Type_Alias) = println("Compound Type in local method")
+
+    val compound_Type_Class = new Compound_Type
+    compound_Type_Local(compound_Type_Class)
+
+    type Scala = Compound_Type1 with Compound_Type2 {def init(): Unit}
+  }
+
+}
+```
+
+== Infix Type
+
+中值类型
+
+
+```
+object Infix_Types {
+
+  def main(args: Array[String]) {
+
+    object Log {
+
+      //例子 第一个是参数 第二个是返回值
+      def >>:(data: String): Log.type = {
+        println(data); Log
+      }
+    }
+    "Hadoop" >>: "Spark" >>: Log
+
+    val list = List()
+    val newList = "A" :: "B" :: list
+    println(newList)
+
+    //例子 泛型
+    class Infix_Type[A, B]
+    val infix: Int Infix_Type String = null
+    val infix1: Infix_Type[Int, String] = null
+
+    //例子 case 两个参数
+    case class Cons(first: String, second: String)
+    val case_class = Cons("one", "two")
+    case_class match {
+      case "one" Cons "two" => println("Spark!!!")
+    } //unapply
+
+  }
+
+}
+```
+
+
+== Self 类型
+
+self 是this的别名
+
+
+```
+//例子 this的别名
+class Self {
+  self =>
+  val tmp = "Scala"
+
+  def foo = self.tmp + this.tmp
+}
+
+
+// 例子 T 必须混入 S1
+trait S1 
+
+class S2 {
+  this: S1 =>
+}
+
+class S3 extends S2 with S1
+
+trait T {
+  this: S1 =>
+}
+
+object S4 extends T with S1
+
+object Self_Types {
+
+  def main(args: Array[String]) {
+    class Outer {
+      outer =>
+      val v1 = "Spark"
+
+      class Inner {
+        println(outer.v1)
+      }
+
+    }
+    val c = new S2 with S1
+  }
+
+}
+```
+
+
+== 依赖注入
+
+Dependency Injection
+
+
+```
+trait Logger {
+  def log(msg: String)
+}
+
+trait Auth {
+  auth: Logger =>
+  def act(msg: String) {
+    log(msg)
+  }
+}
+
+object DI extends Auth with Logger {
+  override def log(msg: String) = println(msg);
+}
+
+object Dependency_Injection {
+
+  def main(args: Array[String]) {
+    DI.act("I hope you'll like it")
+  }
+
+}
+```
+
+
+== 抽象类型
+
+子类必须声明抽象类型的具体类型
+
+```
+type In = String
+```
+
+```
+trait Reader {
+  type In <: java.io.Serializable
+  type Contents
+
+  def read(in: In): Contents
+}
+
+class FileReader extends Reader {
+  type In = String
+  type Contents = BufferedSource
+
+  override def read(name: In) = Source.fromFile(name)
+}
+
+object Abstract_Types {
+
+  def main(args: Array[String]) {
+    val fileReader = new FileReader
+    val content = fileReader.read("E:\\WangJialin.txt")
+    for (line <- content.getLines) {
+      println(line)
+    }
+  }
+
+}
+```
+
+== 隐式转化
+
+
+```
+import scala.io.Source
+import java.io.File
+
+class RichFile(val file: File) {
+  def read = Source.fromFile(file.getPath()).mkString
+}
+
+object Context {
+  implicit def file2RichFile(file: File) = new RichFile(file) //File -> RichFile
+
+}
+
+object Hello_Implicit_Conversions {
+
+  def main(args: Array[String]) {
+    import Context.file2RichFile
+    println(new File("E:\\ctoedu.txt").read)
+  }
+
+}
+```
+
+
+== 隐式参数
+
+方法的参数声明为implicit ，会去上下文找类型相同的隐式值作为默认值。
+
+```
+object Context_Implicits {
+  implicit val default: String = "Flink"
+}
+
+object Param {
+  def print(content: String)(implicit language: String) {
+    println(language + ":" + content)
+  }
+}
+
+object Implicit_Parameters {
+
+  def main(args: Array[String]) {
+    Param.print("Spark")("Scala")
+
+    import Context_Implicits._
+    Param.print("Hadoop")
+  }
+}
+```
+
+
+== 隐式转换 与隐式参数
+
+
+
+```
+object Implicit_Conversions_with_Implicit_Parameters {
+
+  def main(args: Array[String]) {
+    def bigger[T](a: T, b: T)(implicit ordered: T => Ordered[T])
+    = if (a > b) a else b
+
+    println(bigger(4, 3))
+    println(bigger(4.2, 3))
+    println(bigger("Spark", "Hadoop"))
+  }
+
+}
+```
+
+上面的比较也可以写成
+
+```
+if (ordered(a) > b) a else b
+```
+
+== 上下文界定
+
+
+```
+class Pair_Implicits[T: Ordering](val first: T, val second: T) { //Ordering[T]
+  def bigger(implicit ordered: Ordering[T]) =
+    if (ordered.compare(first, second) > 0) first else second
+}
+
+class Pair_Implicitly[T: Ordering](val first: T, val second: T) {
+  def bigger = if (implicitly[Ordering[T]].compare(first, second) > 0)
+    first else second
+}
+
+class Pair_Implicitly_Odereded[T: Ordering](val first: T, val second: T) {
+  def bigger = {
+    import Ordered._
+    if (first > second) first else second
+  }
+}
+
+object Context_Bounds_Internals {
+
+  def main(args: Array[String]) {
+    println(new Pair_Implicits(7, 9).bigger)
+    println(new Pair_Implicitly(7, 9).bigger)
+    println(new Pair_Implicitly_Odereded(7, 9).bigger)
+
+  }
+
+}
+```
