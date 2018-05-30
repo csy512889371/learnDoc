@@ -1,0 +1,204 @@
+= 26 scala 学习比较
+
+== Type 与 Class
+
+```
+import scala.reflect.runtime.universe._
+
+
+class Spark
+
+trait Hadoop
+
+object Flink
+
+class Java {
+
+  class Scala
+
+}
+
+object Type_Advanced {
+
+  def main(args: Array[String]) {
+    println(typeOf[Spark])
+    println(classOf[Spark]) //Class[_ <: Spark]
+
+
+    val spark = new Spark
+
+    println(classOf[Hadoop])
+    println(typeOf[Hadoop])
+
+    println(Flink.getClass)
+    //    println(classOf[Flink])
+
+    val java1 = new Java
+    val java2 = new Java
+    val scala1 = new java1.Scala
+    val scala2 = new java2.Scala
+    println(scala1.getClass)
+    println(scala2.getClass)
+    println(typeOf[java1.Scala] == typeOf[java2.Scala])
+    println(typeOf[java1.Scala])
+    println(typeOf[java2.Scala])
+
+    println(classOf[List[Int]] == classOf[List[String]])
+    println(typeOf[List[Int]] == typeOf[List[String]])
+
+  }
+
+}
+```
+
+
+== Type
+
+this.type 与实例绑定
+
+```
+import scala.reflect.runtime.universe._
+
+object Scala
+
+class Java1
+
+class JVM {
+  def method1: this.type = this
+}
+
+class JVM_Language extends JVM {
+  def method2: this.type = this
+}
+
+object Singleton_Type {
+
+  def main(args: Array[String]) {
+    println(Scala.getClass)
+    println(typeOf[Scala.type])
+
+    val java = new Java1
+    val java2 = new Java1
+    println(typeOf[java.type])
+    println(typeOf[java2.type])
+    val content: java.type = java
+    //    val content:java.type = java2
+
+    val jvm = new JVM_Language
+    println(jvm.method1)
+    jvm.method1.method2
+  }
+
+}
+```
+
+
+== List 中 ::
+
+中值表达式
+
+```
+ def ::[B >: A] (x: B): List[B] =
+    new scala.collection.immutable.::(x, this)
+```
+
+以上的语法 表示 A 和B 有相同父类就可以做拼接
+
+```
+abstract class Big_Data
+
+class Hadoop extends Big_Data
+
+class Spark extends Big_Data
+
+object List_Constructor_Internals {
+
+  def main(args: Array[String]) {
+    val hadoop = new Hadoop :: Nil
+    val big_Data = new Spark :: hadoop
+  }
+
+}
+```
+
+
+== ListBuffer
+
+```
+object ListBuffer_Internals {
+
+  def main(args: Array[String]) {
+    val list = List(1, 2, 3, 4, 5, 6, 7, 8, 9)
+    increment(list)
+    increment_MoreEffective(list)
+    increment_MostEffective(list)
+  }
+
+  def increment(list: List[Int]): List[Int] = list match {
+    case List() => List()
+    case head :: tail => head + 1 :: increment(tail)
+  }
+
+  def increment_MoreEffective(list: List[Int]): List[Int] = {
+    var result = List[Int]()
+    for (element <- list) result = result ::: List(element + 1)
+    result
+  }
+
+  def increment_MostEffective(list: List[Int]): List[Int] = {
+    import scala.collection.mutable.ListBuffer
+    var buffer = new ListBuffer[Int]
+    for (element <- list) buffer += element + 1
+    buffer.toList
+  }
+
+}
+```
+
+== for 
+
+```
+
+object ForInAction {
+
+  def main(args: Array[String]) {
+    val lauren = Person("Lauren", false)
+    val rocky = Person("Rocky", true)
+    val vivian = Person("Vivian", false, lauren, rocky)
+    val persons = List(lauren, rocky, vivian)
+    //生成器 定义 过滤器 处理
+    val forResult = for {person <- persons; name = person.name; if !person.isMale; child <- person.children}
+      yield (person.name, child.name)
+    println(forResult)
+
+    val content = for (x <- List(1, 2, 3); y <- List("Hadoop", "Spark", "Flink")) yield (x, y)
+    println(content)
+  }
+
+}
+```
+
+== for query
+
+```
+case class Book(title: String, authors: List[String])
+
+object For_Query {
+
+  def main(args: Array[String]) {
+    val books: List[Book] = List(
+      Book("Structure and Interpretation ", List("Abelson , Harold", "Sussman")),
+      Book("Principles of Compiler Design",
+        List("Aho, Alfred", "Ullman, Jeffrey")),
+      Book("Programming in Modula-2", List("Wirth, Niklaus")),
+      Book("Introduction to Functional Programming", List("Bird, Richard")),
+      Book("The Java Language Specification",
+        List("Gosling, James", "Joy, Bill", "Steele, Guy", "Bracha, Gilad")))
+
+    //    val result = for(b <- books ; a <- b.authors if a startsWith "Gosling") yield b.title
+    val result = for (b <- books if (b.title indexOf "Programming") >= 0) yield b.title
+    println(result)
+  }
+
+}
+```
