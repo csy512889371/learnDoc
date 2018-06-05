@@ -1,0 +1,99 @@
+= 安装 Dubbo 管理控制台
+
+
+== 概述
+
+Dubbo 管控台可以对注册到 zookeeper 注册中心的服务或服务消费者进行管理，但
+管控台是否正常对 Dubbo 服务没有影响，管控台也不需要高可用，因此可以单节点部署。
+
+
+== 安装
+
+. IP: 192.168.3.71
+. 部署容器：apache-tomcat-7.0.57
+. 端口：8080
+
+
+1、 下载最新版的 Tomcat7:
+
+```
+$wget
+http://mirrors.hust.edu.cn/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.57
+.tar.gz
+```
+
+2、 解压：
+
+```
+$ tar -zxvf apache-tomcat-7.0.57.tar.gz
+$ mv apache-tomcat-7.0.57 dubbo-admin-tomcat
+```
+
+3、 移除/home/wusc/dubbo-admin-tomcat/webapps 目录下的所有文件：
+```
+$ rm -rf *
+
+```
+4、 上传 Dubbo 管理控制台程序 dubbo-admin-2.5.3.war到/home/wusc/dubbo-admin-tomcat/webapps
+
+5、 解压并把目录命名为 ROOT:
+```
+$ unzip dubbo-admin-2.5.3.war -d ROOT
+```
+把 dubbo-admin-2.5.3.war 移到/home/wusc/tools 目录备份
+
+```
+$ mv dubbo-admin-2.5.3.war /home/wusc/tools
+```
+
+6、 配置 dubbo.properties：
+
+```
+$ vi ROOT/WEB-INF/dubbo.properties
+dubbo.registry.address=zookeeper://192.168.3.71:2181
+dubbo.admin.root.password=wusc.123
+dubbo.admin.guest.password=wusc.123
+
+```
+
+（以上密码在正式上生产前要修改）
+
+7、 防火墙开启 8080 端口，用 root 用户修改/etc/sysconfig/iptables，
+
+```
+# vi /etc/sysconfig/iptables
+```
+
+增加：
+
+```
+## dubbo-admin-tomcat:8080
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+
+```
+
+重启防火墙：
+
+```
+# service iptables restart
+
+```
+
+8、 启动 Tomat7
+
+```
+$ /home/wusc/dubbo-admin-tomcat/bin/startup.sh
+```
+
+9、 浏览 http://192.168.3.71:8080/
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/195.png?raw=true[ctoedu,300,200]
+
+10、 配置部署了 Dubbo 管控台的 Tomcat 开机启动：
+
+在虚拟主机中编辑/etc/rc.local 文件，加入：
+
+```
+su - wusc -c '/home/wusc/dubbo-admin-tomcat/bin/startup.sh
+
+```
