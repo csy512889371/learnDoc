@@ -22,28 +22,28 @@ http://mirrors.hust.edu.cn/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.
 2、 规范安装目录：
 
 ```
-/home/wusc/edu/web/xxx-tomcat
+/home/ctoedu/edu/web/xxx-tomcat
 ```
 如：
 
 ```
-/home/wusc/edu/web/boss-tomcat
+/home/ctoedu/edu/web/boss-tomcat
 ```
 3、 解压安装
 
 ```
-$ mkdir –p /home/wusc/edu/web
+$ mkdir –p /home/ctoedu/edu/web
 $ tar -zxvf apache-tomcat-7.0.57.tar.gz
-$ mv apache-tomcat-7.0.57 /home/wusc/edu/web/boss-tomcat
+$ mv apache-tomcat-7.0.57 /home/ctoedu/edu/web/boss-tomcat
 ```
 
-4、 移除/home/wusc/edu/web/boss-tomcat/webapps 目录下的所有文件：
+4、 移除/home/ctoedu/edu/web/boss-tomcat/webapps 目录下的所有文件：
 
 ```
-$ rm -rf /home/wusc/edu/web/boss-tomcat/webapps/*
+$ rm -rf /home/ctoedu/edu/web/boss-tomcat/webapps/*
 ```
 
-5、 上传 Dubbo 服务消费者 Web 应用 war 包 edu-web-boss.war到/home/wusc/edu/web/boss-tomcat/webapps
+5、 上传 Dubbo 服务消费者 Web 应用 war 包 edu-web-boss.war到/home/ctoedu/edu/web/boss-tomcat/webapps
 
 6、 防火墙开启 8080 端口，用 root 用户修改/etc/sysconfig/iptables，
 
@@ -69,7 +69,7 @@ $ rm -rf /home/wusc/edu/web/boss-tomcat/webapps/*
 7、 Tomat 内存设置：
 
 ```
-$ vi /home/wusc/edu/web/boss-tomcat/bin/catalina.sh
+$ vi /home/ctoedu/edu/web/boss-tomcat/bin/catalina.sh
 
 ```
 
@@ -81,6 +81,6 @@ JAVA_OPTS='-Xms128m -Xmx512m -XX:PermSize=128m'
 8、 启动 Tomat7
 
 ```
-$ /home/wusc/edu/web/boss-tomcat/bin/startup.sh
+$ /home/ctoedu/edu/web/boss-tomcat/bin/startup.sh
 ```
 
