@@ -11,7 +11,7 @@
 
 == 注册中心服务器（192.168.3.71）配置，安装 Zookeeper:
 
-* 修改操作系统的/etc/hosts 文件中添加：
+1、 修改操作系统的/etc/hosts 文件中添加：
 
 ```
 # zookeeper servers
@@ -19,3 +19,213 @@
 
 ```
 
+2、 到 http://apache.fayea.com/zookeeper/下载 zookeeper-3.4.6：
+```
+$ wget http://apache.fayea.com/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+```
+3、 解压 zookeeper 安装包：
+```
+$ tar -zxvf zookeeper-3.4.6.tar.gz
+```
+
+4、 在/home/ctoedu/zookeeper-3.4.6 目录下创建以下目录：
+```
+$ cd /home/ctoedu/zookeeper-3.4.6
+$ mkdir data
+$ mkdir logs
+```
+
+5、 将 zookeeper-3.4.6/conf 目录下的 zoo_sample.cfg 文件拷贝一份，命名为为
+
+zoo.cfg
+
+```
+$ cp zoo_sample.cfg zoo.cfg
+```
+6、 修改 zoo.cfg 配置文件：
+
+```
+$ vi zoo.cfg
+```
+
+```
+# The number of milliseconds of each tick
+tickTime=2000
+# The number of ticks that the initial
+# synchronization phase can take
+initLimit=10
+# The number of ticks that can pass between
+# sending a request and getting an acknowledgement
+syncLimit=5
+# the directory where the snapshot is stored.
+# do not use /tmp for storage, /tmp here is just
+# example sakes.
+dataDir=/home/ctoedu/zookeeper-3.4.6/data
+dataLogDir=/home/ctoedu/zookeeper-3.4.6/logs
+# the port at which the clients will connect
+clientPort=2181
+#2888,3888 are election port
+server.1=edu-provider-01:2888:3888
+
+```
+
+
+其中，
+
+2888 端口号是 zookeeper 服务之间通信的端口。
+
+3888 是 zookeeper 与其他应用程序通信的端口。
+
+edu-provider-01 是在 hosts 中已映射了 IP 的主机名。
+
+initLimit：这个配置项是用来配置 Zookeeper 接受客户端（这里所说的客户端不
+是用户连接 Zookeeper 服务器的客户端，而是 Zookeeper 服务器集群中连接到
+Leader 的 Follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
+当已经超过 10 个心跳的时间（也就是 tickTime）长度后 Zookeeper 服务器还没
+有收到客户端的返回信息，那么表明这个客户端连接失败。总的时间长度就是
+5*2000=10 秒。
+
+syncLimit：这个配置项标识 Leader 与 Follower 之间发送消息，请求和应答时
+间长度，最长不能超过多少个 tickTime 的时间长度，总的时间长度就是 2*2000=4
+秒。
+
+server.A=B:C:D：其中 A 是一个数字，表示这个是第几号服务器；B 是这个服务
+器的 IP 地址或/etc/hosts 文件中映射了 IP 的主机名；C 表示的是这个服务器与
+集群中的 Leader 服务器交换信息的端口；D 表示的是万一集群中的 Leader 服务
+器挂了，需要一个端口来重新进行选举，选出一个新的 Leader，而这个端口就是
+用来执行选举时服务器相互通信的端口。如果是伪集群的配置方式，由于 B 都是
+一样，所以不同的 Zookeeper 实例通信端口号不能一样，所以要给它们分配不同
+的端口号。
+
+
+7、 在 dataDir=/home/ctoedu/zookeeper-3.4.6/data 下创建 myid 文件
+编辑 myid 文件，并在对应的 IP 的机器上输入对应的编号。如在 zookeeper 上，myid
+文件内容就是 1。如果只在单点上进行安装配置，那么只有一个 server.1。
+
+```
+$ vi myid
+1
+```
+
+8、 ctoedu 用户下修改 vi /home/ctoedu/.bash_profile，增加 zookeeper 配置：
+
+```
+# zookeeper env
+export ZOOKEEPER_HOME=/home/ctoedu/zookeeper-3.4.6
+export PATH=$ZOOKEEPER_HOME/bin:$PATH
+```
+使配置文件生效
+
+```
+$ source /home/ctoedu/.bash_profile
+```
+
+9、 在防火墙中打开要用到的端口 2181、2888、3888
+切换到 root 用户权限，执行以下命令：
+
+```
+# chkconfig iptables on
+
+
+# service iptables start
+
+```
+编辑/etc/sysconfig/iptables
+
+```
+# vi /etc/sysconfig/iptables
+
+```
+
+增加以下 3 行：
+
+```
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2181 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2888 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3888 -j ACCEPT
+
+```
+
+
+重启防火墙：
+
+```
+# service iptables restart
+```
+
+查看防火墙端口状态：
+
+```
+# service iptables status
+
+```
+
+```
+Table: filter
+Chain INPUT (policy ACCEPT)
+num target prot opt source destination
+1 ACCEPT all -- 0.0.0.0/0 0.0.0.0/0 state RELATED,ESTABLISHED
+2 ACCEPT icmp -- 0.0.0.0/0 0.0.0.0/0
+3 ACCEPT all -- 0.0.0.0/0 0.0.0.0/0
+4 ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 state NEW tcp dpt:22
+5 ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 state NEW tcp dpt:2181
+6 ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 state NEW tcp dpt:2888
+7 ACCEPT tcp -- 0.0.0.0/0 0.0.0.0/0 state NEW tcp dpt:3888
+8 REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+Chain FORWARD (policy ACCEPT)
+num target prot opt source destination
+1 REJECT all -- 0.0.0.0/0 0.0.0.0/0 reject-with icmp-host-prohibited
+Chain OUTPUT (policy ACCEPT)
+num target prot opt source destination
+
+```
+
+
+10、 启动并测试 zookeeper（要用 ctoedu 用户启动，不要用 root）:
+
+(1) 使用 ctoedu 用户到/home/ctoedu/zookeeper-3.4.6/bin 目录中执行：
+
+```
+$ zkServer.sh start
+```
+
+(2) 输入 jps 命令查看进程：
+
+```
+$ jps
+1456 QuorumPeerMain
+1475 Jps
+
+```
+其中，QuorumPeerMain 是 zookeeper 进程，启动正常
+
+
+(3) 查看状态：
+
+```
+$ zkServer.sh status
+
+```
+
+(4) 查看 zookeeper 服务输出信息：
+
+由于服务信息输出文件在/home/ctoedu/zookeeper-3.4.6/bin/zookeeper.out
+
+```
+$ tail -500f zookeeper.out
+```
+
+11、 停止 zookeeper 进程：
+
+```
+$ zkServer.sh stop
+```
+
+12、 配置 zookeeper 开机使用 ctoedu 用户启动：
+
+编辑/etc/rc.local 文件，加入：
+
+```
+su - ctoedu -c '/home/ctoedu/zookeeper-3.4.6/bin/zkServer.sh start'
+
+```
