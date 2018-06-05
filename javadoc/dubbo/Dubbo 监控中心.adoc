@@ -16,11 +16,11 @@
 
 2、 Dubbo 简易监控中心的配置解释（不需要修改，使用默认配置）
 
-操作系统用户为 wusc，系统用户目录为/home/wusc
+操作系统用户为 ctoedu，系统用户目录为/home/ctoedu
 
 
-. dubbo-monitor 的安装目录为：/home/wusc/dubbo-monitor
-. dubbo-monitor 的配置文件为：/home/wusc/dubbo-monitor/conf/dubbo.properties
+. dubbo-monitor 的安装目录为：/home/ctoedu/dubbo-monitor
+. dubbo-monitor 的配置文件为：/home/ctoedu/dubbo-monitor/conf/dubbo.properties
 . dubbo-monitor 的配置文件内容如下：
 
 ```
@@ -41,14 +41,14 @@ dubbo.log4j.level=WARN
 
 看上面配置文件中标红的的 3 行内容，理解${user.home}这个变量的意思则可，${user.home}
 
-指的就是启动 dubbo-monitor 程序的操作系统用户目录。我们这里用的是 wusc 用户，那么就是/home/wusc 目录（如果是 root 用户启动，那就是/root）。
+指的就是启动 dubbo-monitor 程序的操作系统用户目录。我们这里用的是 ctoedu 用户，那么就是/home/ctoedu 目录（如果是 root 用户启动，那就是/root）。
 
 此时，配置中 3 个目录的绝对路径为：
 
 ```
-dubbo.jetty.directory=/home/wusc/monitor
-dubbo.charts.directory=/home/wusc/monitor/charts
-dubbo.statistics.directory=/home/wusc/monitor/statistics
+dubbo.jetty.directory=/home/ctoedu/monitor
+dubbo.charts.directory=/home/ctoedu/monitor/charts
+dubbo.statistics.directory=/home/ctoedu/monitor/statistics
 ```
 
 3、 重新启动 dubbo-monitor 简易监控中心，此时就会看到以上 3 个目录会被创新，并在目录里面有相应的服务接口调用的报表数据。
