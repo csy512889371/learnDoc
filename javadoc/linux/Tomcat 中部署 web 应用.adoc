@@ -1,0 +1,86 @@
+= Tomcat 中部署 web 应用
+
+
+== 概述
+
+* IP: 192.168.2.61
+* 部署容器：apache-tomcat-7.0.57
+* 端口：8080
+* 应用：edu-web-boss.war
+
+== 部署
+
+1、 下载(或上传)最新版的 Tomcat7:
+
+```
+$wget
+http://mirrors.hust.edu.cn/apache/tomcat/tomcat-7/v7.0.57/bin/apache-tomcat-7.0.57.tar.gz
+
+```
+
+
+2、 规范安装目录：
+
+```
+/home/wusc/edu/web/xxx-tomcat
+```
+如：
+
+```
+/home/wusc/edu/web/boss-tomcat
+```
+3、 解压安装
+
+```
+$ mkdir –p /home/wusc/edu/web
+$ tar -zxvf apache-tomcat-7.0.57.tar.gz
+$ mv apache-tomcat-7.0.57 /home/wusc/edu/web/boss-tomcat
+```
+
+4、 移除/home/wusc/edu/web/boss-tomcat/webapps 目录下的所有文件：
+
+```
+$ rm -rf /home/wusc/edu/web/boss-tomcat/webapps/*
+```
+
+5、 上传 Dubbo 服务消费者 Web 应用 war 包 edu-web-boss.war到/home/wusc/edu/web/boss-tomcat/webapps
+
+6、 防火墙开启 8080 端口，用 root 用户修改/etc/sysconfig/iptables，
+
+```
+# vi /etc/sysconfig/iptables
+```
+
+增加：
+
+```
+## boss-tomcat:8080
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+```
+
+重启防火墙：
+
+```
+
+# service iptables restart
+
+```
+
+7、 Tomat 内存设置：
+
+```
+$ vi /home/wusc/edu/web/boss-tomcat/bin/catalina.sh
+
+```
+
+```
+#!/bin/sh
+JAVA_OPTS='-Xms128m -Xmx512m -XX:PermSize=128m'
+```
+
+8、 启动 Tomat7
+
+```
+$ /home/wusc/edu/web/boss-tomcat/bin/startup.sh
+```
+
