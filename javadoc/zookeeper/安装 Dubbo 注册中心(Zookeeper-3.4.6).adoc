@@ -72,24 +72,24 @@ server.1=edu-provider-01:2888:3888
 
 其中，
 
-2888 端口号是 zookeeper 服务之间通信的端口。
+* 2888 端口号是 zookeeper 服务之间通信的端口。
 
-3888 是 zookeeper 与其他应用程序通信的端口。
+* 3888 是 zookeeper 与其他应用程序通信的端口。
 
-edu-provider-01 是在 hosts 中已映射了 IP 的主机名。
+* edu-provider-01 是在 hosts 中已映射了 IP 的主机名。
 
-initLimit：这个配置项是用来配置 Zookeeper 接受客户端（这里所说的客户端不
+* initLimit：这个配置项是用来配置 Zookeeper 接受客户端（这里所说的客户端不
 是用户连接 Zookeeper 服务器的客户端，而是 Zookeeper 服务器集群中连接到
 Leader 的 Follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
 当已经超过 10 个心跳的时间（也就是 tickTime）长度后 Zookeeper 服务器还没
 有收到客户端的返回信息，那么表明这个客户端连接失败。总的时间长度就是
 5*2000=10 秒。
 
-syncLimit：这个配置项标识 Leader 与 Follower 之间发送消息，请求和应答时
+* syncLimit：这个配置项标识 Leader 与 Follower 之间发送消息，请求和应答时
 间长度，最长不能超过多少个 tickTime 的时间长度，总的时间长度就是 2*2000=4
 秒。
 
-server.A=B:C:D：其中 A 是一个数字，表示这个是第几号服务器；B 是这个服务
+* server.A=B:C:D：其中 A 是一个数字，表示这个是第几号服务器；B 是这个服务
 器的 IP 地址或/etc/hosts 文件中映射了 IP 的主机名；C 表示的是这个服务器与
 集群中的 Leader 服务器交换信息的端口；D 表示的是万一集群中的 Leader 服务
 器挂了，需要一个端口来重新进行选举，选出一个新的 Leader，而这个端口就是
