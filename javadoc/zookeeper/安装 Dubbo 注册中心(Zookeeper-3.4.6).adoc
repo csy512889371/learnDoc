@@ -1,0 +1,21 @@
+= 安装 Dubbo 注册中心(Zookeeper-3.4.6) 单节点
+
+== 概述
+
+1、建议使用dubbo-2.3.3以上版本的使用zookeeper注册中心客户端
+
+2、Zookeeper是Apache Hadoop的子项目，强度相对较好，建议生产环境使用该注册中心。
+
+3、Dubbo未对Zookeeper服务器端做任何侵入修改，只需安装原生的Zookeeper服务器即可，所有注册中心逻辑适配都在调用Zookeeper客户端时完成。
+
+
+== 注册中心服务器（192.168.3.71）配置，安装 Zookeeper:
+
+* 修改操作系统的/etc/hosts 文件中添加：
+
+```
+# zookeeper servers
+192.168.3.71 edu-provider-01
+
+```
+
