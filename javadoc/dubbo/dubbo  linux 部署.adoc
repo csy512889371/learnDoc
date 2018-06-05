@@ -1,0 +1,184 @@
+= dubbo  linux 部署
+
+
+== 一、使用Maven构建Dubbo服务的可执行jar包
+
+Dubbo服务的运行方式：
+
+=== 1、使用Servlet容器运行（Tomcat、Jetty等）----不可取
+
+缺点：增加复杂性（端口、管理）
+
+浪费资源（内存）
+
+=== 2、自建Main方法类来运行（Spring容器） ----不建议（本地调试可用）
+
+缺点： Dobbo本身提供的高级特性没用上
+
+自已编写启动类可能会有缺陷
+
+=== 3、使用Dubbo框架提供的Main方法类来运行（Spring容器）----建议使用
+
+优点：框架本身提供（com.alibaba.dubbo.container.Main）
+
+可实现优雅关机（ShutdownHook）
+
+
+=== 注意点：
+
+```
+spring context.xml
+<import resource= classpath:spring/spring xxx.xml" />
+```
+
+== 二、环境变量配置
+
+Java环境变量----只需要JRE
+
+```
+vi /etc/profile
+```
+
+```
+## java env
+export JAVA_HOME=/usr/local/java/jdk1.7.0_72
+export JRE_HOME=$JAVA_HOME/jre
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/li/tools.jar:$JRE_HOME/lib/rt.jar
+export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
+
+```
+
+source /etc/profile
+
+
+== 三、部署目录
+
+```
+home/ctoedu/edu/app/app1
+home/ctoedu/edu/app/app1
+
+home/ctoedu/edu/service/account
+home/ctoedu/edu/service/operation
+home/ctoedu/edu/service/order
+home/ctoedu/edu/service/queue
+home/ctoedu/edu/service/user
+home/ctoedu/edu/service/user/lib
+
+
+home/ctoedu/edu/timer/report
+
+home/ctoedu/edu/web/gateway
+home/ctoedu/edu/web/operation
+home/ctoedu/edu/web/portal
+
+
+```
+
+== 四、手工维护Dubbo服务
+
+```
+java -jar edu-service-xxx.jar &
+kill PID
+kill -9 PID
+```
+
+== 五、自定义Dubbo服务维护的Shell脚本
+
+脚本命名规范：
+
+/home/wusc/edu/service/xxx/service-xxx.sh
+
+例如：
+
+/home/wusc/edu/service/user/service-user.sh
+
+效果：
+
+```
+cd /home/wusc/edu/service/user
+. /service-user.sh start
+. /service-user.sh stop
+. /service-user.sh restart
+```
+
+=== 服务维护注意事项（结合自定义的Shell脚本）
+
+
+1、脚本规范---------尽可能通用
+
+2、守护进程
+
+3、内存调优设置-----按需调整
+
+4、日志处理---------只保留应用Log4j输出的日志
+
+5、避免服务冲突 ----进程名、端口
+
+6、避免进程误杀-----全匹配
+
+
+service-user.sh
+
+```
+#!/bin/sh
+
+## java env
+export JAVA_HOME=/usr/local/java/jdk1.7.0_72
+export JRE_HOME=$JAVA_HOME/jre
+
+## service name
+APP_NAME=user
+
+SERVICE_DIR=/home/wusc/edu/service/$APP_NAME
+SERVICE_NAME=edu-service-$APP_NAME
+JAR_NAME=$SERVICE_NAME\.jar
+PID=$SERVICE_NAME\.pid
+
+cd $SERVICE_DIR
+
+case "$1" in
+
+    start)
+        nohup $JRE_HOME/bin/java -Xms256m -Xmx512m -jar $JAR_NAME >/dev/null 2>&1 &
+        echo $! > $SERVICE_DIR/$PID
+        echo "=== start $SERVICE_NAME"
+        ;;
+
+    stop)
+        kill `cat $SERVICE_DIR/$PID`
+        rm -rf $SERVICE_DIR/$PID
+        echo "=== stop $SERVICE_NAME"
+
+        sleep 5
+		##
+		## edu-service-aa.jar
+		## edu-service-aa-bb.jar
+        P_ID=`ps -ef | grep -w "$SERVICE_NAME" | grep -v "grep" | awk '{print $2}'`
+        if [ "$P_ID" == "" ]; then
+            echo "=== $SERVICE_NAME process not exists or stop success"
+        else
+            echo "=== $SERVICE_NAME process pid is:$P_ID"
+            echo "=== begin kill $SERVICE_NAME process, pid is:$P_ID"
+            kill -9 $P_ID
+        fi
+        ;;
+
+    restart)
+        $0 stop
+        sleep 2
+        $0 start
+        echo "=== restart $SERVICE_NAME"
+        ;;
+
+    *)
+        ## restart
+        $0 stop
+        sleep 2
+        $0 start
+        ;;
+
+esac
+exit 0
+
+
+```
