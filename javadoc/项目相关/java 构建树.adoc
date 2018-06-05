@@ -1,0 +1,310 @@
+= java 构建树
+
+== 概述
+
+. 数据库中存储的树形结构的记录，根据条件查询出符合条件的节点及其父节点。
+. 查询出来的数据构建树，并对其做排序和变量。
+
+== 查询sql
+
+```
+SELECT distinct dm AS code, dm AS sortNo, fdm AS parentCode, mc AS codeName from cfg_az where ajlb = 2  start with dm in ('90','4192','4148', '4162', '4232','103', '4166')
+connect by prior fdm=dm;
+```
+
+== 构建树
+
+```
+@Data
+public class HorzDmDto {
+
+    /**
+     * code
+     */
+    private String code;
+
+    /**
+     * code 名称
+     */
+    private String codeName;
+
+    /**
+     * 父节点
+     */
+    private String parentCode;
+
+    /**
+     * 排序
+     */
+    private String sortNo;
+
+    /**
+     * 层级
+     */
+    private Integer level;
+
+}
+```
+
+
+```
+public class HorzDmNode {
+
+    /**
+     * code
+     */
+    private String code;
+
+    /**
+     * 根节点code
+     */
+    private String rootCode;
+
+    /**
+     * code 名称
+     */
+    private String codeName;
+
+    /**
+     * 父节点
+     */
+    private HorzDmNode parentNode;
+
+    /**
+     * 子节点
+     */
+    private List<HorzDmNode> childrenNodes;
+
+    /**
+     * 排序号
+     */
+    private Integer sortNo;
+
+    /**
+     * 层级: 根为0, 第一层子节点
+     */
+    private Integer lever;
+
+    /**
+     * 最大层级
+     */
+    private Integer maxLever = 0;
+
+    /**
+     * 存放所有父code
+     */
+    private List<String> parentCodePath = new ArrayList<>();
+
+    /**
+     * 存放所有父codeName
+     */
+    private List<String> parentCodeNamePath = new ArrayList<>();
+
+    /**
+     * 添加child
+     *
+     * @param childNode 子节点
+     */
+    public void addChild(HorzDmNode childNode) {
+        if (childrenNodes == null) {
+            childrenNodes = new ArrayList<>();
+        }
+        childrenNodes.add(childNode);
+    }
+
+    public boolean isEndNode() {
+        if (childrenNodes == null || childrenNodes.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getCodeName() {
+        return codeName;
+    }
+
+    public void setCodeName(String codeName) {
+        this.codeName = codeName;
+    }
+
+    public HorzDmNode getParentNode() {
+        return parentNode;
+    }
+
+    public void setParentNode(HorzDmNode parentNode) {
+        this.parentNode = parentNode;
+    }
+
+    public List<HorzDmNode> getChildrenNodes() {
+        return childrenNodes;
+    }
+
+    public void setChildrenNodes(List<HorzDmNode> childrenNodes) {
+        this.childrenNodes = childrenNodes;
+    }
+
+    public Integer getSortNo() {
+        return sortNo;
+    }
+
+    public void setSortNo(Integer sortNo) {
+        this.sortNo = sortNo;
+    }
+
+    public Integer getLever() {
+        return lever;
+    }
+
+    public void setLever(Integer lever) {
+        this.lever = lever;
+    }
+
+    public Integer getMaxLever() {
+        return maxLever;
+    }
+
+    public void setMaxLever(Integer maxLever) {
+        if (maxLever > this.maxLever) {
+            this.maxLever = maxLever;
+        }
+    }
+
+    public List<String> getParentCodePath() {
+        return parentCodePath;
+    }
+
+    public void setParentCodePath(List<String> parentCodePath) {
+        this.parentCodePath = parentCodePath;
+    }
+
+    public String getRootCode() {
+        return rootCode;
+    }
+
+    public void setRootCode(String rootCode) {
+        this.rootCode = rootCode;
+    }
+
+    public List<String> getParentCodeNamePath() {
+        return parentCodeNamePath;
+    }
+
+    public void setParentCodeNamePath(List<String> parentCodeNamePath) {
+        this.parentCodeNamePath = parentCodeNamePath;
+    }
+}
+
+```
+
+```
+public class HorzNodeTreeUtils {
+
+    private static final Integer MAXNODELEV = 10;
+
+    private static final Integer FIRSTLEVEL = 1;
+
+
+    /**
+     * 构建树结构
+     *
+     * @return 树
+     */
+    public static HorzDmNode buildTree(List<HorzDmDto> horzDmDtoList, String rootCode) {
+
+        Map<String, List<HorzDmDto>> nodeMaps = horzDmDtoList.stream().collect(Collectors.groupingBy(HorzDmDto::getParentCode));
+
+        HorzDmNode root = new HorzDmNode();
+        root.setCode(rootCode);
+        root.setRootCode(rootCode);
+
+        createTree(root, root, nodeMaps, FIRSTLEVEL);
+        return root;
+    }
+
+    /**
+     * 递归构建树
+     *
+     * @param parentNode parentNode
+     * @param nodeMaps   节点数根据parentId进行分组
+     * @param level      层级
+     * @return parentId 下的节点
+     */
+    private static void createTree(HorzDmNode root, HorzDmNode parentNode, Map<String, List<HorzDmDto>> nodeMaps, Integer level) {
+
+
+        if (level <= MAXNODELEV) {
+
+            if (nodeMaps.get(parentNode.getCode()) == null) {
+                return;
+            }
+            root.setMaxLever(level);
+
+            nodeMaps.get(parentNode.getCode()).forEach(dmDto -> {
+                HorzDmNode treeNode = new HorzDmNode();
+                treeNode.setCode(dmDto.getCode());
+                treeNode.setCodeName(dmDto.getCodeName());
+                treeNode.setLever(level);
+                treeNode.setSortNo(Integer.valueOf(dmDto.getCode()));
+                treeNode.setParentNode(parentNode);
+                treeNode.getParentCodePath().addAll(parentNode.getParentCodePath());
+                treeNode.getParentCodePath().add(parentNode.getCode());
+
+                treeNode.getParentCodeNamePath().addAll(parentNode.getParentCodeNamePath());
+                treeNode.getParentCodeNamePath().add(parentNode.getCodeName());
+
+                parentNode.addChild(treeNode);
+                createTree(root, treeNode, nodeMaps, level + 1);
+            });
+
+            parentNode.getChildrenNodes().sort(Comparator.comparing(HorzDmNode::getSortNo));
+        }
+    }
+
+    public static void iteratorUnit(HorzDmNode currentNode, HorzDmNode root) {
+        if (!root.getRootCode().equals(currentNode.getCode())) {
+            if (currentNode.isEndNode()) {
+                StringBuffer codeNameStr = new StringBuffer();
+                currentNode.getParentCodeNamePath().stream().filter(StringUtils::isNotEmpty).forEach(codeName -> {
+                    codeNameStr.append(codeName).append(": ");
+                });
+                codeNameStr.append(currentNode.getCodeName());
+                System.out.println(codeNameStr.toString());
+            }
+        }
+        if (!currentNode.isEndNode()) {
+            List<HorzDmNode> list = currentNode.getChildrenNodes();
+            if (list != null && list.size() > 0) {
+                for (HorzDmNode nodeEle : list) {
+                    iteratorUnit(nodeEle, root);
+                }
+            }
+        }
+        if (root.getRootCode().equals(currentNode.getCode())) {
+            System.out.println("总记");
+        }
+        if (!root.getRootCode().equals(currentNode.getCode())) {
+            if (!currentNode.isEndNode()) {
+                StringBuffer codeNameStr = new StringBuffer();
+                currentNode.getParentCodeNamePath().stream().filter(StringUtils::isNotEmpty).forEach(codeName -> {
+                    codeNameStr.append(codeName).append(": ");
+                });
+                codeNameStr.append(currentNode.getCodeName());
+                codeNameStr.append(": 小计");
+                System.out.println(codeNameStr.toString());
+            }
+        }
+    }
+
+
+
+}
+
+```
