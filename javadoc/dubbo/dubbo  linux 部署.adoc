@@ -86,16 +86,16 @@ kill -9 PID
 
 脚本命名规范：
 
-/home/wusc/edu/service/xxx/service-xxx.sh
+/home/ctoedu/edu/service/xxx/service-xxx.sh
 
 例如：
 
-/home/wusc/edu/service/user/service-user.sh
+/home/ctoedu/edu/service/user/service-user.sh
 
 效果：
 
 ```
-cd /home/wusc/edu/service/user
+cd /home/ctoedu/edu/service/user
 . /service-user.sh start
 . /service-user.sh stop
 . /service-user.sh restart
@@ -129,7 +129,7 @@ export JRE_HOME=$JAVA_HOME/jre
 ## service name
 APP_NAME=user
 
-SERVICE_DIR=/home/wusc/edu/service/$APP_NAME
+SERVICE_DIR=/home/ctoedu/edu/service/$APP_NAME
 SERVICE_NAME=edu-service-$APP_NAME
 JAR_NAME=$SERVICE_NAME\.jar
 PID=$SERVICE_NAME\.pid
