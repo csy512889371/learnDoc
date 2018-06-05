@@ -29,21 +29,21 @@ $ tar -zxvf apache-tomcat-7.0.57.tar.gz
 $ mv apache-tomcat-7.0.57 dubbo-admin-tomcat
 ```
 
-3、 移除/home/wusc/dubbo-admin-tomcat/webapps 目录下的所有文件：
+3、 移除/home/ctoedu/dubbo-admin-tomcat/webapps 目录下的所有文件：
 ```
 $ rm -rf *
 
 ```
-4、 上传 Dubbo 管理控制台程序 dubbo-admin-2.5.3.war到/home/wusc/dubbo-admin-tomcat/webapps
+4、 上传 Dubbo 管理控制台程序 dubbo-admin-2.5.3.war到/home/ctoedu/dubbo-admin-tomcat/webapps
 
 5、 解压并把目录命名为 ROOT:
 ```
 $ unzip dubbo-admin-2.5.3.war -d ROOT
 ```
-把 dubbo-admin-2.5.3.war 移到/home/wusc/tools 目录备份
+把 dubbo-admin-2.5.3.war 移到/home/ctoedu/tools 目录备份
 
 ```
-$ mv dubbo-admin-2.5.3.war /home/wusc/tools
+$ mv dubbo-admin-2.5.3.war /home/ctoedu/tools
 ```
 
 6、 配置 dubbo.properties：
@@ -51,8 +51,8 @@ $ mv dubbo-admin-2.5.3.war /home/wusc/tools
 ```
 $ vi ROOT/WEB-INF/dubbo.properties
 dubbo.registry.address=zookeeper://192.168.3.71:2181
-dubbo.admin.root.password=wusc.123
-dubbo.admin.guest.password=wusc.123
+dubbo.admin.root.password=ctoedu.123
+dubbo.admin.guest.password=ctoedu.123
 
 ```
 
@@ -82,7 +82,7 @@ dubbo.admin.guest.password=wusc.123
 8、 启动 Tomat7
 
 ```
-$ /home/wusc/dubbo-admin-tomcat/bin/startup.sh
+$ /home/ctoedu/dubbo-admin-tomcat/bin/startup.sh
 ```
 
 9、 浏览 http://192.168.3.71:8080/
@@ -94,6 +94,6 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/195.pn
 在虚拟主机中编辑/etc/rc.local 文件，加入：
 
 ```
-su - wusc -c '/home/wusc/dubbo-admin-tomcat/bin/startup.sh
+su - ctoedu -c '/home/ctoedu/dubbo-admin-tomcat/bin/startup.sh
 
 ```
