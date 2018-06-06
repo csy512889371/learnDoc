@@ -1,0 +1,57 @@
+= SonarQube代码质量管理
+
+
+== 一、SonarQube的介绍
+
+
+SonarQube是一个管理代码质量的开放平台。
+
+可以从七个维度检测代码质量（为什么要用SonarQube）：
+
+1、复杂度分布(complexity)：代码复杂度过高将难以理解、难以维护
+2、重复代码(duplications)：程序中包含大量复制粘贴的代码是质量低下的表现
+3、单元测试(unit tests)：统计并展示单元测试覆盖率
+4、编码规范(coding rules)：通过Findbugs,PMD,CheckStyle等规范代码编写
+5、注释(comments)：少了可读性差，多了看起来费劲
+6、潜在的Bug(potential bugs)：通过Findbugs,PMD,CheckStyle等检测潜在的bug
+7、结构与设计(architecture & design)：依赖、耦合等
+
+Sonar 可以集成不同的测试工具、代码分析工具、持续集成工具、IDE。
+
+Sonar通过对代码质量分析结果数据进行再加工处理，通过量化的方式来度量
+
+代码质量的变化，从而可以方便地对工程进行代码质量管理。
+
+支持的语言包括：Java、PHP、C#、C、Cobol、PL/SQL、Flex 等。
+
+
+架构图
+
+SonarQube平台的组成：
+
+1、数据库：存放SonarQube的配置数据、代码质量的快照数据
+2、Web服务：用于查看SonarQube的配置数据、代码质量的快照数据
+3、分析器：对项目代码进行分析，生成质量结果数据并存入数据库中（分析器有多种，我们选用 SonarQube Maven Plugin）
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/215.png?raw=true[ctoedu,800,450]
+
+
+
+== 二、SonarQube的安装
+
+
+安装环境要求说明：
+
+http://docs.sonarqube.org/display/SONAR/Requirements
+
+本教程安装环境：
+
+1、CentOS 6.6
+2、Oracle JDK 7u72
+3、MySQL5.1
+4、SonarQube-4.5.4 （LTS）
+
+
+安装步骤：
+http://docs.sonarqube.org/display/SONAR/Installing
+
