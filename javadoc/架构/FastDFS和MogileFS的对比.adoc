@@ -1,0 +1,23 @@
+= FastDFS和MogileFS的对比
+
+国人做的用C语言写的轻量级的分布式文件存储，只有 tracker和storage 节点。没有使用数据库。
+
+FastDFS设计时借鉴了MogileFS的一些思路。FastDFS是一个完善的分布式文件存储系统，通过客户端API对文件进行读写。可以说，MogileFS的所有功能特性FastDFS都具备，MogileFS网址：http://www.danga.com/mogilefs/。
+
+另外，相对于MogileFS，FastDFS具有如下特点和优势：
+1、FastDFS完善程度较高，不需要二次开发即可直接使用；
+2、和MogileFS相比，FastDFS裁减了跟踪用的数据库，只有两个角色：tracker和storage。FastDFS的架构既简化了系统，同时也消除了性能瓶颈；
+3、在系统中增加任何角色的服务器都很容易：增加tracker服务器时，只需要修改storage和client的配置文件（增加一行tracker配置）；增加storage服务器时，通常不需要修改任何配置文件，系统会自动将该卷中已有文件复制到该服务器；
+4、FastDFS比MogileFS更高效。表现在如下几个方面：
+
+* 参见上面的第2点，FastDFS和MogileFS相比，没有文件索引数据库，FastDFS整体性能更高；
+*从采用的开发语言上看，FastDFS比MogileFS更底层、更高效。FastDFS用C语言编写，代码量不到2万行，没有依赖其他开源软件或程序包，安装和部署特别简洁；而MogileFS用perl编写；
+
+* FastDFS直接使用socket通信方式，相对于MogileFS的HTTP方式，效率更高。并且FastDFS使用sendfile传输文件，采用了内存零拷贝，系统开销更小，文件传输效率更高。
+
+
+5、FastDFS有着详细的设计和使用文档，而MogileFS的文档相对比较缺乏。
+
+6、FastDFS的日志记录非常详细，系统运行时发生的任何错误信息都会记录到日志文件中，当出现问题时方便管理员定位错误所在。
+
+7、FastDFS还对文件附加属性（即meta data，如文件大小、图片宽度、高度等）进行存取，应用不需要使用数据库来存储这些信息
