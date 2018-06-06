@@ -1,0 +1,347 @@
+= SVN 版本管理系统的安装
+
+== 一、概述
+
+* CentOS 
+* Subversion 
+* Apache 
+* Jsvnadmin
+
+
+CI 服务器：192.168.4.221
+
+root 用户操作 
+
+
+=== 建议安装前更新操作系统
+```
+# yum update
+
+```
+
+更新完成后重启
+```
+# reboot
+```
+
+== 二、安装 apache
+
+```
+# yum install httpd httpd-devel
+
+# service httpd start
+
+# chkconfig httpd on
+
+# vi /etc/httpd/conf/httpd.conf
+
+```
+找到 ServerName 并修改成
+
+```
+ServerName localhost:80
+```
+
+防火墙中打开 80 端口：
+
+```
+# vi /etc/sysconfig/iptables
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+
+# service iptables restart
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/201.png?raw=true[ctoedu,600,400]
+
+
+
+== 三、安装 SVN 服务
+
+```
+# yum install mod_dav_svn subversion
+```
+
+必须安装 mod_dav_svn 模块
+
+安装完 svn 后要重启 apache
+
+```
+# service httpd restart
+```
+
+查看测试是否安装 svn 模块
+
+```
+# ls /etc/httpd/modules/ | grep svn
+
+mod_authz_svn.so
+
+mod_dav_svn.so
+
+# svn --version 
+```
+
+
+创建 svn 库主目录（多库模式，一份配置文件管理多个库）
+
+```
+# mkdir /svn/
+# cd /etc/httpd/conf.d
+# ls
+```
+
+此时可以看到一个 subversion.conf 配置文件（是在安装 mod_dav_svn 模块时生成的）
+
+```
+# vi subversion.conf
+```
+
+添加以下内容
+
+```
+#Include /svn/httpd.conf
+<Location /svn/>
+DAV svn
+SVNListParentPath on
+SVNParentPath /svn
+AuthType Basic
+AuthName "Subversion repositories"
+AuthUserFile /svn/passwd.http
+AuthzSVNAccessFile /svn/authz
+Require valid-user
+</Location>
+RedirectMatch ^(/svn)$ $1/
+
+```
+
+创建/svn/passwd.http 和/svn/authz
+
+```
+# touch /svn/passwd.http
+# touch /svn/authz
+```
+
+重启 apache
+
+```
+# service httpd restart
+```
+
+
+== 四、安装 jsvnadmin
+
+svnadmin 介绍
+
+（在 Google Code 上，需要 FQ 才能下载）
+
+* https://code.google.com/p/jsvnadmin/
+* https://jsvnadmin.googlecode.com/files/svnadmin-3.0.5.zip
+
+== 五、安装 MySQL（单独安装，与业务系统的数据库分开）
+
+```
+# rpm -qa | grep mysql ## 查看该操作系统上是否已经安装了 mysql 数据库，
+```
+
+有的话，可以通过 rpm -e 命令 或者 rpm -e --nodeps 命令来卸载掉
+
+```
+# yum install mysql-server mysql mysql-devel
+# service mysqld start
+# chkconfig --list | grep mysqld
+mysqld 0:off 1:off 2:off 3:off 4:off 5:off 6:off
+```
+
+用上面的命令查看到 MySQL 并没有设置开机启动，所以需要设置开机启动
+
+```
+# chkconfig mysqld on
+```
+
+为了方便远程管理，防火墙中打开 3306 端口
+```
+# vi /etc/sysconfig/iptables
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3306 -j ACCEPT
+```
+
+重启防火墙，使端口配置生效
+
+```
+# service iptables restart
+```
+
+设置 MySQL 数据库 root 用户的密码：
+
+```
+# mysqladmin -u root password 'wusc.123'
+```
+
+登录数据库：
+```
+# mysql -u root -p
+```
+
+MySQL 授权远程访问（先用 root 登录 mysql）
+
+```
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'wusc.321' WITH
+GRANT OPTION;
+mysql> FLUSH PRIVILEGES;
+```
+
+== 六、使用 Tomcat7 部署 svnadmin
+
+```
+# cd /root
+```
+
+使用 wget 下载最新版的 tomcat7 的 tar.gz 包
+
+```
+# tar -zxvf apache-tomcat-7.0.xx.tar.gz
+# mv apache-tomcat-7.0.xx svnadmin-tomcat
+```
+
+修改 Tomcat 的端口为 9000 和容器编码为 UTF-8
+
+```
+# vi /root/svnadmin-tomcat/conf/server.xml
+```
+
+修改以下标红的内容
+
+```
+<Server port="9005" shutdown="SHUTDOWN">
+<Connector port="9000" protocol="HTTP/1.1"
+ connectionTimeout="20000"
+ redirectPort="8443" URIEncoding="UTF-8" />
+```
+
+防火墙中打开 9000 端口
+```
+# vi /etc/sysconfig/iptables
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 9000 -j ACCEPT
+```
+
+重启防火墙，使端口配置生效
+```
+# service iptables restart
+# cd /root/svnadmin-tomcat/webapps
+# rm -rf *
+```
+
+上传 svnadmin.war 到/root/svnadmin-tomcat/webapps 目录
+
+```
+# cd /root/svnadmin-tomcat/webapps
+```
+
+> 解压
+```
+# unzip svnadmin.war -d svnadmin
+```
+
+> 备份
+```
+# mv svnadmin.war /root/tools/
+# cd svnadmin/WEB-INF
+# vi jdbc.properties
+```
+
+内容改为如下
+```
+db=MySQL
+#MySQL
+MySQL.jdbc.driver=com.mysql.jdbc.Driver
+MySQL.jdbc.url=jdbc:mysql://127.0.0.1:3306/svnadmin?characterEncoding=utf-8
+MySQL.jdbc.username=root
+MySQL.jdbc.password=wusc.123
+```
+
+=== 创建 svnadmin 数据库并导入相应数据（UTF-8 编码）
+
+执行 db/mysql5.sql 和 db/lang/en.sql
+
+> 启动 svnadmin-tomcat
+
+```
+# /root/svnadmin-tomcat/bin/startup.sh
+```
+
+浏览器中打开：http://192.168.4.221:9000/svnadmin/
+
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/202.png?raw=true[ctoedu,600,400]
+
+如：输入 admin，wusc.123
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/203.png?raw=true[ctoedu,600,400]
+
+> 创建库
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/204.png?raw=true[ctoedu,600,400]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/205.png?raw=true[ctoedu,600,400]
+
+
+
+此时：
+
+/svn/目录下会创建一个 wusc_edu 的 SVN 库目录。
+
+同 时 也 会 多 出 一 个 httpd.conf 文 件 ， 内 容 与 subversion.conf 一 样 ， 在/etc/httpd/conf.d/subversion.conf 中已配置。
+/svn/authz 授权文件中会多出如下内容：
+
+```
+[aliases]
+[groups]
+wusc_edu_developer=
+wusc_edu_manager=
+wusc_edu_tester=
+[wusc_edu:/]
+@wusc_edu_manager=rw
+```
+
+以上过程其实是调用了 svn 对应的命令做了相应的操作
+
+> 配置库目录权限
+
+```
+# cd /svn
+# chown -R apache.apache wusc_edu
+# chmod -R 777 wusc_edu
+```
+（如创建新库，需要对新建的库目录执行以上两步授权操作）
+
+> 关闭 SELinux（Linux 的访问控制）
+
+修改/etc/selinux/config 文件
+
+```
+# vi /etc/selinux/config
+```
+
+将 SELINUX=enforcing 改为 SELINUX=disabled
+
+重启机器即可
+```
+# reboot
+```
+
+=== SVN 版本管理平台（Subversion+Apache+Jsvnadmin）的使用
+
+先安装 SVN 管理客户端 TortoiseSVN，方便对 SVN 库的操作和管理
+http://tortoisesvn.net/downloads.html
+
+（注意 64 位系统要安装 64 位版）
+
+接下来可以对 wusc_edu 库进行相应的操作
+
+1、用户组
+2、用户
+3、授权
+4、导入项目
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/206.png?raw=true[ctoedu,600,400]
