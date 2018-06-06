@@ -174,7 +174,7 @@ mysqld 0:off 1:off 2:off 3:off 4:off 5:off 6:off
 设置 MySQL 数据库 root 用户的密码：
 
 ```
-# mysqladmin -u root password 'wusc.123'
+# mysqladmin -u root password 'ctoedu.123'
 ```
 
 登录数据库：
@@ -185,7 +185,7 @@ mysqld 0:off 1:off 2:off 3:off 4:off 5:off 6:off
 MySQL 授权远程访问（先用 root 登录 mysql）
 
 ```
-mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'wusc.321' WITH
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'ctoedu.321' WITH
 GRANT OPTION;
 mysql> FLUSH PRIVILEGES;
 ```
@@ -256,7 +256,7 @@ db=MySQL
 MySQL.jdbc.driver=com.mysql.jdbc.Driver
 MySQL.jdbc.url=jdbc:mysql://127.0.0.1:3306/svnadmin?characterEncoding=utf-8
 MySQL.jdbc.username=root
-MySQL.jdbc.password=wusc.123
+MySQL.jdbc.password=ctoedu.123
 ```
 
 === 创建 svnadmin 数据库并导入相应数据（UTF-8 编码）
@@ -275,7 +275,7 @@ MySQL.jdbc.password=wusc.123
 
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/202.png?raw=true[ctoedu,600,400]
 
-如：输入 admin，wusc.123
+如：输入 admin，ctoedu.123
 
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/203.png?raw=true[ctoedu,600,400]
 
@@ -289,7 +289,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/205.pn
 
 此时：
 
-/svn/目录下会创建一个 wusc_edu 的 SVN 库目录。
+/svn/目录下会创建一个 ctoedu_edu 的 SVN 库目录。
 
 同 时 也 会 多 出 一 个 httpd.conf 文 件 ， 内 容 与 subversion.conf 一 样 ， 在/etc/httpd/conf.d/subversion.conf 中已配置。
 /svn/authz 授权文件中会多出如下内容：
@@ -297,11 +297,11 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/205.pn
 ```
 [aliases]
 [groups]
-wusc_edu_developer=
-wusc_edu_manager=
-wusc_edu_tester=
-[wusc_edu:/]
-@wusc_edu_manager=rw
+ctoedu_edu_developer=
+ctoedu_edu_manager=
+ctoedu_edu_tester=
+[ctoedu_edu:/]
+@ctoedu_edu_manager=rw
 ```
 
 以上过程其实是调用了 svn 对应的命令做了相应的操作
@@ -310,8 +310,8 @@ wusc_edu_tester=
 
 ```
 # cd /svn
-# chown -R apache.apache wusc_edu
-# chmod -R 777 wusc_edu
+# chown -R apache.apache ctoedu_edu
+# chmod -R 777 ctoedu_edu
 ```
 （如创建新库，需要对新建的库目录执行以上两步授权操作）
 
@@ -337,7 +337,7 @@ http://tortoisesvn.net/downloads.html
 
 （注意 64 位系统要安装 64 位版）
 
-接下来可以对 wusc_edu 库进行相应的操作
+接下来可以对 ctoedu_edu 库进行相应的操作
 
 1、用户组
 2、用户
