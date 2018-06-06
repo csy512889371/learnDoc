@@ -1,0 +1,257 @@
+= Hudson 持续集成
+
+== 概述 
+
+IP:192.168.4.221 8G 内存（Hudson 多个工程在同时构建的情况下比较耗内存）
+环境：CentOS 6.6、JDK7
+Hudson 不需要用到数据库
+
+
+Hudson 只是一个持续集成服务器（持续集成工具），要想搭建一套完整的持续集成管理平台，
+还需要用到前面课程中所讲到的 SVN、Maven、Sonar 等工具，按需求整合则可。
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/219.png?raw=true[ctoedu,800,500]
+
+
+> 1、 安装 JDK 并配置环境变量
+
+```
+JAVA_HOME=/usr/local/java/jdk1.7.0_72
+```
+
+> 2、 Maven 本地仓库的安装（使用 Maven 作为项目构建与管理工具）：
+
+* 下载 maven-3.0.5
+
+（注意：建议不要下载 3.1 或更高版本的 Maven，因为与 Hudson 进行集成时会有问题，之前有遇到过）：
+
+```
+# wget http://mirrors.hust.edu.cn/apache/maven/maven-3/3.0.5/binaries/apache-maven3.0.5-bin.tar.gz
+```
+* 解压：
+
+```
+# tar -zxvf apache-maven-3.0.5-bin.tar.gz
+# mv apache-maven-3.0.5 maven-3.0.5
+```
+
+
+* 配置 Maven 环境变量：
+
+```
+# vi /etc/profile
+## maven env
+export MAVEN_HOME=/root/maven-3.0.5
+export PATH=$PATH:$MAVEN_HOME/bin
+
+```
+
+```
+# source /etc/profile
+```
+
+
+> 3、 配置 HudsonHome，在/root 目录下创建 HudsonHome 目录，并配置到环境变量
+
+```
+# mkdir HudsonHome
+```
+
+切换到 root 用户，在/etc/profile 中配置全局环境变量
+# vi /etc/profile
+## hudson env
+export HUDSON_HOME=/root/HudsonHome
+# source /etc/profile
+
+
+> 4、 下载最新版 Tomcat7，当前最新版为 7.0.59：
+
+```
+# wget http://apache.fayea.com/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat7.0.59.tar.gz
+```
+
+> 5、 解压安装 Tomcat：
+
+```
+# tar -zxvf apache-tomcat-7.0.59.tar.gz
+# mv apache-tomcat-7.0.59 hudson-tomcat
+```
+
+移除/root/hudson-tomcat/webapps 目录下的所有文件：
+
+```
+# rm -rf /root/hudson-tomcat/webapps/*
+```
+
+将 Tomcat 容器的编码设为 UTF-8:
+
+```
+# vi /root/hudson-tomcat/conf/server.xml
+<Connector port="8080" protocol="HTTP/1.1"
+ connectionTimeout="20000"
+ redirectPort="8443" URIEncoding="UTF-8" />
+```
+
+如果不把 Tomcat 容器的编码设为 UTF-8，在以后配置 Hudson 是有下面的提示：
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/220.png?raw=true[ctoedu,800,450]
+
+
+设置 hudson-tomcat 的内存
+
+```
+# vi /root/hudson-tomcat/bin/catalina.sh
+```
+
+```
+#!/bin/sh 下面增加：
+JAVA_OPTS='-Xms512m -Xmx2048m'
+```
+
+> 6、 下载最新版的 Hudson（这里是 3.2.2 版）包：
+
+```
+# wget http://mirror.bit.edu.cn/eclipse/hudson/war/hudson-3.2.2.war
+```
+
+将 war 包拷贝到 hudson-tomcat/weapps 目录，并重命名为 hudson.war
+
+```
+# cp /root/hudson-3.2.2.war /root/hudson-tomcat/webapps/hudson.war
+```
+
+> 7、 防火墙开启 8080 端口，用 root 用户修改/etc/sysconfig/iptables，
+
+```
+# vi /etc/sysconfig/iptables
+```
+
+增加：
+```
+## hudson-tomcat port:8080
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+```
+
+重启防火墙：
+
+```
+# service iptables restart
+```
+
+
+> 8、 设置 hudson-tomcat 开机启动：
+
+在虚拟主机中编辑/etc/rc.local 文件，
+
+```
+# vi /etc/rc.local
+```
+
+加入：
+
+```
+/root/hudson-tomcat/bin/startup.sh
+```
+
+> 9、 启动 hudson-tomcat
+
+```
+# /root/hudson-tomcat/bin/startup.sh
+```
+
+
+> 10、 配置 Hudson:
+
+* 浏览器输入：http://192.168.4.221:8080/hudson/
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/221.png?raw=true[ctoedu,800,450]
+
+
+初始化安装需要安装 3 个默认勾选中的插件（如上图红色部分），其它插件可以等初始化安装完成之后再选择安装。
+
+点击“Install”安装按钮后，需要等待一会时间才能安装完成。安装完成后按“Finish”按钮。
+
+安装的插件保存在 /root/HudsonHome/plugins 目录。
+
+* 初始化完成后就会进行 Hudson 的配置管理界面：
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/222.png?raw=true[ctoedu,800,450]
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/223.png?raw=true[ctoedu,800,450]
+
+
+
+安全配置
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/224.png?raw=true[ctoedu,800,450]
+
+使用项目矩阵授权策略
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/225.png?raw=true[ctoedu,800,450]
+
+注册一个超级管理员账号
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/226.png?raw=true[ctoedu,800,450]
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/227.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/228.png?raw=true[ctoedu,800,450]
+
+系统设置
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/229.png?raw=true[ctoedu,800,450]
+
+配置系统信息、JDK、Maven
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/230.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/231.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/232.png?raw=true[ctoedu,800,450]
+
+保存后的效果
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/233.png?raw=true[ctoedu,800,450]
+
+插件安装
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/234.png?raw=true[ctoedu,800,450]
+
+结合我们想要实现的持续集成功能，需要安装如下几个插件。如想集成更多功能，自行添加插件并配置则可。（注意：现在我们使用了 SonarQube 质量管理不台，则不再需要在
+Hudson 中单独去安装 CheckStyle、Findbugs、PMD、Cobertura 等 Sonar 中已有的插件）
+
+逐个搜索你想要安装的插件并点击安装，安装完之后重启 Hudson。
+
+如下图所示：
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/235.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/236.png?raw=true[ctoedu,800,450]
+
+在 Hudson 中配置 SonarQube 链接
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/237.png?raw=true[ctoedu,800,450]
+
+以上就是 Hudson 的基本安装和配置，更多其它配置和功能可自行扩展
+
+
+
+=== Hudson 的使用（使用 Hudson 来自动化编译、分析、打包、发布、部署项目）
+
+
+添加项目
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/238.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/239.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/240.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/241.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/242.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/243.png?raw=true[ctoedu,800,450]
+
+
+
+
+
