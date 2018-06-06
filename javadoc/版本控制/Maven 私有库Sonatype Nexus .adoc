@@ -104,13 +104,13 @@ Started Nexus OSS.
 
 7、浏览器中打开：http://192.168.4.221:8081/nexus/
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/207.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/207.png?raw=true[ctoedu,700,400]
 
 8、登录，默认用户名 admin,默认密码 admin123:
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/208.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/208.png?raw=true[ctoedu,700,400]
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/209.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/209.png?raw=true[ctoedu,700,400]
 
 
 到此，Nexus 已安装完成，接下来是 Nexus 的配置
@@ -120,19 +120,19 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/209.pn
 
 > 1、菜单 Administration/Server 配置邮箱服务地址(如果忘记密码，可以通过该邮箱找回密码)
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/210.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/210.png?raw=true[ctoedu,700,400]
 
 给用户配置邮箱地址，方便忘记密码时找回：
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/211.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/211.png?raw=true[ctoedu,700,400]
 
 用户修改密码
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/212.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/212.png?raw=true[ctoedu,700,400]
 
 > 2、仓库类型
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/213.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/213.png?raw=true[ctoedu,700,400]
 
 group 仓库组：Nexus 通过仓库组的概念统一管理多个仓库，这样我们在项目中直接请
 
@@ -159,7 +159,7 @@ Nexus 私服下载成功后再下载至本地 Maven 库供项目引用。
 
 > 3、设置 proxy 代理仓库(Apache Snapshots/Central/Codehaus Snapshots)准许远程下载，如：
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/214.png?raw=true[ctoedu,600,400]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/zz/214.png?raw=true[ctoedu,700,400]
 
 
 
