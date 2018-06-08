@@ -1,0 +1,173 @@
+= Dubbo服务化一
+
+= 子系统的划分
+
+服务化的目标：
+
+* 将系统中独立的业务模块抽取出来，按业务的独立性进行垂直划分，抽象出基础服务层。
+
+*  基础服务为上游业务的功能实现提供支撑，基础服务应用本身无状态，可随着系统的负荷灵活伸缩来提供服务能力。
+
+* 服务子系统的数量把控
+
+过多：
+. 可能划分过细，破坏业务子系统的独立性（如：支付订单、退款订单，用户、账户）
+. 部署维护工作量大，独立进程占用内存多
+
+
+过少：
+. 没能很好的解耦
+. 开发维护不好分工
+. 升级维护影响面大
+
+
+* 服务子系统划分注意事项：
+
+* 不要出现A服务中的SQL需要链接查询到B服务中的表等情况，
+* 这样在A服务与B服务进行垂直拆库时就会出错
+* 服务子系统间避免出现环状的依赖调用
+* 服务子系统间的依赖关系链不要过长
+* 尽量避免分布式事务
+
+服务子系统的划分是一个不断优化的过程
+
+== 接口类型
+
+* 简单数据查询接口：action、facade、dao
+* 带业务逻辑的数据查询接口：action、facade、biz、dao
+* 简单的数据写入接口：action、facade、dao
+* 带业务逻辑的数据写入接口：action、facade、biz、dao
+* 同步接口
+* 异步接口
+
+= 接口设计原则
+
+> 接口粒度：
+
+* 服务接口尽可能大粒度，每个服务方法应代表一个功能，而不是某功能的一个步骤，否则将面临分布式事务问题，Dubbo暂未提供分布式事务支持。同时可以减少系统间的网络交互。
+* 服务接口建议以业务场景为单位划分，并对相近业务做抽象，防止接口数量爆炸。
+* 不建议使用过于抽象的通用接口，如：Map query(Map)，这样的接口没有明确语义，会给后期维护带来不便。
+
+
+> 接口版本：
+
+每个接口都应定义版本号，为后续不兼容升级提供可能，如：
+
+```
+<dubbo:service interface="com.XxService" version="1.0" />
+```
+
+
+> 接口兼容性：
+
+* 服务接口增加方法，或服务模型增加字段，可向后兼容；
+* 删除方法或删除字段，将不兼容，枚举类型新增字段也不兼容，
+* 需通过变更版本号升级。
+
+
+> 异常处理：
+
+* 建议使用异常汇报错误，而不是返回错误码，异常信息能携带更多信息，以及语义更友好。
+* 如果担心性能问题，在必要时，可以通过override掉异常类的fillInStackTrace()方法为空方法，使其不拷贝栈信息。
+* 查询方法不建议抛出checked异常，否则调用方在查询时将过多的try...catch，并且不能进行有效处理。
+* 服务提供方不应将DAO或SQL等异常抛给消费方，应在服务实现中对消费方不关心的异常进行包装，否则可能出现消费方无法反序列化相应异常。
+
+
+> 必要的接口输入参数校验
+
+
+> 在Provider上尽量多配置Consumer端属性：
+
+原因如下：
+
+作服务的提供者，比服务使用方更清楚服务性能参数，如调用的超时时间，合理的重试次数，等等
+在Provider配置后，Consumer不配置则会使用Provider的配置值，即Provider配置可以作为Consumer的缺省值。否则，Consumer会使用Consumer端的全局设置，这对于Provider不可控的，并且往往是不合理的。
+
+Provider上尽量多配置Consumer端的属性，让Provider实现者一开始就思考Provider服务特点、服务质量的问题。
+
+
+在Provider上尽量多配置Consumer端属性：
+
+样例：
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/7.png?raw=true[ctoedu,800,350]
+
+服务接口设计与服务子系统划分过程相互优化
+
+== 集群容错模式
+
+```
+标签：<dubbo:service>、<dubbo:reference>、
+      <dubbo:consumer>、<dubbo:provider>
+```
+
+=== 1、Failover Cluster
+
+. 失败自动切换，当出现失败，重试其它服务器。(缺省)
+. 通常用于读操作，但重试会带来更长延迟。
+. 可通过retries="2"来设置重试次数(不含第一次)。
+
+```
+<dubbo:service retries="2" />
+或：
+<dubbo:reference retries="2" />
+或：
+<dubbo:reference>
+<dubbo:method name="findFoo" retries="2" />
+</dubbo:reference>
+```
+
+== 2、Failfast Cluster
+
+. 快速失败，只发起一次调用，失败立即报错。
+. 通常用于非幂等性的写操作，比如新增记录。
+
+```
+<dubbo:service cluster="failfast" />
+或：
+<dubbo:reference cluster="failfast" />
+```
+
+== 3、Failsafe Cluster
+. 失败安全，出现异常时，直接忽略。
+. 通常用于写入审计日志等操作。
+
+```
+<dubbo:service cluster="failsafe" />
+或：
+<dubbo:reference cluster="failsafe" />
+```
+
+== 4、Failback Cluster
+. 失败自动恢复，后台记录失败请求，定时重发。
+. 通常用于消息通知操作。
+
+
+== 5、Forking Cluster
+. 并行调用多个服务器，只要一个成功即返回。
+. 通常用于实时性要求较高的读操作，但需要浪费更多服务资源。
+. 可通过forks="2"来设置最大并行数。
+
+
+```
+<dubbo:service cluster=“forking" />
+或：
+<dubbo:reference cluster=“forking" />
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/8.png?raw=true[ctoedu,800,450]
+
+
+== 启动时检查
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/9.png?raw=true[ctoedu,800,450]
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/10.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/11.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/12.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/13.png?raw=true[ctoedu,800,450]
+
