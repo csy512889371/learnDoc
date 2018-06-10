@@ -1,0 +1,316 @@
+= Netty Hello Word
+
+== 概述
+
+netty版本大致版本分为  netty3.x  和  netty4.x、netty5.x
+
+=== netty可以运用在那些领域？
+
+1、分布式进程通信
+
+例如: hadoop、dubbo、akka等具有分布式功能的框架，底层RPC通信都是基于netty实现的，这些框架使用的版本通常都还在用netty3.x
+
+2、游戏服务器开发
+
+最新的游戏服务器有部分公司可能已经开始采用netty4.x 或 netty5.x
+
+
+=== 1、netty服务端hello world案例
+
+```
+SimpleChannelHandler 处理消息接收和写
+{
+	messageReceived接收消息
+
+	channelConnected新连接，通常用来检测IP是否是黑名单
+
+	channelDisconnected链接关闭，可以再用户断线的时候清楚用户的缓存数据等
+}
+```
+
+=== 2、netty客户端hello world案例
+
+* channelDisconnected与channelClosed的区别
+* channelDisconnected只有在连接建立后断开才会调用
+* channelClosed无论连接是否成功都会调用关闭资源
+
+
+== netty server 服务端
+
+
+1、初始化ServerBootstrap，并注入NioServerSocketChannelFactory，用于创建通道（channel）等。从这里可以看出是通过Nio的方式来处理的，factory中放入两个线程池，主要用于接收connect和message。 
+
+2、MyHandler继承了SimpleChannelHandler，并且重写了方法：channelClosed、channelConnected、messageReseived，方法的参数为ChannelHandlerContext和ChannelEvent。ChannelHandlerContext为通道上下文，event中便带有消息和连接的信息。 
+  
+* channelConnected方法在接到来自客户端的连接时触发（这里只是打印了收到的连接的信息），所以在执行telnet命令时，看到控制台会有相应的输出。  MessageReseived方法在接收到消息是会触发，这里会交给processMessage方法处理，这里只是简单的把接收到的信息写回客户端。所以在命令行窗口中会看到我们写入的字母信息。
+
+* ChannelClosed方法在关闭连接的时候被调用，当我们关闭命令行窗口的时候，就会看到控制台打印出相应的信息。 
+* 当然，ChannelHander的接口不止这么三个，除了SimpleChannelHandler以外还有很特殊的实现，这里只做简单介绍。 
+
+
+3、初始化完成之后，我们调用server.config(int port)方法注入需要绑定的端口信息
+
+Server
+
+```
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.handler.codec.string.StringDecoder;
+import org.jboss.netty.handler.codec.string.StringEncoder;
+
+/**
+ * netty服务端入门
+ */
+public class Server {
+
+    public static void main(String[] args) {
+
+        //服务类
+        ServerBootstrap bootstrap = new ServerBootstrap();
+
+        //boss线程监听端口，worker线程负责数据读写
+        ExecutorService boss = Executors.newCachedThreadPool();
+        ExecutorService worker = Executors.newCachedThreadPool();
+
+        //设置niosocket工厂
+        bootstrap.setFactory(new NioServerSocketChannelFactory(boss, worker));
+
+        //设置管道的工厂
+        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+
+            @Override
+            public ChannelPipeline getPipeline() throws Exception {
+
+                ChannelPipeline pipeline = Channels.pipeline();
+                pipeline.addLast("decoder", new StringDecoder());
+                pipeline.addLast("encoder", new StringEncoder());
+                pipeline.addLast("helloHandler", new HelloHandler());
+                return pipeline;
+            }
+        });
+
+        bootstrap.bind(new InetSocketAddress(10101));
+
+        System.out.println("start!!!");
+
+    }
+
+}
+
+```
+
+
+HelloHandler
+
+
+```
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+
+/**
+ * 消息接受处理类
+ */
+public class HelloHandler extends SimpleChannelHandler {
+
+    /**
+     * 接收消息
+     */
+    @Override
+    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+
+
+        String s = (String) e.getMessage();
+        System.out.println(s);
+
+        //回写数据
+        ctx.getChannel().write("hi");
+        super.messageReceived(ctx, e);
+    }
+
+    /**
+     * 捕获异常
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+        System.out.println("exceptionCaught");
+        super.exceptionCaught(ctx, e);
+    }
+
+    /**
+     * 新连接
+     */
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelConnected");
+        super.channelConnected(ctx, e);
+    }
+
+    /**
+     * 必须是链接已经建立，关闭通道的时候才会触发
+     */
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelDisconnected");
+        super.channelDisconnected(ctx, e);
+    }
+
+    /**
+     * channel关闭的时候触发
+     */
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelClosed");
+        super.channelClosed(ctx, e);
+    }
+}
+
+
+```
+
+运行程序，打开命令行，输入：telnet 127.0.0.1 10101
+
+
+
+== netty client netty 客户端
+
+```
+
+import java.net.InetSocketAddress;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.jboss.netty.bootstrap.ClientBootstrap;
+import org.jboss.netty.channel.Channel;
+import org.jboss.netty.channel.ChannelFuture;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.handler.codec.string.StringDecoder;
+import org.jboss.netty.handler.codec.string.StringEncoder;
+
+/**
+ * netty客户端入门
+ */
+public class Client {
+
+    public static void main(String[] args) {
+
+        //服务类
+        ClientBootstrap bootstrap = new ClientBootstrap();
+
+        //线程池
+        ExecutorService boss = Executors.newCachedThreadPool();
+        ExecutorService worker = Executors.newCachedThreadPool();
+
+        //socket工厂
+        bootstrap.setFactory(new NioClientSocketChannelFactory(boss, worker));
+
+        //管道工厂
+        bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+
+            @Override
+            public ChannelPipeline getPipeline() throws Exception {
+                ChannelPipeline pipeline = Channels.pipeline();
+                pipeline.addLast("decoder", new StringDecoder());
+                pipeline.addLast("encoder", new StringEncoder());
+                pipeline.addLast("hiHandler", new HiHandler());
+                return pipeline;
+            }
+        });
+
+        //连接服务端
+        ChannelFuture connect = bootstrap.connect(new InetSocketAddress("127.0.0.1", 10101));
+        Channel channel = connect.getChannel();
+
+        System.out.println("client start");
+
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("请输入");
+            channel.write(scanner.next());
+        }
+    }
+
+}
+
+
+```
+
+
+
+```
+
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.ChannelStateEvent;
+import org.jboss.netty.channel.ExceptionEvent;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+
+/**
+ * 消息接受处理类
+ */
+public class HiHandler extends SimpleChannelHandler {
+
+    /**
+     * 接收消息
+     */
+    @Override
+    public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+
+
+        String s = (String) e.getMessage();
+        System.out.println(s);
+
+        super.messageReceived(ctx, e);
+    }
+
+    /**
+     * 捕获异常
+     */
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, ExceptionEvent e) throws Exception {
+        System.out.println("exceptionCaught");
+        super.exceptionCaught(ctx, e);
+    }
+
+    /**
+     * 新连接
+     */
+    @Override
+    public void channelConnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelConnected");
+        super.channelConnected(ctx, e);
+    }
+
+    /**
+     * 必须是链接已经建立，关闭通道的时候才会触发
+     */
+    @Override
+    public void channelDisconnected(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelDisconnected");
+        super.channelDisconnected(ctx, e);
+    }
+
+    /**
+     * channel关闭的时候触发
+     */
+    @Override
+    public void channelClosed(ChannelHandlerContext ctx, ChannelStateEvent e) throws Exception {
+        System.out.println("channelClosed");
+        super.channelClosed(ctx, e);
+    }
+}
+
+```
