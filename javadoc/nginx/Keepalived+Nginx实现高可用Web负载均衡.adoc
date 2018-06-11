@@ -1,0 +1,399 @@
+= Keepalived+Nginx实现高可用Web负载均衡
+
+== 一、场景需求
+
+image::https://img-blog.csdn.net/20160417090335172?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+== 二、Keepalived 简要介绍
+
+Keepalived 是一种高性能的服务器高可用或热备解决方案，Keepalived 可以用来防止服务器单点故障的发生，通过配合 Nginx 可以实现 web 前端服务的高可用。
+
+Keepalived 以 VRRP 协议为实现基础，用 VRRP 协议来实现高可用性(HA)。VRRP(VirtualRouter
+Redundancy Protocol)协议是用于实现路由器冗余的协议，VRRP 协议将两台或多台路由器设备虚拟成一个设备，对外提供虚拟路由器 IP(一个或多个)，而在路由器组内部，如果实际拥有这个对外 IP 的路由器如果工作正常的话就是 MASTER，或者是通过算法选举产生，MASTER 实现针对虚拟路由器 IP 的各种网络功能，
+
+如 ARP 请求，ICMP，以及数据的转发等；其他设备不拥有该虚拟 IP，状态是 BACKUP，除了接收 MASTER 的VRRP 状态通告信息外，不执行对外的网络功能。当主机失效时，BACKUP 将接管原先 MASTER 的网络功能。VRRP 协议使用多播数据来传输 VRRP 数据，VRRP 数据使用特殊的虚拟源 MAC 地址发送数据而不是自身网卡的 MAC 地址，VRRP 运行时只有 MASTER 路由器定时发送 VRRP 通告信息，表示 MASTER 工作正常以及虚拟路由器 IP(组)，BACKUP 只接收 VRRP 数据，不发送数据，如果一定时间内没有接收到 MASTER 的通告信息，各 BACKUP 将宣告自己成为 MASTER，发送通告信息，重新进行 MASTER 选举状态。
+
+
+image::https://img-blog.csdn.net/20160417090514201?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+== 三、方案规划
+
+
+image::https://img-blog.csdn.net/20160417091041614?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+== 四、安装 Nginx
+
+=== 1、安装编译 Nginx 所需的依赖包
+
+[root@edu-proxy--01 ~]# yum install gcc gcc-c++ make automake autoconf libtool pcre pcre-devel zlib zlib-devel openssl openssl-devel
+
+=== 2、上传 Nginx(nginx-1.6.2.tar.gz)到 /usr/local/src 目录
+
+
+image::https://img-blog.csdn.net/20160417091538443?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+== 3、编译安装 Nginx
+
+```
+[root@edu-proxy--01 ~]# cd /usr/local/src/
+[root@edu-proxy--01 src]# ls
+keepalived-1.2.18.tar.gz  nginx-1.6.2.tar.gz
+[root@edu-proxy--01 src]# tar -zxvf nginx-1.6.2.tar.gz 
+[root@edu-proxy--01 src]# cd nginx-1.6.2
+[root@edu-proxy--01 nginx-1.6.2]# ./configure --prefix=/usr/local/nginx
+
+[root@edu-proxy--01 nginx-1.6.2]# make && make install
+
+[root@edu-proxy--01 nginx-1.6.2]# vi /usr/local/nginx/conf/nginx.conf
+```
+
+
+```
+
+user  root;
+worker_processes  1;
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+#pid        logs/nginx.pid;
+events {
+    worker_connections  1024;
+}
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+
+    server {
+        listen       88;
+        server_name  localhost;
+        #charset koi8-r;
+        #access_log  logs/host.access.log  main;
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+        #error_page  404              /404.html;
+        # redirect server error pages to the static page /50x.html
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}
+```
+
+修改 Nginx 欢迎首页内容（用于后面测试，用于区分两个节点的 Nginx）：
+
+```
+vi /usr/local/nginx/html/index.html 
+```
+
+```
+192.168.1.121 中的标题加 1
+
+ <h1>Welcome to nginx! 1</h1> 
+
+192.168.1.122 中的标题加 2 
+
+<h1>Welcome to nginx! 2</h1>
+```
+
+=== 5、系统防火墙打开对应的端口 88
+
+```
+vi /etc/sysconfig/iptables
+```
+
+```
+ -A INPUT -m state --state NEW -m tcp -p tcp --dport 88 -j ACCEPT
+```
+
+```
+service iptables restart
+```
+
+=== 6、测试 Nginx 是否安装成功
+
+```
+/usr/local/nginx/sbin/nginx -t
+nginx: the configuration file /usr/local/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/nginx/conf/nginx.conf test is successful
+```
+
+
+=== 7、启动 Nginx
+
+```
+/usr/local/nginx/sbin/nginx 
+```
+重启
+
+```
+/usr/local/nginx/sbin/nginx -s reload
+```
+
+
+=== 8、设置 Nginx 开机启动
+
+```
+vi /etc/rc.local 
+```
+加入
+
+
+```
+/usr/local/nginx/sbin/nginx
+```
+
+分别访问两个nginx
+
+
+nginx1
+
+image::https://img-blog.csdn.net/20160417133121959?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,540]
+
+
+2.nginx2
+
+image::https://img-blog.csdn.net/20160417125848329?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,540]
+
+== 五、安装 Keepalived （ http://www.keepalived.org/download.html ）
+
+=== 1、上传或下载 keepalived（keepalived-1.2.18.tar.gz）到 /usr/local/src 目录
+
+=== 2、解压安装
+
+```
+ cd /usr/local/src
+
+ tar -zxvf keepalived-1.2.18.tar.gz
+
+ cd keepalived-1.2.18
+
+ ./configure --prefix=/usr/local/keepalived
+
+ make && make install
+```
+
+=== 3、将 keepalived 安装成 Linux 系统服务：
+
+因为没有使用 keepalived 的默认路径安装（默认是/usr/local）,安装完成之后，需要做一些工作复制默认配置文件到默认路径
+
+```
+mkdir /etc/keepalived
+
+ cp /usr/local/keepalived/etc/keepalived/keepalived.conf /etc/keepalived/
+```
+
+复制 keepalived 服务脚本到默认的地址
+
+```
+ cp /usr/local/keepalived/etc/rc.d/init.d/keepalived /etc/init.d/
+
+ cp /usr/local/keepalived/etc/sysconfig/keepalived /etc/sysconfig/
+
+ ln -s /usr/local/sbin/keepalived /usr/sbin/
+
+ ln -s /usr/local/keepalived/sbin/keepalived /sbin/
+```
+
+设置 keepalived 服务开机启动
+
+```
+chkconfig keepalived on
+```
+
+=== 4、修改 Keepalived 配置文件
+
+注意，如果linux用的网卡是eth0,interface就要写成eth1，用的是eth1就要写成eth1
+
+(1) MASTER 节点配置文件（192.168.1.121）
+
+```
+vi /etc/keepalived/keepalived.conf
+
+! Configuration File for keepalived
+
+global_defs {
+   router_id edu-proxy-01
+}
+vrrp_script chk_nginx {
+    script "/etc/keepalived/nginx_check.sh"
+    interval 2
+    weight -20
+}
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth0
+    virtual_router_id 51
+    mcast_src_ip 192.168.1.121
+    priority 100
+    nopreempt
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    track_script {
+        chk_nginx
+    }
+    virtual_ipaddress {
+        192.168.1.120
+    }
+```
+
+BACKUP节点配置 （192.168.1.122）
+
+```
+! Configuration File for keepalived
+global_defs {
+   router_id edu-proxy-02
+}
+vrrp_script chk_nginx {
+    script "/etc/keepalived/nginx_check.sh"
+    interval 2
+    weight -20
+}
+vrrp_instance VI_1 {
+    state BACKUP
+    interface eth0
+    virtual_router_id 51
+    mcast_src_ip 192.168.1.122
+    priority 90
+    advert_int 1
+    authentication {
+        auth_type PASS
+        auth_pass 1111
+    }
+    track_script {
+        chk_nginx
+    }
+    virtual_ipaddress {
+        192.168.1.120
+    }
+}
+```
+
+
+=== 5.编写Nginx状态检测脚本/etc/keepalived/nginx_check.sh(keepalived.conf中配置)
+
+脚本要求:如果nginx停止运行，尝试启动，如果无法启动则杀死本机的keepalived进程，keepaied将虚拟ip绑定到BACKUP机器上，内容如下
+
+```
+#!/bin/bash
+A=`ps -C nginx –no-header |wc -l`
+if [ $A -eq 0 ];then
+    /usr/local/nginx/sbin/nginx
+    sleep 2
+    if [ `ps -C nginx --no-header |wc -l` -eq 0 ];then
+        killall keepalived
+    fi
+
+fi
+```
+
+保存后给脚本授邓权限
+
+
+```
+chmod -x /etc/keepalived/nginx_check.sh 
+```
+
+6.启动keepalived
+
+```
+serivce keepalived start
+```
+
+我们在cmd中查看arp
+
+
+image::https://img-blog.csdn.net/20160417130542254?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+在edu-proxy-01
+
+```
+[root@edu-proxy--01 keepalived]# ip add
+```
+
+image::https://img-blog.csdn.net/20160417133717830?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+这里我们访问192.168.1.120:88
+
+image::https://img-blog.csdn.net/20160417130143783?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+=== 7.Keepalived+nginx的高可用测试
+
+(1)关闭192.168.1.121的Nginx,Keepalived会将它重新启动
+
+```
+[root@edu-proxy--01 keepalived]# /usr/local/nginx/sbin/nginx -s stop
+```
+
+(2)关闭192.168.1.121中的Keepalived,VIP会切换到192.168.1.122中
+
+```
+[root@edu-proxy--01 keepalived]# service keepalived stop
+
+root@edu-proxy-02 keepalived]# ip add
+```
+
+image::https://img-blog.csdn.net/20160417134607052?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+查看虚拟ip
+
+image::https://img-blog.csdn.net/20160417131923104?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+说明此时VIP已经漂移到主机192.168.1.122上了
+
+再能过VIP来访问Nginx集群，访问到的也是192.168.1.122
+
+image::https://img-blog.csdn.net/20160417131746009?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+(3)重新启动192.168.1.121中的Keepalived,VIP又会切回到192.168.1.121中来
+```
+
+[root@edu-proxy--01 keepalived]# service keepalived start
+```
+
+查看虚拟机IP
+
+image::https://img-blog.csdn.net/20160417133541563?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+ip add
+
+image::https://img-blog.csdn.net/20160417133717830?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+Keepalived启动后，网络接口上又会创建出VIP192.168.1.120
+
+image::https://img-blog.csdn.net/20160417133828845?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+Keepalived服务管理命令:
+
+. 停止: service keepalived stop
+. 启动: service keepalived start
+. 重启: service keepalived restart
+. 查看状态: service keepalived status
+
+其他参考资料:
+
+* keepalived之vrrp_script总结:http://my.oschina.NET/hncscwc/blog/158746
+* keepalived双机热备实现故障时发送邮件通知:http://www.2cto.com/os/201407/317795.html
+* 基于keepalived实现VIP转移，lvs,nginx的高可用;:http://www.tuicool.com/articles/eu26Vz
