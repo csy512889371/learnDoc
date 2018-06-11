@@ -45,7 +45,7 @@ while (true) {
 
 ```
 
-这种算法的逻辑实现如图2所示，图中我们假定四台服务器的处理能力为3:1:1:1。
+这种算法的逻辑实现如图所示，图中我们假定四台服务器的处理能力为3:1:1:1。
 
 
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/14.png?raw=true[ctoedu,800,450]
@@ -64,7 +64,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/14.png
 
 === 环形hash 空间
 
-考虑通常的hash 算法都是将 value 映射到一个 32 为的 key 值，也即是 0~2^32-1 次方的数值空间；我们可以将这个空间想象成一个首(0)尾(2^32-1)相接的圆环，如下面图 2 所示的那样。
+考虑通常的hash 算法都是将 value 映射到一个 32 为的 key 值，也即是 0~2^32-1 次方的数值空间；我们可以将这个空间想象成一个首(0)尾(2^32-1)相接的圆环，如下面图 所示的那样。
 
 .环形 hash 空间
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/15.png?raw=true[ctoedu,800,450]
@@ -74,7 +74,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/15.png
 === 把对象映射到hash 空间
 
 
-接下来考虑4个对象 object1~object4，通过 hash 函数计算出的 hash 值 key 在环上的分布如图 3所示。
+接下来考虑4个对象 object1~object4，通过 hash 函数计算出的 hash 值 key 在环上的分布如图 所示。
 
 ```
 hash(object1) = key1;
@@ -90,7 +90,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/16.png
 
 
 Consistent hashing 的基本思想就是将对象和 cache 都映射到同一个 hash 数值空间中，并且使用相同的hash算法。
-假设当前有A,B和C 共3台cache，那么其映射结果将如图 4 所示，他们在 hash 空间中，以对应的 hash 值排列。
+假设当前有A,B和C 共3台cache，那么其映射结果将如图  所示，他们在 hash 空间中，以对应的 hash 值排列。
 
 
 ```
@@ -113,7 +113,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/17.png
 现在 cache 和对象都已经通过同一个 hash 算法映射到 hash 数值空间中了，接下来要考虑的就是如何将对象映射到 cache上面了。
 在这个环形空间中，如果沿着顺时针方向从对象的 key 值出发，直到遇见一个 cache ，那么就将该对象存储在这个 cache 上，因为对象和 cache 的 hash 值是固定的，因此这个 cache 必然是唯一和确定的。这样不就找到了对象和 cache 的映射方法了吗！
 
-依然继续上面的例子（参见图 4 ），那么根据上面的方法，对象 object1 将被存储到 cache A 上； object2 和object3 对应到 cache C ； object4 对应到 cache B ；
+依然继续上面的例子（参见图  ），那么根据上面的方法，对象 object1 将被存储到 cache A 上； object2 和object3 对应到 cache C ； object4 对应到 cache B ；
 
 
 === 考察cache 的变动
@@ -153,7 +153,7 @@ hash 算法并不是保证绝对的平衡，如果 cache 较少的话，对象�
 
 “虚拟节点”（ virtual node ）是实际节点在 hash 空间的复制品（ replica ），一实际个节点对应了若干个“虚拟节点”，这个对应个数也成为“复制个数”，“虚拟节点”在 hash 空间中以 hash 值排列。
 
-仍以仅部署 cache A 和 cache C 的情况为例，在图 5 中我们已经看到， cache 分布并不均匀。现在我们引入虚拟节点，并设置“复制个数”为 2 ，这就意味着一共会存在 4 个“虚拟节点”， cache A1, cache A2 代表了cache A ； cache C1, cache C2 代表了 cache C ；假设一种比较理想的情况，参见图 
+仍以仅部署 cache A 和 cache C 的情况为例，在图  中我们已经看到， cache 分布并不均匀。现在我们引入虚拟节点，并设置“复制个数”为 2 ，这就意味着一共会存在 4 个“虚拟节点”， cache A1, cache A2 代表了cache A ； cache C1, cache C2 代表了 cache C ；假设一种比较理想的情况，参见图 
 
 .引入“虚拟节点”后的映射关系
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/19.png?raw=true[ctoedu,800,450]
@@ -190,7 +190,7 @@ Hash(“202.168.14.241#2”);  // cache A2
 
 == 3、Random LoadBalance与LeastAction LoadBalance
 
-Random LoadBalance与LeastAction LoadBalance算法比较简单，可以参照Dubbo文档中的给的描述及后面代码附录。Dubbo文档截图如下图9所示：
+Random LoadBalance与LeastAction LoadBalance算法比较简单，可以参照Dubbo文档中的给的描述及后面代码附录。Dubbo文档截图如下图所示：
 
 .负载均衡算法
 image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/22.png?raw=true[ctoedu,800,450]
