@@ -1,0 +1,332 @@
+= ZooKeeper 集群的安装、配置、高可用测试
+
+
+== 概述
+
+Dubbo 建议使用 Zookeeper 作为服务的注册中心。
+Zookeeper 集群中只要有过半的节点是正常的情况下，那么整个集群对外就是可用的。正是基于这个
+特性，要将 ZK 集群的节点数量要为奇数（2n+1：如 3、5、7 个节点）较为合适。
+
+== ZooKeeper 与 Dubbo 服务集群架构图
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/24.png?raw=true[ctoedu,800,650]
+
+
+```
+服务器 1：192.168.1.81 端口：2181、2881、3881
+服务器 2：192.168.1.82 端口：2182、2882、3882
+服务器 3：192.168.1.83 端口：2183、2883、3883
+```
+
+* 1、 修改操作系统的/etc/hosts 文件，添加 IP 与主机名映射：
+
+```
+# zookeeper cluster servers
+192.168.1.81 edu-zk-01
+192.168.1.82 edu-zk-02
+192.168.1.83 edu-zk-03
+
+```
+
+* 2、 下载或上传 zookeeper-3.4.6.tar.gz 到/home/ctoedu/zookeeper 目录：
+
+```
+$ cd /home/ctoedu/zookeeper
+$ wget http://apache.fayea.com/zookeeper/zookeeper-3.4.6/zookeeper-3.4.6.tar.gz
+```
+
+* 3、解压 zookeeper 安装包，并按节点号对 zookeeper 目录重命名：
+
+```
+$ tar -zxvf zookeeper-3.4.6.tar.gz
+服务器 1：
+$ mv zookeeper-3.4.6 node-01
+服务器 2：
+$ mv zookeeper-3.4.6 node-02
+服务器 3：
+$ mv zookeeper-3.4.6 node-03
+```
+
+* 4、 在各 zookeeper 节点目录下创建以下目录：
+
+```
+$ cd /home/ctoedu/zookeeper/node-0X (X 代表节点号 1、2、3，以下同解)
+$ mkdir data
+$ mkdir logs
+```
+
+* 5、 将 zookeeper/node-0X/conf 目录下的 zoo_sample.cfg 文件拷贝一份，命名为 zoo.cfg:
+$ cp zoo_sample.cfg zoo.cfg
+
+* 6、 修改 zoo.cfg 配置文件：
+
+zookeeper/node-01 的配置（/home/ctoedu/zookeeper/node-01/conf/zoo.cfg）如下：
+
+```
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/home/ctoedu/zookeeper/node-01/data
+dataLogDir=/home/ctoedu/zookeeper/node-01/logs
+clientPort=2181
+server.1=edu-zk-01:2881:3881
+server.2=edu-zk-02:2882:3882
+server.3=edu-zk-03:2883:3883
+
+```
+
+
+zookeeper/node-02 的配置（/home/ctoedu/zookeeper/node-02/conf/zoo.cfg）如下：
+
+```
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/home/ctoedu/zookeeper/node-02/data
+dataLogDir=/home/ctoedu/zookeeper/node-02/logs
+clientPort=2182
+server.1=edu-zk-01:2881:3881
+server.2=edu-zk-02:2882:3882
+server.3=edu-zk-03:2883:3883
+```
+
+zookeeper/node-03 的配置（/home/ctoedu/zookeeper/node-03/conf/zoo.cfg）如下：
+
+```
+tickTime=2000
+initLimit=10
+syncLimit=5
+dataDir=/home/ctoedu/zookeeper/node-03/data
+dataLogDir=/home/ctoedu/zookeeper/node-03/logs
+clientPort=2183
+server.1=edu-zk-01:2881:3881
+server.2=edu-zk-02:2882:3882
+server.3=edu-zk-03:2883:3883
+
+```
+
+=== 参数说明: 
+
+> tickTime=2000
+
+tickTime 这个时间是作为 Zookeeper 服务器之间或客户端与服务器之间维持心跳的时间间隔,也就是每
+个 tickTime 时间就会发送一个心跳。 
+
+
+> initLimit=10
+
+initLimit 这个配置项是用来配置 Zookeeper 接受客户端（这里所说的客户端不是用户连接 Zookeeper
+服务器的客户端,而是 Zookeeper 服务器集群中连接到 Leader 的 Follower 服务器）初始化连接时最长
+能忍受多少个心跳时间间隔数。当已经超过 10 个心跳的时间（也就是 tickTime）长度后 Zookeeper 服
+务器还没有收到客户端的返回信息,那么表明这个客户端连接失败。总的时间长度就是 10*2000=20 秒。 
+
+> syncLimit=5
+
+syncLimit 这个配置项标识 Leader 与 Follower 之间发送消息,请求和应答时间长度,最长不能超过多少
+个 tickTime 的时间长度,总的时间长度就是 5*2000=10 秒。
+
+> dataDir=/home/ctoedu/zookeeper/node-01/data
+
+dataDir 顾名思义就是Zookeeper 保存数据的目录,默认情况下Zookeeper 将写数据的日志文件也保存在
+这个目录里。 
+
+> clientPort=2181
+clientPort 这个端口就是客户端（应用程序）连接 Zookeeper 服务器的端口,Zookeeper 会监听这个端
+口接受客户端的访问请求
+
+```
+server.A=B：C：D
+server.1=edu-zk-01:2881:3881
+server.2=edu-zk-02:2882:3882
+server.3=edu-zk-03:2883:3883
+
+```
+
+. A 是一个数字,表示这个是第几号服务器；
+. B 是这个服务器的 IP 地址（或者是与 IP 地址做了映射的主机名）；
+. C 第一个端口用来集群成员的信息交换,表示这个服务器与集群中的 Leader 服务器交换信息的端口；
+. D 是在 leader 挂掉时专门用来进行选举 leader 所用的端口。
+. 注意：如果是伪集群的配置方式，不同的 Zookeeper 实例通信端口号不能一样，所以要给它们分配不同的端口号。
+
+
+* 7、 在 dataDir=/home/ctoedu/zookeeper/node-0X/data 下创建 myid 文件
+
+编辑 myid 文件，并在对应的 IP 的机器上输入对应的编号。如在 node-01 上，myid 文件内容就是1,node-02 上就是 2，node-03 上就是 3：
+
+```
+$ vi /home/ctoedu/zookeeper/node-01/data/myid ## 值为 1
+$ vi /home/ctoedu/zookeeper/node-02/data/myid ## 值为 2
+$ vi /home/ctoedu/zookeeper/node-03/data/myid ## 值为 3
+```
+
+* 8、 在防火墙中打开要用到的端口 218X、288X、388X
+
+切换到 root 用户权限，执行以下命令：
+
+```
+# chkconfig iptables on
+# service iptables start
+```
+编辑/etc/sysconfig/iptables
+
+```
+# vi /etc/sysconfig/iptables
+```
+如服务器 01 增加以下 3 行：
+```
+## zookeeper
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2181 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 2881 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 3881 -j ACCEPT
+```
+重启防火墙：
+
+```
+# service iptables restart
+```
+
+查看防火墙端口状态：
+```
+# service iptables status
+```
+
+* 9、 启动并测试 zookeeper（要用 ctoedu 用户启动，不要用 root）:
+
+(1) 使用 ctoedu 用户到/home/ctoedu/zookeeper/node-0X/bin 目录中执行：
+```
+$ /home/ctoedu/zookeeper/node-01/bin/zkServer.sh start
+$ /home/ctoedu/zookeeper/node-02/bin/zkServer.sh start
+$ /home/ctoedu/zookeeper/node-03/bin/zkServer.sh start
+```
+
+(2) 输入 jps 命令查看进程： 
+
+```
+$ jps
+
+1456 QuorumPeerMain
+```
+其中，QuorumPeerMain 是 zookeeper 进程，说明启动正常
+
+(3) 查看状态：
+
+```
+
+$ /home/ctoedu/zookeeper/node-01/bin/zkServer.sh status
+```
+
+(4) 查看 zookeeper 服务输出信息：
+
+由于服务信息输出文件在/home/ctoedu/zookeeper/node-0X/bin/zookeeper.out
+
+```
+$ tail -500f zookeeper.out
+```
+
+* 10、停止 zookeeper 进程：
+
+```
+$ zkServer.sh stop
+
+```
+
+* 11、配置 zookeeper 开机使用 ctoedu 用户启动：
+
+编辑 node-01、node-02、node-03 中的/etc/rc.local 文件，分别加入：
+
+```
+su - ctoedu -c '/home/ctoedu/zookeeper/node-01/bin/zkServer.sh start'
+su - ctoedu -c '/home/ctoedu/zookeeper/node-02/bin/zkServer.sh start'
+su - ctoedu -c '/home/ctoedu/zookeeper/node-03/bin/zkServer.sh start'
+```
+
+
+== 二、安装 Dubbo 管控台（基础篇有讲,此处重点讲管控台如何链接集群）： 
+
+Dubbo 管控台可以对注册到 zookeeper 注册中心的服务或服务消费者进行管理，但管控台是否正常对Dubbo 服务没有影响，管控台也不需要高可用，因此可以单节点部署。
+
+
+```
+IP: 192.168.1.81
+部署容器：Tomcat7
+端口：8080
+```
+
+1、 下载（或上传）最新版的 Tomcat7（apache-tomcat-7.0.57.tar.gz）到/home/ctoedu/
+
+
+2、 解压：
+
+```
+$ tar -zxvf apache-tomcat-7.0.57.tar.gz
+$ mv apache-tomcat-7.0.57 dubbo-admin-tomcat
+```
+
+3、 移除/home/ctoedu/dubbo-admin-tomcat/webapps 目录下的所有文件：
+
+```
+$ rm -rf *
+
+```
+
+4、 上传 Dubbo 管理控制台程序 dubbo-admin-2.5.3.war 到/home/ctoedu/dubbo-admin-tomcat/webapps
+
+5、 解压并把目录命名为 ROOT:
+
+```
+$ unzip dubbo-admin-2.5.3.war -d ROOT
+```
+
+把 dubbo-admin-2.5.3.war 移到/home/ctoedu/tools 目录备份
+
+```
+$ mv dubbo-admin-2.5.3.war /home/ctoedu/tools
+```
+
+6、 配置 dubbo.properties：
+
+$ vi ROOT/WEB-INF/dubbo.properties
+
+```
+
+dubbo.registry.address=
+zookeeper://192.168.1.81:2181?backup=192.168.1.82:2182,192.168.1.83:2183
+dubbo.admin.root.password=ctoedu.123
+dubbo.admin.guest.password=ctoedu.123
+（以上密码在正式上生产前要修改）
+```
+
+7、 防火墙开启 8080 端口，用 root 用户修改/etc/sysconfig/iptables，
+
+```
+# vi /etc/sysconfig/iptables
+```
+
+增加：
+
+```
+## dubbo-admin-tomcat:8080
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8080 -j ACCEPT
+
+```
+重启防火墙：
+```
+# service iptables restart
+```
+
+8、 启动 Tomat7
+
+```
+$ /home/ctoedu/dubbo-admin-tomcat/bin/startup.sh
+```
+
+9、 浏览 http://192.168.1.81:8080/
+
+
+10、配置部署了 Dubbo 管控台的 Tomcat 开机启动：
+
+在虚拟主机中编辑/etc/rc.local 文件，加入：
+
+```
+su - ctoedu -c '/home/ctoedu/dubbo-admin-tomcat/bin/startup.sh'
+```
