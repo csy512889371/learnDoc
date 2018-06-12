@@ -30,7 +30,7 @@ image::https://img-blog.csdn.net/20160423145903660?watermark/2/text/aHR0cDovL2Js
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 7111 -j ACCEPT 
 
 -A INPUT -m state --state NEW -m tcp -p tcp --dport 17111 -j ACCEPT 
-``
+```
 
 192.168.1.82
 ```
