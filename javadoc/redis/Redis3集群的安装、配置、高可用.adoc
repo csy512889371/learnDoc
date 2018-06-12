@@ -1,0 +1,549 @@
+= Redis3集群的安装、配置、高可用
+
+
+== 概述
+
+参考文档 
+
+* Redis 官方集群指南：http://redis.io/topics/cluster-tutorial 
+* Redis 官方集群规范：http://redis.io/topics/cluster-spec 
+* Redis 集群指南(中文翻译，紧供参考)：http://redisdoc.com/topic/cluster-tutorial.html 
+* Redis 集群规范(中文翻译，紧供参考)： http://redisdoc.com/topic/cluster-spec.html
+
+要让 Redis3.0 集群正常工作至少需要 3 个 Master 节点，要想实现高可用，每个 Master 节点要配备 
+
+至少 1 个 Slave 节点。根据以上特点和要求，进行如下的集群实施规划： 
+
+使用 6台服务器（物理机或虚拟机）部署 3 个 Master + 3 个 Slave；
+
+
+image::https://img-blog.csdn.net/20160423145903660?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+== 安装
+
+按规划：防火墙中打开相应的端口
+
+192.168.1.81 
+
+```
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7111 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17111 -j ACCEPT 
+``
+
+192.168.1.82
+```
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7112 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17112 -j ACCEPT 
+```
+
+192.168.1.83
+
+```
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7113 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17113 -j ACCEPT 
+```
+
+192.168.1.84
+
+```
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7114 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17114 -j ACCEPT 
+```
+
+
+192.168.1.85
+
+```
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7115 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17115 -j ACCEPT 
+```
+
+192.168.1.86
+
+```
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 7116 -j ACCEPT 
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 17116 -j ACCEPT
+```
+
+安装目录：/usr/local/redis3
+
+ 用户：root
+
+=== 编译和安装所需的包:
+
+ # yum install gcc tcl
+
+ 下载（或上传）Redis3 最新稳定版（当前最新版 redis-3.0.3.tar.gz）
+
+ # cd /usr/local/src
+
+ # wget http://download.redis.io/releases/redis-3.0.3.tar.gz
+
+ 创建安装目录：
+
+ # mkdir /usr/local/redis3
+
+ 解压:
+
+ # tar -zxvf redis-3.0.3.tar.gz
+
+ # cd redis-3.0.3
+
+ 安装(使用 PREFIX 指定安装目录)：
+
+ # make PREFIX=/usr/local/redis3 install
+
+ 安装完成后，可以看到/usr/local/redis3 目录下有一个 bin 目录，bin 目录里就是 redis 的命令脚本：
+
+ redis-benchmark redis-check-aof redis-check-dump redis-cli redis-server
+
+ 
+=== 创建集群配置目录，并拷贝 redid.conf 配置文件到各节点配置目录：
+
+192.168.1.81
+
+```
+# mkdir -p /usr/local/redis3/cluster/7111
+
+# cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7111/redis-7111.conf 
+```
+
+192.168.1.82
+
+```
+ # mkdir -p /usr/local/redis3/cluster/7112
+
+ # cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7112/redis-7112.conf
+```
+
+192.168.1.83
+
+```
+ # mkdir -p /usr/local/redis3/cluster/7113
+
+ # cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7113/redis-7113.conf 
+```
+
+192.168.1.84
+
+```
+ # mkdir -p /usr/local/redis3/cluster/7114
+
+ # cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7114/redis-7114.conf 
+```
+
+192.168.1.85
+
+```
+ # mkdir -p /usr/local/redis3/cluster/7115
+
+ # cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7115/redis-7115.conf 
+```
+
+192.168.1.86
+
+```
+ # mkdir -p /usr/local/redis3/cluster/7116
+
+ # cp /usr/local/src/redis-3.0.3/redis.conf /usr/local/redis3/cluster/7116/redis-7116.conf
+```
+
+修改配置文件中的下面选项：
+
+ 6 个节点的 redis.conf 配置文件内容，注意修改下红色字体部分的内容即可，其他都相同： 
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/25.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/26.png?raw=true[ctoedu,800,450]
+
+192.168.1.81
+
+```
+vi /usr/local/redis3/cluster/7111/redis-7111.conf 
+
+pidfile /var/run/redis-7111.pid
+port 7111
+cluster-config-file /usr/local/redis3/cluster/7111/nodes.conf
+dir /usr/local/redis3/cluster/7111(通过查找# REPLICATION)
+```
+
+ 192.168.1.82
+
+```
+vi /usr/local/redis3/cluster/7112/redis-7112.conf 
+
+pidfile /var/run/redis-7112.pid
+port 7112
+cluster-config-file /usr/local/redis3/cluster/7112/nodes.conf
+dir /usr/local/redis3/cluster/7113(通过查找# REPLICATION)
+
+```
+
+ 192.168.1.83
+
+```
+vi /usr/local/redis3/cluster/7113/redis-7113.conf 
+
+pidfile /var/run/redis-7113.pid
+port 7113
+cluster-config-file /usr/local/redis3/cluster/7113/nodes.conf
+dir /usr/local/redis3/cluster/7113(通过查找# REPLICATION)
+
+```
+
+
+ 192.168.1.84
+
+```
+vi /usr/local/redis3/cluster/7114/redis-7114.conf 
+
+pidfile /var/run/redis-7114.pid
+port 7114
+cluster-config-file /usr/local/redis3/cluster/7114/nodes.conf
+dir /usr/local/redis3/cluster/7114(通过查找# REPLICATION)
+```
+
+
+ 192.168.1.85
+
+```
+ vi /usr/local/redis3/cluster/7115/redis-7115.conf 
+
+pidfile /var/run/redis-7115.pid
+port 7115
+cluster-config-file /usr/local/redis3/cluster/7115/nodes.conf
+dir /usr/local/redis3/cluster/7115(通过查找# REPLICATION)
+```
+
+
+ 192.168.1.86
+
+```
+
+ vi /usr/local/redis3/cluster/7116/redis-7116.conf 
+
+pidfile /var/run/redis-7116.pid
+port 7116
+cluster-config-file /usr/local/redis3/cluster/7116/nodes.conf
+dir /usr/local/redis3/cluster/7116(通过查找# REPLICATION)
+```
+
+
+包含了最少选项的集群配置文件示例如下:
+
+```
+ port 7000 cluster-enabled yes
+
+ cluster-config-file nodes.conf cluster-node-timeout 5000
+
+appendonly yes
+```
+
+=== 使用如下命令启动这 6 个 Redis 节点实例：
+
+ 192.168.181
+
+```
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7111/redis-7111.conf 
+
+```
+192.168.1.82
+
+```
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7112/redis-7112.conf 
+
+```
+192.168.1.83
+
+```
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7113/redis-7113.conf 
+```
+
+192.168.1.84
+
+```
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7114/redis-7114.conf 
+```
+
+192.168.1.85
+
+```
+
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7115/redis-7115.conf 
+```
+
+192.168.1.86
+
+```
+ # /usr/local/redis3/bin/redis-server /usr/local/redis3/cluster/7116/redis-7116.conf
+```
+
+启动之后用 PS 命令查看实例启动情况：
+
+```
+[root@edu-zk-01 cluster]# ps -ef | grep redis
+
+ root 5443 1 0 22:49 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7111 [cluster] 
+
+[root@edu-zk-02 cluster]# ps -ef | grep redis
+
+ root 5421 1 0 22:49 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7112 [cluster] 
+
+[root@edu-zk-03 cluster]# ps -ef | grep redis 
+
+root 5457 1 0 22:49 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7113 [cluster]
+
+[root@edu-zk-04 cluster]# ps -ef | grep redis 
+
+root 5379 1 0 22:50 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7114 [cluster] 
+
+[root@edu-zk-05 cluster]# ps -ef | grep redis 
+
+root 5331 1 0 22:50 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7115 [cluster]
+
+[root@edu-zk-06 cluster]# ps -ef | grep redis 
+
+root 5687 1 0 22:50 ? 00:00:00 /usr/local/redis3/bin/redis-server *:7116 [cluster]
+```
+
+=== 注意：启动完毕后，6 个Redis 实例尚未构成集群。
+
+ 接下来准备创建集群
+
+ 安装 ruby 和 rubygems（注意：需要 ruby 的版本在 1.8.7 以上）
+
+```
+ # yum install ruby rubygems
+```
+
+ 检查 ruby 版本：
+
+```
+# ruby -v
+
+ ruby 1.8.7 (2013-06-27 patchlevel 374) [x86_64-Linux]
+```
+
+ gem 安装 redis ruby 接口：
+
+```
+ # gem install redis
+
+ Successfully installed redis-3.2.1
+
+ 1 gem installed 
+
+Installing ri documentation for redis-3.2.1... 
+
+Installing RDoc documentation for redis-3.2.1...
+
+```
+
+
+
+ === 执行 Redis 集群创建命令（只需要在其中一个节点上执行一次则可）
+
+```
+ # cd /usr/local/src/redis-3.0.3/src/
+
+ # cp redis-trib.rb /usr/local/bin/redis-trib
+
+ # redis-trib create --replicas 1 192.168.1.84:7114 192.168.1.85:7115 192.168.1.86:7116 192.168.1.81:7111 192.168.1.82:7112 192.168.1.83:7113
+
+
+```
+
+image::https://img-blog.csdn.net/20160428230500898?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+image::https://img-blog.csdn.net/20160428230638680?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+（输入 yes 并按下回车确认之后，集群就会将配置应用到各个节点，并连接起（join）各个节点，也就是让各个节点开始互相通讯）
+
+集群简单测试 ：
+
+image::https://img-blog.csdn.net/20160428230549507?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160428230549507?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedi]
+
+
+
+=== 将Redis配置成服务
+
+(非伪集群适用，也就是每个节点物理机部署的情况下 )
+
+按上面的操作步奏。Redis的启动脚本为: /usr/local/src/redis-3.0.3/utils/redis_init_script
+
+将启动脚本复制到/etc/rc.d/init.d/目录 下，并命名为redis
+
+```
+#cp /usr/local/src/redis-3.0.3/utils/redis_init_script /etc/rc.d/init.d/redis
+```
+
+编辑/etc/rc.d/init.d/redis,修改相应配置，使用之能注册成为服务
+
+```
+# vi /etc/rc.d/init.d/redis
+```
+
+```
+#!/bin/sh
+#
+# Simple Redis init.d script conceived to work on Linux systems
+# as it does use of the /proc filesystem.
+REDISPORT=6379
+EXEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+PIDFILE=/var/run/redis_${REDISPORT}.pid
+CONF="/etc/redis/${REDISPORT}.conf"
+case "$1" in
+    start)
+        if [ -f $PIDFILE ]
+        then
+                echo "$PIDFILE exists, process is already running or crashed"
+        else
+                echo "Starting Redis server..."
+                $EXEC $CONF
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+                echo "$PIDFILE does not exist, process is not running"
+        else
+                PID=$(cat $PIDFILE)
+                echo "Stopping ..."
+                $CLIEXEC -p $REDISPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
+                    echo "Waiting for Redis to shutdown ..."
+                    sleep 1
+                done
+                echo "Redis stopped"
+        fi
+        ;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac
+```
+
+
+查看以上redis服务脚本,关注为橙色的几个属性，做如下几个修改的准备
+
+(1)、在脚本的第一行后面添加一行内容如下：
+
+```
+#chkconfig: 2345 80 90
+```
+（如果不添加 上面的内容，在注册服务时会提示:service redis does not support chkconfig）
+
+(2)、REDISPORT端口修改各节点对应的端口:(注意，端口名将与下面的配置文件名有关)
+
+(3)EXEC=/usr/local/bin/redis-server改为EXEC=/usr/local/redis3/redis-server
+
+(4)CLIEXEC=/usr/local/bin/redis-cli改为CLIEXEC=/usr/local/redis3/bin/redis-cli
+
+(5)配置文件设置，对conf属性作如下调整
+
+```
+CONF="/etc/redis/${REDISPORT}.conf"
+
+改为CONF="/usr/local/redis/cluster/${REDISPORT}/redis-${REDISPORT}.conf"
+```
+
+(6)更改redis开启的命令,以后台运行的方式执行:
+
+
+image::https://img-blog.csdn.net/20160428230228975?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160428230317332?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+$EXEC $CONF & #"&"作用是将服务转到后面运行
+
+修改后的/etc/rc.d/init.d/redis服务脚本内容为(注意各节点的端口不同):
+
+修改成:
+
+```
+#!/bin/sh
+
+#chkconfig: 2345 80 90
+# Simple Redis init.d script conceived to work on Linux systems
+# as it does use of the /proc filesystem.
+REDISPORT=7111
+EXEC=/usr/local/redis3/bin/redis-server
+CLIEXEC=/usr/local/redis3/bin/redis-cli
+PIDFILE=/var/run/redis-${REDISPORT}.pid
+CONF="/usr/local/redis3/cluster/${REDISPORT}/redis-${REDISPORT}.conf"
+
+
+case "$1" in
+    start)
+        if [ -f $PIDFILE ]
+        then
+                echo "$PIDFILE exists, process is already running or crashed"
+        else
+                echo "Starting Redis server..."
+                $EXEC $CONF &
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+                echo "$PIDFILE does not exist, process is not running"
+        else
+                PID=$(cat $PIDFILE)
+                echo "Stopping ..."
+                $CLIEXEC -p $REDISPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
+                    echo "Waiting for Redis to shutdown ..."
+                    sleep 1
+                done
+                echo "Redis stopped"
+        fi
+        ;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac
+```
+
+image::https://img-blog.csdn.net/20160428230317332?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160428230317332?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+```
+# chkconfig --add /etc/rc.d/init.d/redis
+
+# service redis start
+Starting Redis server...
+# service redis stop
+Stopping ...
+Redis stopped
+```
+
+== Java代码集群测试
+
+存数据
+
+image::https://img-blog.csdn.net/20160429104700261?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+取数据
+
+image::https://img-blog.csdn.net/20160429104717464?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+image::https://img-blog.csdn.net/20160429105531905?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
