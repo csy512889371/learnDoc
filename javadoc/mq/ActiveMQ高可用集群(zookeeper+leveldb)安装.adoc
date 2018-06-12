@@ -1,0 +1,331 @@
+= ActiveMQ高可用集群(zookeeper+leveldb)安装
+
+== 概述
+
+从 ActiveMQ 5.9 开始，ActiveMQ 的集群实现方式取消了传统的Master-Slave 方式，增加了基于ZooKeeper + LevelDB的 Master-Slave实现方式，其他两种方式目录共享和数据库共享依然存在。
+
+== 三种集群方式的对比： 
+
+(1)基于共享文件系统（KahaDB，默认）： 
+
+```
+<persistenceAdapter> 
+
+<kahaDB directory="${activemq.data}/kahadb"/> </persistenceAdapter> 
+```
+
+(2)基于 JDBC：
+
+```
+<bean id="MySQL-ds" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+
+ <property name="url" value="jdbc:mysql://localhost:3306/amq?relaxAutoCommit=true"/> <property name="username" value="root"/>
+
+ <property name="password" value="root"/> <property name="maxActive" value="20"/>
+
+ <property name="poolPreparedStatements" value="true"/> </bean>
+
+ <persistenceAdapter> 
+
+ <jdbcPersistenceAdapter dataDirectory="${activemq.data}" dataSource="#mysql-ds" createTablesOnStartup="false"/>
+
+ </persistenceAdapter>
+```
+
+(3)基于可复制的 LevelDB（本文采用这种集群方式）： 
+
+LevelDB 是 Google开发的一套用于持久化数据的高性能类库。LevelDB并不是一种服务,用户需要自 行实现Server。是单进程的服务，能够处理十亿级别规模Key-Value 型数据，占用内存小。
+
+```
+<persistenceAdapter> 
+
+  <replicatedLevelDB 
+
+       directory="${activemq.data}/leveldb" 
+
+       replicas="3" 
+
+       bind="tcp://0.0.0.0:62621" 
+
+       zkAddress="localhost:2181,localhost:2182,localhost:2183" 
+
+       hostname="localhost" 
+
+       zkPath="/activemq/leveldb-stores"/> 
+
+</persistenceAdapter>
+```
+
+本文主要讲解基于 ZooKeeper 和LevelDB 搭建ActiveMQ 集群。集群仅提供主备方式的高可用集 群功能，避免单点故障，没有负载均衡功能。 
+
+官方文档：http://activemq.apache.org/replicated-leveldb-store.html 
+
+集群原理图：
+
+image::https://img-blog.csdn.net/20160419213930471?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+高可用的原理：使用ZooKeeper（集群）注册所有的ActiveMQ Broker。只有其中的一个Broker 可以提供 服务，被视为Master，其他的Broker 处于待机状态，被视为Slave。不能提供负载均衡功能，只是高可用。如果Master 因故障而不能提供服务，ZooKeeper 会从 Slave中选举出一个 Broker充当 Master。 Slave 连接 Master并同步他们的存储状态，Slave不接受客户端连接。所有的存储操作都将被复制到 连接至 Master 的Slaves。如果 Master 宕了,得到了最新更新的 Slave 会成为 Master。故障节点在恢复后 会重新加入到集群中并连接 Master 进入Slave 模式。 
+
+所有需要同步的 disk 的消息操作都将等待存储状态被复制到其他法定节点的操作完成才能完成。所以，如果你配置了replicas=3，那么法定大小是(3/2)+1=2。Master 将会存储并更新然后等待 (2-1)=1 个Slave存储和更新完成，才汇报 success。至于为什么是 2-1，熟悉 Zookeeper 的应该知道，有一个 node要作为观擦者存在。当一个新的Master 被选中，你需要至少保障一个法定node 在线以能够找到拥有最新 状态的node。这个node 可以成为新的Master。因此，推荐运行至少3 个replica nodes，以防止一个node失败了，服务中断。（原理与 ZooKeeper 集群的高可用实现方式类似）
+
+== 集群部署
+
+=== 1、ActiveMQ集群部署规划：
+
+. 环境：CentOS 6.6 x64 、JDK7 
+. 版本：ActiveMQ 5.11.1 
+. ZooKeeper 集群环境：192.168.1.81:2181,192.168.1.82:2182,192.168.1.83:2183
+
+=== 2、防火墙打开对应的端口
+
+```
+edu-zk-01:
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8161 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 51511 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 62621 -j ACCEPT
+
+edu-zk-02:
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8162 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 51512 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 62622 -j ACCEPT
+
+edu-zk-03:
+
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 8163 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 51513 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 62623 -j ACCEPT
+
+
+```
+
+=== 3、分别在三台主机中创建/home/ctoedu/activemq目录
+
+```
+# mkdir /home/ctoedu/activemq
+```
+
+上传 apache-activemq-5.11.1-bin.tar.gz 到/home/ctoedu/activemq 目录
+
+=== 4、解压并按节点命名
+
+```
+# tar -xvf apache-activemq-5.11.1-bin.tar.gz
+
+# cd /home/ctoedu/activemq 
+
+# tar -xvf apache-activemq-5.11.1-bin.tar.gz
+
+# mv apache-activemq-5.11.1 node-0X#(X代表节点号 1、2、3，下同)
+```
+
+
+=== 5、修改管理控制台端口（默认为 8161）可在 conf/jetty.xml 中修改，如下：
+
+ node-01 管控台端口：
+
+ ```
+<bean id="jettyPort" class="org.apache.activemq.web.WebConsolePort" init-method="start">
+             <!-- the default port number for the web console -->
+        <property name="host" value="0.0.0.0"/>
+        <property name="port" value="8161"/>
+  </bean>
+ ```
+
+ node-02管控台端口：
+
+```
+ <bean id="jettyPort" class="org.apache.activemq.web.WebConsolePort" init-method="start">
+             <!-- the default port number for the web console -->
+        <property name="host" value="0.0.0.0"/>
+        <property name="port" value="8162"/>
+  </bean>
+
+```
+
+ node-03管控台端口：
+
+```
+<bean id="jettyPort" class="org.apache.activemq.web.WebConsolePort" init-method="start">
+             <!-- the default port number for the web console -->
+        <property name="host" value="0.0.0.0"/>
+        <property name="port" value="8163"/>
+  </bean>
+```
+
+=== 6、集群配置： 
+
+在 3 个ActiveMQ 节点中配置conf/activemq.xml 中的持久化适配器。修改其中bind、zkAddress、hostname和 zkPath。注意：每个 ActiveMQ 的 BrokerName 必须相同，否则不能加入集群。
+
+所有节点中activemq.xml配置
+
+```
+<broker xmlns="http://activemq.apache.org/schema/core" brokerName="DubboEdu" dataDirectory="${activemq.data}">
+
+```
+
+node-01 中的持久化配置:
+
+image::https://img-blog.csdn.net/20160430150858022?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+node-02 中的持久化配置:
+
+image::https://img-blog.csdn.net/20160430150459093?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+node-03 中的持久化配置:
+image::https://img-blog.csdn.net/20160430150839207?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+修改各节点的消息端口（注意，避免端口冲突）：
+
+node-01 中的消息端口配置:
+
+image::https://img-blog.csdn.net/20160430145419923?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+node-02 中的消息端口配置:
+
+image::https://img-blog.csdn.net/20160430144538614?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+ node-03 中的消息端口配置:
+
+image::https://img-blog.csdn.net/20160430144712132?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+=== 7、按顺序启动 3个 ActiveMQ节点：(zookeeper集群已经启动)
+
+```
+#/home/ctoedu/zookeeper/node-01/bin/zkSeerver.sh start
+
+#/home/ctoedu/zookeeper/node-02/bin/zkSeerver.sh start
+
+#/home/ctoedu/zookeeper/node-03/bin/zkSeerver.sh start
+
+
+
+# /home/ctoedu/activemq/node-01/bin/activemq start
+
+# /home/ctoedu/activemq/node-02/bin/activemq start
+
+# /home/ctoedu/activemq/node-03/bin/activemq start
+```
+
+
+监听日志：
+
+```
+#  tail -f /home/ctoedu/activemq/node-01/data/activemq.log 
+
+#  tail -f /home/ctoedu/activemq/node-02/data/activemq.log 
+
+#  tail -f /home/ctoedu/activemq/node-03/data/activemq.log 
+```
+
+=== 8、集群的节点状态分析：
+
+ 集群启动后对 ZooKeeper 数据的抓图
+
+image::https://img-blog.csdn.net/20160420232546065?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+可以看到ActiveMQ 的有3 个节点，分别是00000000000，00000000001，00000000002。 我这里是 00000000005，00000000006，00000000007。
+
+以下第一张图展现了 000000000005的值，可以看到elected 的值是不为空，说明这个节点是Master，
+
+image::https://img-blog.csdn.net/20160420232535956?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+其他两个节点是 Slave
+
+
+image::https://img-blog.csdn.net/20160420232606050?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+image::https://img-blog.csdn.net/20160420232634787?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+ === 9.集群可用性测试
+
+ActiveMQ的客户端只能访问Master的Broker,其他处于Slave的Broker不能访问，所以客户端连接的Broker应该使用failover协议(失败转移)
+
+```
+failover:(tcp://192.168.1.81:51511,tcp://192.168.1.82:51512,tcp://192.168.1.83:51513)?randomize=false
+```
+
+image::https://img-blog.csdn.net/20160427224251647?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu,800,450]
+
+
+=== 10.集群高可用测试
+
+当一个ActiveMQ节点挂掉，或者一个Zookeeper节点挂掉，ActiveMQ服务依然正常运转，如果仅剩一个ActiveMQ节点,因为不能选举Master,ActiveMQ不能正常运行:同样的,如果Zookeeper仅剩一个节点活动，不管ActiveMQ各节点存活，ActiveMQ也不能正常提供服务。(ActiveMQ集群的高可用，依赖于Zookeeper集群的高可用)
+
+=== 11.设置开机启动
+
+```
+#vi /etc/rc.local
+
+su - ctoedu-c '/home/ctoedu/activemq/node-01/bin/activemq start'
+
+su - ctoedu-c '/home/ctoedu/activemq/node-02/bin/activemq start'
+
+su - ctoedu-c '/home/ctoedu/activemq/node-03/bin/activemq start'
+```
+
+=== 12.ActiveMQ集群测试
+
+image::https://img-blog.csdn.net/20160427224326340?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+image::https://img-blog.csdn.net/20160427224353481?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+=== 13、负载均衡集群
+
+配置放在
+
+集群 1 链接集群 2：
+
+image::https://img-blog.csdn.net/20160430145632158?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+集群 2 链接集群 1： 
+
+集群2(伪集群)连接集群1配置 
+
+image::https://img-blog.csdn.net/20160427231244166?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160427231258512?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+集群2(伪集群)端口放开
+
+image::https://img-blog.csdn.net/20160427231336857?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+启动集群1（伪集群）启动
+
+image::https://img-blog.csdn.net/20160428000539610?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+
+image::https://img-blog.csdn.net/20160428000552422?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+集群1连接集群2配置
+
+image::https://img-blog.csdn.net/20160427232826487?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160427232826487?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+image::https://img-blog.csdn.net/20160427232826487?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+集群2连接集群1配置
+
+image::https://img-blog.csdn.net/20160430150245419?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+ActiveMQ集群负载均衡原理图
+
+image::https://img-blog.csdn.net/20160427234235522?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
+集群1，集群2负载均衡高可用测试:
+
+消息生产者B
+
+
+image::https://img-blog.csdn.net/20160428133552293?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQv/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center[ctoedu]
+
