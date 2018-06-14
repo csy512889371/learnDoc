@@ -1,0 +1,623 @@
+= 自定义序列化
+
+
+== 例子一
+
+* 使用位移 与大小端存储对象。
+
+```
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Arrays;
+
+public class Test1 {
+
+	public static void main(String[] args) throws IOException {
+		int id = 101;
+		int age = 21;
+		
+		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+		arrayOutputStream.write(int2bytes(id));
+		arrayOutputStream.write(int2bytes(age));
+		
+		byte[] byteArray = arrayOutputStream.toByteArray();
+		
+		System.out.println(Arrays.toString(byteArray));
+		
+		//==============================================================
+		ByteArrayInputStream arrayInputStream = new ByteArrayInputStream(byteArray);
+		byte[] idBytes = new byte[4];
+		arrayInputStream.read(idBytes);
+		System.out.println("id:" + bytes2int(idBytes));
+		
+		byte[] ageBytes = new byte[4];
+		arrayInputStream.read(ageBytes);
+		System.out.println("age:" + bytes2int(ageBytes));
+		
+	}
+	
+	
+	/**
+	 * 大端字节序列(先写高位，再写低位)
+	 * 百度下 大小端字节序列
+	 * @param i
+	 * @return
+	 */
+	public static byte[] int2bytes(int i){
+		byte[] bytes = new byte[4];
+		bytes[0] = (byte)(i >> 3*8);
+		bytes[1] = (byte)(i >> 2*8);
+		bytes[2] = (byte)(i >> 1*8);
+		bytes[3] = (byte)(i >> 0*8);
+		return bytes;
+	}
+	
+	
+	/**
+	 * 大端
+	 * @param bytes
+	 * @return
+	 */
+	public static int bytes2int(byte[] bytes){
+		return (bytes[0] << 3*8) |
+				(bytes[1] << 2*8) |
+				(bytes[2] << 1*8) |
+				(bytes[3] << 0*8);
+	}
+
+}
+
+```
+
+
+== ByteBuffer
+
+```
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+public class Test2 {
+
+	public static void main(String[] args) {
+		int id = 101;
+		int age = 21;
+		
+		ByteBuffer buffer = ByteBuffer.allocate(8);
+		buffer.putInt(id);
+		buffer.putInt(age);
+		byte[] array = buffer.array();
+		System.out.println(Arrays.toString(buffer.array()));
+		
+		//====================================================
+		
+		ByteBuffer buffer2 = ByteBuffer.wrap(array);
+		System.out.println("id:"+buffer2.getInt());
+		System.out.println("age:"+buffer2.getInt());
+
+	}
+
+}
+```
+
+
+== ChannelBuffer
+
+```
+
+import java.util.Arrays;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
+
+public class Test3 {
+
+    public static void main(String[] args) {
+
+        ChannelBuffer buffer = ChannelBuffers.dynamicBuffer();
+        buffer.writeInt(101);
+        buffer.writeDouble(80.1);
+
+        byte[] bytes = new byte[buffer.writerIndex()];
+        buffer.readBytes(bytes);
+
+        System.out.println(Arrays.toString(bytes));
+
+        System.out.println("abc".getBytes());
+
+        //================================================
+        ChannelBuffer wrappedBuffer = ChannelBuffers.wrappedBuffer(bytes);
+        System.out.println(wrappedBuffer.readInt());
+        System.out.println(wrappedBuffer.readDouble());
+
+    }
+
+}
+
+```
+
+== 序列化
+
+Serializer
+
+```
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.jboss.netty.buffer.ChannelBuffer;
+/**
+ * 自定义序列化接口
+ *
+ *
+ */
+public abstract class Serializer {
+	
+	
+	public static final Charset CHARSET = Charset.forName("UTF-8");
+	
+	protected ChannelBuffer writeBuffer;
+	
+	protected ChannelBuffer readBuffer;
+	
+	/**
+	 * 反序列化具体实现
+	 */
+	protected abstract void read();
+	
+	/**
+	 * 序列化具体实现
+	 */
+	protected abstract void write();
+	
+	/**
+	 * 从byte数组获取数据
+	 * @param bytes	读取的数组
+	 */
+	public Serializer readFromBytes(byte[] bytes) {
+		readBuffer = BufferFactory.getBuffer(bytes);
+		read();
+		readBuffer.clear();
+		return this;
+	}
+	
+	/**
+	 * 从buff获取数据
+	 * @param readBuffer
+	 */
+	public void readFromBuffer(ChannelBuffer readBuffer) {
+		this.readBuffer = readBuffer;
+		read();
+	}
+	
+	/**
+	 * 写入本地buff
+	 * @return
+	 */
+	public ChannelBuffer writeToLocalBuff(){
+		writeBuffer = BufferFactory.getBuffer();
+		write();
+		return writeBuffer;
+	}
+	
+	/**
+	 * 写入目标buff
+	 * @param buffer
+	 * @return
+	 */
+	public ChannelBuffer writeToTargetBuff(ChannelBuffer buffer){
+		writeBuffer = buffer;
+		write();
+		return writeBuffer;
+	}
+	
+	/**
+	 * 返回buffer数组
+	 * 
+	 * @return
+	 */
+	public byte[] getBytes() {
+		writeToLocalBuff();
+		byte[] bytes = null;
+		if (writeBuffer.writerIndex() == 0) {
+			bytes = new byte[0];
+		} else {
+			bytes = new byte[writeBuffer.writerIndex()];
+			writeBuffer.readBytes(bytes);
+		}
+		writeBuffer.clear();
+		return bytes;
+	}
+
+	
+	public byte readByte() {
+		return readBuffer.readByte();
+	}
+
+	public short readShort() {
+		return readBuffer.readShort();
+	}
+
+	public int readInt() {
+		return readBuffer.readInt();
+	}
+
+	public long readLong() {
+		return readBuffer.readLong();
+	}
+
+	public float readFloat() {
+		return readBuffer.readFloat();
+	}
+
+	public double readDouble() {
+		return readBuffer.readDouble();
+	}
+	
+	public String readString() {
+		int size = readBuffer.readShort();
+		if (size <= 0) {
+			return "";
+		}
+
+		byte[] bytes = new byte[size];
+		readBuffer.readBytes(bytes);
+
+		return new String(bytes, CHARSET);
+	}
+	
+	public <T> List<T> readList(Class<T> clz) {
+		List<T> list = new ArrayList<>();
+		int size = readBuffer.readShort();
+		for (int i = 0; i < size; i++) {
+			list.add(read(clz));
+		}
+		return list;
+	}
+	
+	public <K,V> Map<K,V> readMap(Class<K> keyClz, Class<V> valueClz) {
+		Map<K,V> map = new HashMap<>();
+		int size = readBuffer.readShort();
+		for (int i = 0; i < size; i++) {
+			K key = read(keyClz);
+			V value = read(valueClz);
+			map.put(key, value);	
+		}
+		return map;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <I> I read(Class<I> clz) {
+		Object t = null;
+		if ( clz == int.class || clz == Integer.class) {
+			t = this.readInt();
+		} else if (clz == byte.class || clz == Byte.class){
+			t = this.readByte();
+		} else if (clz == short.class || clz == Short.class){
+			t = this.readShort();
+		} else if (clz == long.class || clz == Long.class){
+			t = this.readLong();
+		} else if (clz == float.class || clz == Float.class){
+			t = readFloat();
+		} else if (clz == double.class || clz == Double.class){
+			t = readDouble();
+		} else if (clz == String.class ){
+			t = readString();
+		} else if (Serializer.class.isAssignableFrom(clz)){
+			try {
+				byte hasObject = this.readBuffer.readByte();
+				if(hasObject == 1){
+					Serializer temp = (Serializer)clz.newInstance();
+					temp.readFromBuffer(this.readBuffer);
+					t = temp;
+				}else{
+					t = null;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+			
+		} else {
+			throw new RuntimeException(String.format("不支持类型:[%s]", clz));
+		}
+		return (I) t;
+	}
+
+
+	public Serializer writeByte(Byte value) {
+		writeBuffer.writeByte(value);
+		return this;
+	}
+
+	public Serializer writeShort(Short value) {
+		writeBuffer.writeShort(value);
+		return this;
+	}
+
+	public Serializer writeInt(Integer value) {
+		writeBuffer.writeInt(value);
+		return this;
+	}
+
+	public Serializer writeLong(Long value) {
+		writeBuffer.writeLong(value);
+		return this;
+	}
+
+	public Serializer writeFloat(Float value) {
+		writeBuffer.writeFloat(value);
+		return this;
+	}
+
+	public Serializer writeDouble(Double value) {
+		writeBuffer.writeDouble(value);
+		return this;
+	}
+
+	public <T> Serializer writeList(List<T> list) {
+		if (isEmpty(list)) {
+			writeBuffer.writeShort((short) 0);
+			return this;
+		}
+		writeBuffer.writeShort((short) list.size());
+		for (T item : list) {
+			writeObject(item);
+		}
+		return this;
+	}
+
+	public <K,V> Serializer writeMap(Map<K, V> map) {
+		if (isEmpty(map)) {
+			writeBuffer.writeShort((short) 0);
+			return this;
+		}
+		writeBuffer.writeShort((short) map.size());
+		for (Entry<K, V> entry : map.entrySet()) {
+			writeObject(entry.getKey());
+			writeObject(entry.getValue());
+		}
+		return this;
+	}
+
+	public Serializer writeString(String value) {
+		if (value == null || value.isEmpty()) {
+			writeShort((short) 0);
+			return this;
+		}
+
+		byte data[] = value.getBytes(CHARSET);
+		short len = (short) data.length;
+		writeBuffer.writeShort(len);
+		writeBuffer.writeBytes(data);
+		return this;
+	}
+
+	public Serializer writeObject(Object object) {
+		
+		if(object == null){
+			writeByte((byte)0);
+		}else{
+			if (object instanceof Integer) {
+				writeInt((int) object);
+				return this;
+			}
+
+			if (object instanceof Long) {
+				writeLong((long) object);
+				return this;
+			}
+
+			if (object instanceof Short) {
+				writeShort((short) object);
+				return this;
+			}
+
+			if (object instanceof Byte) {
+				writeByte((byte) object);
+				return this;
+			}
+
+			if (object instanceof String) {
+				String value = (String) object;
+				writeString(value);
+				return this;
+			}
+			if (object instanceof Serializer) {
+				writeByte((byte)1);
+				Serializer value = (Serializer) object;
+				value.writeToTargetBuff(writeBuffer);
+				return this;
+			}
+			
+			throw new RuntimeException("不可序列化的类型:" + object.getClass());
+		}
+		
+		return this;
+	}
+
+	private <T> boolean isEmpty(Collection<T> c) {
+		return c == null || c.size() == 0;
+	}
+	public <K,V> boolean isEmpty(Map<K,V> c) {
+		return c == null || c.size() == 0;
+	}
+}
+
+```
+
+BufferFactory
+
+
+
+```
+import java.nio.ByteOrder;
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.buffer.ChannelBuffers;
+/**
+ * buff工厂
+ *
+ *
+ */
+public class BufferFactory {
+	
+	public static ByteOrder BYTE_ORDER = ByteOrder.BIG_ENDIAN;
+
+	/**
+	 * 获取一个buffer
+	 * 
+	 * @return
+	 */
+	public static ChannelBuffer getBuffer() {
+		ChannelBuffer dynamicBuffer = ChannelBuffers.dynamicBuffer();
+		return dynamicBuffer;
+	}
+
+	/**
+	 * 将数据写入buffer
+	 * @param bytes
+	 * @return
+	 */
+	public static ChannelBuffer getBuffer(byte[] bytes) {
+		ChannelBuffer copiedBuffer = ChannelBuffers.copiedBuffer(bytes);
+		return copiedBuffer;
+	}
+
+}
+```
+
+Player
+
+```
+import java.util.ArrayList;
+import java.util.List;
+
+import com.cn.core.Serializer;
+
+public class Player extends Serializer{
+	
+	private long playerId;
+	
+	private int age;
+	
+	private List<Integer> skills = new ArrayList<>();
+	
+	private Resource resource = new Resource();
+	
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
+
+	public long getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(long playerId) {
+		this.playerId = playerId;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+	public List<Integer> getSkills() {
+		return skills;
+	}
+
+	public void setSkills(List<Integer> skills) {
+		this.skills = skills;
+	}
+
+	@Override
+	protected void read() {
+		this.playerId = readLong();
+		this.age = readInt();
+		this.skills = readList(Integer.class);
+		this.resource = read(Resource.class);
+	}
+
+	@Override
+	protected void write() {
+		writeLong(playerId);
+		writeInt(age);
+		writeList(skills);
+		writeObject(resource);
+	}
+	
+	
+
+}
+```
+
+Resource
+
+
+```
+import com.cn.core.Serializer;
+
+public class Resource extends Serializer {
+	
+	private int gold;
+	
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+
+	@Override
+	protected void read() {
+		this.gold = readInt();
+	}
+
+	@Override
+	protected void write() {
+		writeInt(gold);
+	}
+
+}
+```
+
+Test4
+
+
+```
+import java.util.Arrays;
+
+public class Test4 {
+
+    public static void main(String[] args) {
+
+        Player player = new Player();
+        player.setPlayerId(10001);
+        player.setAge(22);
+        player.getSkills().add(101);
+        player.getResource().setGold(99999);
+
+        byte[] bytes = player.getBytes();
+
+        System.out.println(Arrays.toString(bytes));
+
+        //==============================================
+
+        Player player2 = new Player();
+        player2.readFromBytes(bytes);
+        System.out.println(player2.getPlayerId() + "   " + player2.getAge() + "     " + Arrays.toString(player2.getSkills().toArray()) + "   " + player2.getResource().getGold());
+
+    }
+
+}
+```
