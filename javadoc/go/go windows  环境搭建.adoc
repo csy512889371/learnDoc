@@ -1,0 +1,77 @@
+= go windows  环境搭建
+
+== 概述
+
+. https://golang.google.cn/dl/下载地址
+. https://golang.google.cn/project/ 
+. https://golang.org/dl/ 翻墙地址
+
+== 安装
+
+go环境变量,自动添加
+
+```
+GOROOT：D:\go
+```
+
+```
+E:\gopath: E:\gopath\Development
+```
+
+在path 中加入 
+
+```
+%GOROOT%\bin;%GOPATH%\bin;
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,800,450]
+
+
+检查go 安装成功与否
+```
+go version
+
+go env
+
+```
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/35.png?raw=true[ctoedu,800,450]
+
+
+=== 查看api
+
+```
+godoc -http=:8099
+```
+
+```
+http://localhost:8099/
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/36.png?raw=true[ctoedu,800,450]
+
+== helloword
+
+包结构
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,800,450]
+
+src/hello.go
+
+```
+// You can edit this code!
+// Click here and start typing.
+package main
+
+import "fmt"
+
+func main() {
+	fmt.Println("Hello, 世界")
+}
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/38.png?raw=true[ctoedu,800,450]
+
+
+```
+go run hello.go
+go build hello.go
+```
