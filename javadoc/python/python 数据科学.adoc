@@ -1,0 +1,76 @@
+= python 数据科学相关库
+
+== 概述
+
+最受欢迎的Python数据科学平台
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/32.png?raw=true[ctoedu,800,450]
+
+== Anaconda
+
+Anaconda 官网下载地址：https://www.continuum.io/downloads 
+
+
+https://repo.continuum.io/archive/ 下载地址 
+
+
+我使用的是 Python 3.5 版本，这里使用Anaconda3-4.2.0-Windows-x86_64.exe版本
+
+=== 安装软件：
+
+1、打开Anaconda Prompt，输入下面命令用于创建一个虚拟环境，名字叫tensorflow， 同时指定python的版本，如果本机内没有安装这个版本的python，就会自动下载安装。
+
+
+```
+conda create -n tensorflow python=3.5
+```
+
+2、激活虚拟环境
+
+```
+activate tensorflow
+```
+
+3、经过第2步，进入了tensorflow虚拟环境中了，所以现在所有的操作将只会影响到这个环境。下面在这个环境中安装名为tensorflow的软件。
+
+```
+pip install tensorflow 或者 
+pip install –ignore-installed –upgrade tensorflow
+```
+
+
+
+== 在pycharm中使用虚拟环境
+
+在Anaconda Prompt中查看新建的虚拟环境在哪个目录下：> conda env list
+
+File->setting->Project:XXXX->Project Interperter
+
+可以新建一个，也可以选择上面所创建的虚拟环境。
+
+本人Anaconda安装路径为：C:\Users\Administrator\Anaconda3
+上面步骤所创建的虚拟环境的路径为：C:\Users\Administrator\Anaconda3\envs\tensorflow\python.ext，其中tensorflow表示虚拟环境的名字。
+
+如果要在这个环境下添加工具包，需要在Anaconda Prompt中操作。
+
+
+=== 修改Jupyter Notebook初始目录
+
+快捷方式后加入具体目录
+
+```
+
+C:\Users\Administrator\Anaconda3\python.exe C:\Users\Administrator\Anaconda3\cwp.py C:\Users\Administrator\Anaconda3 "C:/Users/Administrator/Anaconda3/python.exe" "C:/Users/Administrator/Anaconda3/Scripts/jupyter-notebook-script.py" E:\python\jupyter-notebook
+```
+
+==  常用开发库
+
+. Numpy
+. Scipy
+. Pandas
+. Matplotlib
+. Scikit-learn
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/33.png?raw=true[ctoedu,800,450]
