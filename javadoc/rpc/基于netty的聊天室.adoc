@@ -1,0 +1,228 @@
+= 基于netty的聊天室
+
+== 概述
+
+* chat_netty3 基于netty3
+* chat_netty4 基于netty4
+* chat_protobuf 序列化协议 使用protobuf
+
+== 部分代码
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/40.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/41.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/42.png?raw=true[ctoedu,800,450]
+
+netty4 部分代码
+
+```
+package com.cn.common.core.session;
+/**
+ * 会话抽象接口
+ *
+ *
+ */
+public interface Session {
+	
+	/**
+	 * 会话绑定对象
+	 * @return
+	 */
+	Object getAttachment();
+	
+	/**
+	 * 绑定对象
+	 * @return
+	 */
+	void setAttachment(Object attachment);
+	
+	/**
+	 * 移除绑定对象
+	 * @return
+	 */
+	void removeAttachment();
+	
+	/**
+	 * 向会话中写入消息
+	 * @param message
+	 */
+	void write(Object message);
+	
+	/**
+	 * 判断会话是否在连接中
+	 * @return
+	 */
+	boolean isConnected();
+	
+	/**
+	 * 关闭
+	 * @return
+	 */
+	void close();
+}
+
+```
+
+SessionImpl
+
+
+```
+package com.cn.common.core.session;
+
+import io.netty.channel.Channel;
+import io.netty.util.AttributeKey;
+
+/**
+ * 会话封装类
+ *
+ *
+ */
+public class SessionImpl implements Session {
+	
+	/**
+	 * 绑定对象key
+	 */
+	public static AttributeKey<Object> ATTACHMENT_KEY  = AttributeKey.valueOf("ATTACHMENT_KEY");
+	
+	/**
+	 * 实际会话对象
+	 */
+	private Channel channel;
+	
+	
+	public SessionImpl(Channel channel) {
+		this.channel = channel;
+	}
+
+	@Override
+	public Object getAttachment() {
+		return channel.attr(ATTACHMENT_KEY).get();
+	}
+
+	@Override
+	public void setAttachment(Object attachment) {
+		channel.attr(ATTACHMENT_KEY).set(attachment);
+	}
+	
+	@Override
+	public void removeAttachment() {
+		channel.attr(ATTACHMENT_KEY).remove();
+	}
+
+	@Override
+	public void write(Object message) {
+		channel.writeAndFlush(message);
+	}
+
+	@Override
+	public boolean isConnected() {
+		return channel.isActive();
+	}
+
+	@Override
+	public void close() {
+		channel.close();
+	}
+
+
+
+}
+
+```
+
+
+SessionManager
+
+
+```
+package com.cn.common.core.session;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import com.cn.common.core.model.Response;
+import com.cn.common.core.serial.Serializer;
+import com.cn.common.core.session.Session;
+import com.google.protobuf.GeneratedMessage;
+/**
+ * 会话管理者
+ *
+ *
+ */
+public class SessionManager {
+
+	/**
+	 * 在线会话
+	 */
+	private static final ConcurrentHashMap<Long, Session> onlineSessions = new ConcurrentHashMap<>();
+	
+	/**
+	 * 加入
+	 * @param playerId
+	 * @param channel
+	 * @return
+	 */
+	public static boolean putSession(long playerId, Session session){
+		if(!onlineSessions.containsKey(playerId)){
+			boolean success = onlineSessions.putIfAbsent(playerId, session)== null? true : false;
+			return success;
+		}
+		return false;
+	}
+	
+	/**
+	 * 移除
+	 * @param playerId
+	 */
+	public static Session removeSession(long playerId){
+		return onlineSessions.remove(playerId);
+	}
+	
+	/**
+	 * 发送消息[自定义协议]
+	 * @param <T>
+	 * @param playerId
+	 * @param message
+	 */
+	public static <T extends Serializer> void sendMessage(long playerId, short module, short cmd, T message){
+		Session session = onlineSessions.get(playerId);
+		if (session != null && session.isConnected()) {
+			Response response = new Response(module, cmd, message.getBytes());
+			session.write(response);
+		}
+	}
+	
+	/**
+	 * 发送消息[protoBuf协议]
+	 * @param <T>
+	 * @param playerId
+	 * @param message
+	 */
+	public static <T extends GeneratedMessage> void sendMessage(long playerId, short module, short cmd, T message){
+		Session session = onlineSessions.get(playerId);
+		if (session != null && session.isConnected()) {
+			Response response = new Response(module, cmd, message.toByteArray());
+			session.write(response);
+		}
+	}
+	
+	/**
+	 * 是否在线
+	 * @param playerId
+	 * @return
+	 */
+	public static boolean isOnlinePlayer(long playerId){
+		return onlineSessions.containsKey(playerId);
+	}
+	
+	/**
+	 * 获取所有在线玩家
+	 * @return
+	 */
+	public static Set<Long> getOnlinePlayers() {
+		return Collections.unmodifiableSet(onlineSessions.keySet());
+	}
+}
+
+```
