@@ -3,6 +3,12 @@
 
 == 概述
 
+=== netty和tcp协议的关系
+
+netty -> Java Runtime Socket (io、nio、nio2) -> OS Socket -> TCP (当然也可以是UDP、SCTP)；
+
+作系统层的Socket都必须做三次握手（仅对TCP而言），Netty当然无法跳过，只不过它对用户屏蔽了三次握手（当然还有四次挥手）的部分细节。
+
 * 粘包现象
 
 客户端在一个for循环内连续发送1000个hello给Netty服务器端
