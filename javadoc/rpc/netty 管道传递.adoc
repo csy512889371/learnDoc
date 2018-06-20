@@ -1,0 +1,133 @@
+= netty 管道传递
+
+== 代码
+
+* server
+
+```
+package com.server;
+
+import java.net.InetSocketAddress;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import org.jboss.netty.bootstrap.ServerBootstrap;
+import org.jboss.netty.channel.ChannelPipeline;
+import org.jboss.netty.channel.ChannelPipelineFactory;
+import org.jboss.netty.channel.Channels;
+import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
+import org.jboss.netty.handler.codec.string.StringDecoder;
+import org.jboss.netty.handler.codec.string.StringEncoder;
+
+public class Server {
+
+	public static void main(String[] args) {
+		//服务类
+		ServerBootstrap bootstrap = new ServerBootstrap();
+		
+		//boss线程监听端口，worker线程负责数据读写
+		ExecutorService boss = Executors.newCachedThreadPool();
+		ExecutorService worker = Executors.newCachedThreadPool();
+		
+		//设置niosocket工厂
+		bootstrap.setFactory(new NioServerSocketChannelFactory(boss, worker));
+		
+		//设置管道的工厂
+		bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
+			
+			@Override
+			public ChannelPipeline getPipeline() throws Exception {
+
+				ChannelPipeline pipeline = Channels.pipeline();
+				pipeline.addLast("handler1", new MyHandler1());
+				pipeline.addLast("handler2", new MyHandler2());
+				return pipeline;
+			}
+		});
+		
+		bootstrap.bind(new InetSocketAddress(10101));
+		
+		System.out.println("start!!!");
+	}
+
+}
+
+```
+
+* client
+
+```
+package com.server;
+
+import java.net.Socket;
+
+public class Client {
+
+	public static void main(String[] args) throws Exception {
+
+		Socket socket = new Socket("127.0.0.1", 10101);
+		
+		socket.getOutputStream().write("hello".getBytes());
+		
+		socket.close();
+	}
+
+}
+
+```
+
+* MyHandler1
+
+```
+package com.server;
+
+import org.jboss.netty.buffer.ChannelBuffer;
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+import org.jboss.netty.channel.UpstreamMessageEvent;
+
+public class MyHandler1 extends SimpleChannelHandler {
+
+	@Override
+	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+
+		ChannelBuffer buffer = (ChannelBuffer)e.getMessage();
+		
+		byte[] array = buffer.array();
+		String message = new String(array);
+		System.out.println("handler1:" + message);
+		
+		//传递
+		ctx.sendUpstream(new UpstreamMessageEvent(ctx.getChannel(), "abc", e.getRemoteAddress()));
+		ctx.sendUpstream(new UpstreamMessageEvent(ctx.getChannel(), "efg", e.getRemoteAddress()));
+	}
+}
+
+```
+
+* MyHandler2
+
+```
+package com.server;
+
+import org.jboss.netty.channel.ChannelHandlerContext;
+import org.jboss.netty.channel.MessageEvent;
+import org.jboss.netty.channel.SimpleChannelHandler;
+
+public class MyHandler2 extends SimpleChannelHandler {
+
+	@Override
+	public void messageReceived(ChannelHandlerContext ctx, MessageEvent e) throws Exception {
+
+		String message = (String)e.getMessage();
+		
+		System.out.println("handler2:" + message);
+	}
+}
+
+```
+
+
+
+
