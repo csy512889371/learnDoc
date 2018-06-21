@@ -1,0 +1,54 @@
+= anaconda 环境搭建
+
+== 概述
+
+http://www.image-net.org/
+
+https://tensorflow.google.cn/
+
+== anaconda
+
+通过anaconda 安装相应的包
+
+* opencv
+* tersorflow
+* rtersorflow
+* numpy
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/43.png?raw=true[ctoedu,800,450]
+
+
+=== 中科大的镜像
+
+```
+conda config --add channels https://mirrors.ustc.edu.cn/anaconda/pkgs/free/  
+
+conda config --set show_channel_urls yes  
+
+ustc conda-r地址：https://mirrors.ustc.edu.cn/anaconda/pkgs/r/
+```
+
+.condarc以点开头，一般表示 conda 应用程序的配置文件，在用户的根目录 
+
+```
+（windows：C:\users\username\，linux：/home/username/）。
+
+C:\Users\Administrator
+```
+
+但对于.condarc配置文件，是一种可选的（optional）运行期配置文件，其默认情况下是不存在的。 
+
+当用户第一次运行 conda config命令时，将会在用户的家目录创建该文件。
+
+* TUNA 还提供了 Anaconda 仓库的镜像，运行以下命令:
+
+```
+conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
+```
+
+```
+conda config --set show_channel_urls yes
+```
+
+
+
