@@ -1,0 +1,42 @@
+= Jupyter默认目录和默认浏览器修改
+
+== 概述
+
+打开cmd，首先进入到Jupyter的安装目录，我的是在D:\Python\Anaconda\Scrips中。然后，输入命令
+
+```
+jupyter notebook --generate-config
+```
+
+=== 2.执行命令后，会在如下所示路径的文件夹中找到新建立的Jupyter_notebook_config.py文件
+
+```
+C:\Users\Administrator\.jupyter\jupyter_notebook_config.py
+```
+
+=== 3.用Notepad++或者IPython打开文件，对文件修改如下：
+
+（1）默认目录修改
+
+找到#c.NotebookApp.notebook_dir =' '，删掉开头的“#”，在‘ ’中输入你要启动的目录路径。
+
+```
+## The directory to use for notebooks and kernels.
+c.NotebookApp.notebook_dir = 'E:\\python\\jupyter-notebook'
+```
+
+
+2）默认浏览器修改
+
+找到c.NotebookApp.browser = ''，在下方输入
+
+```
+#  variable to override it.
+#c.NotebookApp.browser = ''
+import webbrowser
+webbrowser.register("chrome",None,webbrowser.GenericBrowser(u"C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"))
+c.NotebookApp.browser = 'chrome'
+```
+
+注意：输入命令要满足python格式，开头不要有空格，否则会出错
+
