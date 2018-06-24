@@ -1,0 +1,41 @@
+= opencv 素描图
+
+== 代码 
+
+
+* opencv 3.3.1 版本
+* 调整 cv2.Canny(img,180,180) 中的数字 可以改变线条的多少
+* 1.jpg 源图片
+* 000.jpg 目标图片
+
+
+```
+import cv2
+import numpy as np
+import random
+img = cv2.imread('1.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+#canny 1 gray 2 高斯 3 canny 
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+imgG = cv2.GaussianBlur(gray,(3,3),0)
+dst = cv2.Canny(img,180,180) #图片卷积——》th
+cv2.imwrite('000.jpg',dst) # 1 name 2 data 
+
+#颜色反转
+
+imgfz = cv2.imread('000.jpg',1)
+imgInfofz = imgfz.shape
+dstfz = np.zeros((height,width,3),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        (b,g,r) = imgfz[i,j]
+        dstfz[i,j] = (255-b,255-g,255-r)
+#cv2.imshow('dstfz',dstfz)
+cv2.imwrite('000.jpg',dstfz) # 1 name 2 data 
+cv2.waitKey(0)
+
+
+
+```
