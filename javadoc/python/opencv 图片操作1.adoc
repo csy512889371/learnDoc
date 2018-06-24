@@ -1,0 +1,155 @@
+= opencv 图片操作
+
+== 图片剪切
+
+```
+
+#100 -》200 x
+#100-》300 y
+import cv2
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+print(imgInfo)
+dst = img[100:200,100:300]
+cv2.imshow('image',dst)
+cv2.waitKey(0)
+```
+
+== 图片移位
+
+使用opencv2 api 实现
+```
+# 1 API 2 算法原理 3 源代码
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+####
+matShift = np.float32([[1,0,100],[0,1,200]])# 2*3
+dst = cv2.warpAffine(img,matShift,(height,width))#1 data 2 mat 3 info
+# 移位 矩阵
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+算法解析
+
+```
+# [1,0,100],[0,1,200] 2*2 2*1 
+# [[1,0],[0,1]]  2*2  A
+# [[100],[200]] 2*1   B
+# xy C
+# A*C+B = [[1*x+0*y],[0*x+1*y]]+[[100],[200]]
+# = [[x+100],[y+200]]
+
+#(10,20)->(110,120)
+```
+
+使用代码实现
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+dst = np.zeros(img.shape,np.uint8)
+height = imgInfo[0]
+width = imgInfo[1]
+for i in range(0,height):
+    for j in range(0,width-100):
+        dst[i,j+100]=img[i,j]
+cv2.imshow('image',dst)
+cv2.waitKey(0)
+```
+
+=== 图片镜像
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+deep = imgInfo[2]
+newImgInfo = (height*2,width,deep)
+dst = np.zeros(newImgInfo,np.uint8)#uint8 
+for i in range(0,height):
+    for j in range(0,width):
+        dst[i,j] = img[i,j]
+        #x y = 2*h - y -1
+        dst[height*2-i-1,j] = img[i,j]
+for i in range(0,width):
+    dst[height,i] = (0,0,255)#BGR
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+=== 图片缩放
+
+```
+#[[A1 A2 B1],[A3 A4 B2]]
+# [[A1 A2],[A3 A4]]  [[B1],[B2]]
+# newX = A1*x + A2*y+B1
+# newY = A3*x +A4*y+B2
+# x->x*0.5 y->y*0.5
+# newX = 0.5*x
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+matScale = np.float32([[0.5,0,0],[0,0.5,0]])
+dst = cv2.warpAffine(img,matScale,(int(width/2),int(height/2)))
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+== 仿射变换 
+
+图片拉升变换
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+#src 3->dst 3 (左上角 左下角 右上角)
+matSrc = np.float32([[0,0],[0,height-1],[width-1,0]])
+matDst = np.float32([[50,50],[300,height-200],[width-300,100]])
+#组合
+matAffine = cv2.getAffineTransform(matSrc,matDst)# mat 1 src 2 dst
+dst = cv2.warpAffine(img,matAffine,(width,height))
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+
+== 图片旋转
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+cv2.imshow('src',img)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+# 2*3 
+matRotate = cv2.getRotationMatrix2D((height*0.5,width*0.5),45,0.5)# mat rotate 1 center 2 angle 3 scale
+#100*100 25 
+dst = cv2.warpAffine(img,matRotate,(height,width))
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+
+```

@@ -1,0 +1,239 @@
+= opencv 图片特效
+
+
+== 灰度处理
+
+* 方法1 imread 
+
+```
+#imread 
+#方法1 imread 
+import cv2
+img0 = cv2.imread('image0.jpg',0)
+img1 = cv2.imread('image0.jpg',1)
+print(img0.shape)
+print(img1.shape)
+cv2.imshow('src',img0)
+cv2.waitKey(0)
+```
+
+* 方法2 cvtColor
+
+```
+#方法2 cvtColor
+import cv2
+img = cv2.imread('image0.jpg',1)
+dst = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)# 颜色空间转换 1 data 2 BGR gray
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+* 方法3 RGB R=G=B = gray  (R+G+B)/3
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+# RGB R=G=B = gray  (R+G+B)/3
+dst = np.zeros((height,width,3),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        (b,g,r) = img[i,j]
+        gray = (int(b)+int(g)+int(r))/3
+        dst[i,j] = np.uint8(gray)
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+* 方法4 gray = r*0.299+g*0.587+b*0.114
+
+
+```
+#方法4 gray = r*0.299+g*0.587+b*0.114
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+dst = np.zeros((height,width,3),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        (b,g,r) = img[i,j]
+        b = int(b)
+        g = int(g)
+        r = int(r)
+        gray = r*0.299+g*0.587+b*0.114
+        dst[i,j] = np.uint8(gray)
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+== 算法优化
+
+```
+# 1 灰度 最重要 2 基础 3 实时性 
+# 定点 快于 浮点    >> 快于 +- 快于 */ 
+# r*0.299+g*0.587+b*0.114
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+# RGB R=G=B = gray  (R+G+B)/3
+dst = np.zeros((height,width,3),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        (b,g,r) = img[i,j]
+        b = int(b)
+        g = int(g)
+        r = int(r)
+        #
+        #gray = (r*1+g*2+b*1)/4
+        gray = (r+(g<<1)+b)>>2
+        dst[i,j] = np.uint8(gray)
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+
+== 计算机算加减乘除的时间对比
+
+* 加法
+
+```
+指令　　　　　　　　　　　　　指令周期
+
+adc 寄存器, 立即数　　　　　　1
+
+adc 寄存器, 寄存器　　　　　　1
+
+adc 寄存器, 内存　　　　　　　2
+
+adc 内存,   立即数　　　　　　3
+
+adc 内存,   寄存器　　　　　　3
+
+ 
+
+add 寄存器, 立即数　　　　　　1
+
+add 寄存器, 寄存器　　　　　　1
+
+add 寄存器, 内存　　　　　　　2
+
+add 内存, 立即数　　　　　　　3
+
+add 内存, 寄存器　　　　　　　3
+
+ 
+
+inc 寄存器　　　　　　　　　　1
+
+inc 内存　　　　　　　　　　　3
+```
+
+
+* 减法
+
+```
+dec 寄存器　　　　　　　　　　1
+
+dec 内存　　　　　　　　　　　3
+
+ 
+
+sub 寄存器, 立即数　　　　　　1
+
+sub 寄存器, 寄存器　　　　　　1
+
+sub 寄存器, 内存　　　　　　　2
+
+sub 内存, 立即数　　　　　　　3
+
+sub 内存, 寄存器　　　　　　　3
+
+ 
+
+sbb 寄存器, 立即数　　　　　　1
+
+sbb 寄存器, 寄存器　　　　　　1
+
+sbb 寄存器, 内存　　　　　　　2
+
+sbb 内存, 立即数　　　　　　　3
+
+sbb 内存, 寄存器　　　　　　　3
+
+```
+
+* 乘法
+
+```
+imul 寄存器　　　　　　　　　11
+
+imul 内存　　　　　　　　　　11
+
+imul 寄存器, 寄存器, 立即数　10
+
+imul 寄存器, 立即数　　　　　10
+
+imul 寄存器, 内存, 立即数　　10
+
+imul 寄存器, 寄存器　　　　　10
+
+imul 寄存器, 内存　　　　　　10
+
+ 
+
+mul 8位寄存器　　　　　　　　11
+
+mul 16位寄存器 　　　　　　　11
+
+mul 32位寄存器 　　　　　　　10
+
+mul 8位内存　　　　　　　　　11
+
+mul 16位内存 　　　　　　　　11
+
+mul 32位内存 　　　　　　　　10
+```
+
+
+除法
+
+
+```
+div 8位寄存器　　　　　　　　17
+
+div 16位寄存器 　　　　　　　25
+
+div 32位寄存器 　　　　　　　41
+
+div 8位内存　　　　　　　　　17
+
+div 16位内存 　　　　　　　　25
+
+div 32位内存 　　　　　　　　41
+
+ 
+
+idiv 8位寄存器 　　　　　　　22
+
+idiv 16位寄存器　　　　　　　30
+
+idiv 32位寄存器　　　　　　　46
+
+idiv 8位内存 　　　　　　　　30
+
+idiv 16位内存　　　　　　　　30
+
+idiv 32位内存　　　　　　　　46
+```
+
+由此可见，CPU计算加减法的速度跟位运算（与、或、非、异或）相当，乘法的速度比加减法慢近10倍，除法的速度比加减法慢（近20倍——8位，近30倍——16位，40倍以上——32位）。算加减法，读取内存数据的比不读内存数据的慢，写内存的比读内存的慢。
+

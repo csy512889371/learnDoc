@@ -1,0 +1,133 @@
+= opencv 图片特效
+
+== 图片颜色反转
+
+灰度图片颜色反转
+
+```
+#0-255 255-当前
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+dst = np.zeros((height,width,1),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        grayPixel = gray[i,j]
+        dst[i,j] = 255-grayPixel
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+彩色图片颜色反转
+
+
+```
+#RGB 255-R=newR
+#0-255 255-当前
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+dst = np.zeros((height,width,3),np.uint8)
+for i in range(0,height):
+    for j in range(0,width):
+        (b,g,r) = img[i,j]
+        dst[i,j] = (255-b,255-g,255-r)
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+== 马赛克
+
+```
+import cv2
+import numpy as np
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+for m in range(100,300):
+    for n in range(100,200):
+        # pixel ->10*10
+        if m%10 == 0 and n%10==0:
+            for i in range(0,10):
+                for j in range(0,10):
+                    (b,g,r) = img[m,n]
+                    img[i+m,j+n] = (b,g,r)
+cv2.imshow('dst',img)
+cv2.waitKey(0)
+```
+
+== 毛玻璃
+
+```
+import cv2
+import numpy as np
+import random
+img = cv2.imread('image0.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+dst = np.zeros((height,width,3),np.uint8)
+mm = 8
+for m in range(0,height-mm):
+    for n in range(0,width-mm):
+        index = int(random.random()*8)#0-8
+        (b,g,r) = img[m+index,n+index]
+        dst[m,n] = (b,g,r)
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+== 图片融合
+
+dst  = src1*a+src2*(1-a)
+
+```
+# dst  = src1*a+src2*(1-a)
+import cv2
+import numpy as np
+img0 = cv2.imread('image0.jpg',1)
+img1 = cv2.imread('image1.jpg',1)
+imgInfo = img0.shape
+height = imgInfo[0]
+width = imgInfo[1]
+# ROI
+roiH = int(height/2)
+roiW = int(width/2)
+img0ROI = img0[0:roiH,0:roiW]
+img1ROI = img1[0:roiH,0:roiW]
+# dst
+dst = np.zeros((roiH,roiW,3),np.uint8)
+dst = cv2.addWeighted(img0ROI,0.5,img1ROI,0.5,0)#add src1*a+src2*(1-a)
+# 1 src1 2 a 3 src2 4 1-a
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+== 边缘检测
+
+```
+import cv2
+import numpy as np
+import random
+img = cv2.imread('3.jpg',1)
+imgInfo = img.shape
+height = imgInfo[0]
+width = imgInfo[1]
+cv2.imshow('src',img)
+#canny 1 gray 2 高斯 3 canny 
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+imgG = cv2.GaussianBlur(gray,(3,3),0)
+dst = cv2.Canny(img,50,50) #图片卷积——》th
+cv2.imshow('dst',dst)
+cv2.waitKey(0)
+```
+
+
