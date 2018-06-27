@@ -1,0 +1,395 @@
+= 机器学习
+
+*  1 样本 2 特征 3 分类器 4 预测 检验
+*  haar+adaboost -》face
+*  haar 模版 adaboost 三级 （强分类器 弱分类器 node）
+*  hog 模版 svm 
+
+== 样本准备
+
+=== 视频分解图片
+
+```
+
+# 视频分解图片
+# 1 load 2 info 3 parse 4 imshow imwrite
+import cv2
+cap = cv2.VideoCapture("1.mp4")# 获取一个视频打开cap 1 file name
+isOpened = cap.isOpened# 判断是否打开‘
+print(isOpened)
+fps = cap.get(cv2.CAP_PROP_FPS)#帧率
+width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))#w h
+height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+print(fps,width,height)
+i = 0
+while(isOpened):
+    if i == 10:
+        break
+    else:
+        i = i+1
+    (flag,frame) = cap.read()# 读取每一张 flag frame 
+    fileName = 'image'+str(i)+'.jpg'
+    print(fileName)
+    if flag == True:
+        cv2.imwrite(fileName,frame,[cv2.IMWRITE_JPEG_QUALITY,100])
+print('end!')
+
+```
+
+图片合成视频
+
+```
+import cv2
+img = cv2.imread('image1.jpg')
+imgInfo = img.shape
+size = (imgInfo[1],imgInfo[0])
+print(size)
+videoWrite = cv2.VideoWriter('2.mp4',-1,5,size)# 写入对象 1 file name
+# 2 编码器 3 帧率 4 size
+for i in range(1,11):
+    fileName = 'image'+str(i)+'.jpg'
+    img = cv2.imread(fileName)
+    videoWrite.write(img)# 写入方法 1 jpg data
+print('end!')
+```
+
+基于Haar+Adaboost人脸识别
+
+
+```
+# 1 load xml 2 load jpg 3 haar gray 4 detect 5 draw
+import cv2
+import numpy as np
+# load xml 1 file name
+face_xml = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+eye_xml = cv2.CascadeClassifier('haarcascade_eye.xml')
+# load jpg
+img = cv2.imread('face.jpg')
+cv2.imshow('src',img)
+# haar gray
+gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+# detect faces 1 data 2 scale 3 5
+faces = face_xml.detectMultiScale(gray,1.3,5)
+print('face=',len(faces))
+# draw
+for (x,y,w,h) in faces:
+    cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),2)
+    roi_face = gray[y:y+h,x:x+w]
+    roi_color = img[y:y+h,x:x+w]
+    # 1 gray
+    eyes = eye_xml.detectMultiScale(roi_face)
+    print('eye=',len(eyes))
+    #for (e_x,e_y,e_w,e_h) in eyes:
+        #cv2.rectangle(roi_color,(e_x,e_y),(e_x+e_w,e_y+e_h),(0,255,0),2)
+cv2.imshow('dst',img)
+cv2.waitKey(0)
+
+
+```
+
+```
+#adaboost 训练
+# 1 初始化数据权值分布
+# 苹果 苹果 苹果 香蕉
+# 0.1 0.1 0.1 0.1 
+# 2 遍历阈值 p
+# minP t 
+# 3 G1（x）
+# 4 权值分布 update
+# 0.2 0.2 0.2 0.7
+## 训练终止条件：1 for count 2 p
+```
+
+```
+#haar + adaboost face
+# 苹果 苹果 苹果 香蕉
+# 0.1  0.1 0.1 0.5
+# 训练终止条件：1 for count 2 p
+# 1 分类器的结构 2 adaboost 计算过程 3 xml 文件结构
+# haar> T1 and haar>T2  2个强分类器15-20 
+
+# 1 分类器的结构
+# 3个强分类器 1 x1 t1 2 x2 t2 3 x3 t3
+# x1>t1 and x2>t2 and x3>t3  目标-》苹果
+# 作用：判决
+# 弱分类器结构
+# 作用：计算强分类器特征x1 x2 x3
+# x2 = sum（y1,y2,y3）
+
+# y1 弱分类器特征
+# node
+# 3个haar-》 node
+# 1node haar1 > nodeT1   z1 = a1
+# 1node haar1 < nodeT1   z1 = a2
+# Z = sum(z1,z2,z3)>T y1 = AA
+# Z = sum(z1,z2,z3)<T y1 = BB
+
+# haar->Node z1 z2 z3 Z=sum(z1,z2,z3)
+# Z>T y1 y2 y3
+# x = sum(y1,y2,y3) > T1 obj
+
+```
+
+```
+#haar 1 什么是haar？特征 = 像素 运算 -》结果 （具体值 向量 矩阵 多维）
+# 2 如何利用特征 区分目标？ 阈值判决 
+# 3 得到判决？机器学习 
+# 1 特征 2 判决 3 得到判决
+
+# 公式推导 1  -2
+# 特征 = 整个区域*权重1 + 黑色*权重2 = （黑+白）*1+黑*（-2）=
+# = 黑+白-2黑 = 白-黑
+
+# 1 haar模版 上下 左右 image size 模版 size 100*100 10*10 100次 step = 10
+# 1 100*100 2 10*10 3 step 10 4 模版1
+# 模版 滑动 缩放 10*10 11*11 20级
+
+# 举例 1080*720 step2 10*10 
+# 计算量 = 14模版*20缩放*（1080/2*720/2）*（100点+- ） = 50-100亿
+# （50-100）*15 = 1000亿次
+
+# A 1 B 1 2 C 1 3 D 1 2 3 4
+# 4 = A-B-C+D = 1+1+2+3+4 - 1 -2 - 1 -3 = 4 (3+-)
+```
+
+== SVM
+
+```
+# 1 思想 分类器 
+# 2 如何？ 寻求一个最优的超平面 分类
+# 3 核：line
+# 4 数据：样本 
+# 5 训练  SVM_create  train predict
+# svm本质 寻求一个最优的超平面 分类
+# svm 核: line
+# 身高体重 训练 预测 
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+#1 准备data
+rand1 = np.array([[155,48],[159,50],[164,53],[168,56],[172,60]])
+rand2 = np.array([[152,53],[156,55],[160,56],[172,64],[176,65]])
+
+# 2 label
+label = np.array([[0],[0],[0],[0],[0],[1],[1],[1],[1],[1]])
+
+# 3 data
+data = np.vstack((rand1,rand2))
+data = np.array(data,dtype='float32')
+
+# svm 所有的数据都要有label
+# [155,48] -- 0 女生 [152,53] ---1  男生
+# 监督学习 0 负样本 1 正样本
+
+# 4 训练
+svm = cv2.ml.SVM_create() # ml  机器学习模块 SVM_create() 创建
+# 属性设置
+svm.setType(cv2.ml.SVM_C_SVC) # svm type
+svm.setKernel(cv2.ml.SVM_LINEAR) # line
+svm.setC(0.01)
+# 训练
+result = svm.train(data,cv2.ml.ROW_SAMPLE,label)
+# 预测
+pt_data = np.vstack([[167,55],[162,57]]) #0 女生 1男生
+pt_data = np.array(pt_data,dtype='float32')
+print(pt_data)
+(par1,par2) = svm.predict(pt_data)
+print(par2)
+```
+
+
+== Hog特征
+
+
+```
+# 【3780】hog svm line训练【3780】
+#。hog*svm = 值
+# 值》T 目标obj 
+```
+
+```
+#整体hog cell复用
+# 3780
+# 3780 《-win（block cell bin）
+# 1《-bin
+# cell0 cell3 bin0-bin8
+# cell0: bin0 bin1 。。。bin8
+# cell1: bin0 bin1 。。。bin8
+# cell2: bin0 bin1 。。。bin8
+# cell3: bin0 bin1 。。。bin8
+#ij cell0 bin0=《f0，
+#i+1 j cell0 bin0 = f1
+#ij。。。。
+# sumbin0（f0+f1.。）= bin0
+# 权重累加
+#ij bin0 bin1 
+
+# cell复用
+
+# block 4个cell
+# 【0】【】【】【3】
+# cell0 bin0-bin9 
+# cellx0 cellx2 cellx4
+# cellx0:ij-》bin bin+1
+# cellx2：ij -》 cell2 cell3 -》bin bin+1 bin bin+1
+# cellx4：ij
+
+# 【cell 9】【4cell】【105】 = 3780
+```
+
+
+```
+# bin 投影 梯度
+# bin 0-360 9bin 0-40
+# bin1 0-20 180-200
+# ij f a = 10
+# 0-20 center bin1 a=190 180 200 bin1
+# f 
+# 25 bin1 bin2 
+# f1 = f*f（夹角） f2 = f*（1-f（夹角））  f（夹角）  0-1.0
+# +1 hog 
+```
+
+
+```
+#2·2 梯度 方向 模版
+# 像素都有一个梯度 》hog== win
+# 特征模版-》haar类似
+# 【1 0 -1】【【1】【0】【-1】】
+# a = p1*1+p2*0+p3*(-1) = 相邻像素之差
+# b = 上下像素之差
+# f = 根号下（a方+b方）
+# angle = arctan（a/b）
+```
+
+```
+#7 cell bin 梯度：运算
+# 每个像素-》梯度 ：大小 f 方向 angle
+# 0-360 /40 = 9块 = 9bin
+# 1bin = 40 cell-》360-〉9bin
+# hog特征维度：
+# haar 值 hog 向量 （维度）-》完全描述 一个obj info all
+# 维度 = 105*4*9=3780 
+```
+
+```
+#1 什么是hog》？特征 某个像素 某种运算
+#2 2·1 模块划分 2·2 梯度 方向 模版 2·3 bin 投影 2·4 每个模块hog
+#2·1 模块划分 
+# image（ppt） win（蓝色） block（红色） cell （绿色）（size）
+#image》win〉block》cell
+#block setp  win step cell bin 
+#win 特征计算最顶层单元 -》obj 
+# 1 win size 50*100 20*50    64*128
+# 2 2.1 block 《win 2.2 win size w h / block （wh） 16*16
+# 3 block step  如何win下滑动 8*8
+# 4 计算block cout = （（64-16）/8+1）*（（128-16）/8+1）= 105 block
+# 5 cell size 8*8 
+# 6 block = ？cell 16*16 = 2*2 = 》4cell  cell1-cell4
+# 7 bin？
+```
+
+
+== Hog+SVM
+
+```
+# 训练
+# 1 参数 2hog 3 svm 4 computer hog 5 label 6 train 7 pred 8 draw
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+# 1 par
+PosNum = 820
+NegNum = 1931
+winSize = (64,128)
+blockSize = (16,16)# 105
+blockStride = (8,8)#4 cell
+cellSize = (8,8)
+nBin = 9#9 bin 3780
+
+# 2 hog create hog 1 win 2 block 3 blockStride 4 cell 5 bin
+hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nBin)
+# 3 svm
+svm = cv2.ml.SVM_create()
+# 4 computer hog
+featureNum = int(((128-16)/8+1)*((64-16)/8+1)*4*9) #3780
+featureArray = np.zeros(((PosNum+NegNum),featureNum),np.float32)
+labelArray = np.zeros(((PosNum+NegNum),1),np.int32)
+# svm 监督学习 样本 标签 svm -》image hog  
+for i in range(0,PosNum):
+    fileName = 'pos/'+str(i+1)+'.jpg'
+    img = cv2.imread(fileName)
+    hist = hog.compute(img,(8,8))# 3780
+    for j in range(0,featureNum):
+        featureArray[i,j] = hist[j]
+    # featureArray hog [1,:] hog1 [2,:]hog2 
+    labelArray[i,0] = 1
+    # 正样本 label 1
+    
+for i in range(0,NegNum):
+    fileName = 'neg/'+str(i+1)+'.jpg'
+    img = cv2.imread(fileName)
+    hist = hog.compute(img,(8,8))# 3780
+    for j in range(0,featureNum):
+        featureArray[i+PosNum,j] = hist[j]
+    labelArray[i+PosNum,0] = -1
+# 负样本 label -1
+svm.setType(cv2.ml.SVM_C_SVC)
+svm.setKernel(cv2.ml.SVM_LINEAR)
+svm.setC(0.01)
+# 6 train
+ret = svm.train(featureArray,cv2.ml.ROW_SAMPLE,labelArray)
+# 7 myHog ：《-myDetect
+# myDetect-《resultArray  rho
+# myHog-》detectMultiScale
+
+# 7 检测  核心：create Hog -》 myDetect—》array-》
+# resultArray-》resultArray = -1*alphaArray*supportVArray
+# rho-》svm-〉svm.train
+alpha = np.zeros((1),np.float32)
+rho = svm.getDecisionFunction(0,alpha)
+print(rho)
+print(alpha)
+alphaArray = np.zeros((1,1),np.float32)
+supportVArray = np.zeros((1,featureNum),np.float32)
+resultArray = np.zeros((1,featureNum),np.float32)
+alphaArray[0,0] = alpha
+resultArray = -1*alphaArray*supportVArray
+# detect
+myDetect = np.zeros((3781),np.float32)
+for i in range(0,3780):
+    myDetect[i] = resultArray[0,i]
+myDetect[3780] = rho[0]
+# rho svm （判决）
+myHog = cv2.HOGDescriptor()
+myHog.setSVMDetector(myDetect)
+# load 
+imageSrc = cv2.imread('Test2.jpg',1)
+# (8,8) win 
+objs = myHog.detectMultiScale(imageSrc,0,(8,8),(32,32),1.05,2)
+# xy wh 三维 最后一维
+x = int(objs[0][0][0])
+y = int(objs[0][0][1])
+w = int(objs[0][0][2])
+h = int(objs[0][0][3])
+# 绘制展示
+cv2.rectangle(imageSrc,(x,y),(x+w,y+h),(255,0,0),2)
+cv2.imshow('dst',imageSrc)
+cv2.waitKey(0)
+```
+
+
+```
+# 1 样本 2 训练 3 test 预测
+# 1 样本
+# 1.1 pos 正样本 包含所检测目标 neg 不包含obj
+# 1.2 如何获取样本 1 网络 2 公司内部 3 自己收集
+# 一个好的样本 远胜过一个 复杂的神经网络 （K w）（M）
+# 1.1 网络公司 样本：1张图 1元  贵
+# 1.2 网络 爬虫 自己爬 
+# 1.3 公司： 很多年积累（mobileeye ADAS 99%） 红外图像 
+# 1.4 自己收集 视频 100 30 = 3000
+# 正样本：尽可能的多样  环境 干扰
+# 820 pos neg 1931 1:2 1:3
+# name
+```

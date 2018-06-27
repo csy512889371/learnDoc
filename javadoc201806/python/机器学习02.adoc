@@ -1,0 +1,17 @@
+= 机器学习2
+
+== 概述
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/1.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/2.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/3.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/4.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/5.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/6.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/7.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/8.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/9.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/python/10.png?raw=true[ctoedu,800,450]
+
+
+
