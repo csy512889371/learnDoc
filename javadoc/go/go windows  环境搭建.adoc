@@ -24,7 +24,7 @@ E:\gopath: E:\gopath\Development
 %GOROOT%\bin;%GOPATH%\bin;
 ```
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,600,450]
 
 
 检查go 安装成功与否
@@ -34,7 +34,7 @@ go version
 go env
 
 ```
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/35.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/35.png?raw=true[ctoedu,600,450]
 
 
 === 查看api
@@ -47,13 +47,13 @@ godoc -http=:8099
 http://localhost:8099/
 ```
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/36.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/36.png?raw=true[ctoedu,600,450]
 
 == helloword
 
 包结构
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/34.png?raw=true[ctoedu,600,450]
 
 src/hello.go
 
@@ -69,10 +69,34 @@ func main() {
 }
 ```
 
-image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/38.png?raw=true[ctoedu,800,450]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/fz/38.png?raw=true[ctoedu,600,450]
 
 
 ```
 go run hello.go
 go build hello.go
 ```
+
+
+== bee
+
+```
+go get github.com/beego/bee
+```
+
+```
+go get github.com/astaxie/beego
+```
+
+在 $GOPATH/src 目录下执行 bea create myapp
+
+=== 使用bee 工具编译beego项目
+
+
+在 $GOPATH/src 目录下执行. 启动项目
+
+```
+bee start myapp
+```
+
+访问: http://localhost:8080/ 
