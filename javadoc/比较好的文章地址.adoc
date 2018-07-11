@@ -1,0 +1,127 @@
+
+= 相关例子
+[cookie跨域读写](https://github.com/csy512889371/learnDoc/tree/master/sso-cookie)
+
+
+== python 博客
+http://www.cnblogs.com/liuxiaowei/category/1034666.html
+
+
+
+=== 理解OAuth 2.0
+
+http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html
+
+
+
+= mybatis 
+
+- 博客地址http://www.jianshu.com/nb/5226994
+
+# dubbo启动服务之容器（Container）
+
+* [*] http://www.ccblog.cn/75.htm
+
+#  推荐网站springcloud
+https://springcloud.cc/spring-cloud-dalston.html
+https://segmentfault.com/a/1190000011698823
+# 好的博客
+
+http://www.cnblogs.com/mr-yang-localhost/p/8313360.html
+
+
+# sharding-jdbc—分片策略
+http://www.cnblogs.com/mr-yang-localhost/p/8313360.html
+
+# spring boot
+
+http://blog.didispace.com/
+https://gitee.com/didispace/SpringBoot-Learning
+
+# spring 
+
+http://www.spring4all.com/
+
+
+Spring Boot 2.0 新特性详解 
+
+http://www.54tianzhisheng.cn/2018/03/06/SpringBoot2-new-features/
+
+Spring Boot 2.0 迁移指南
+
+http://www.54tianzhisheng.cn/2018/03/06/SpringBoot2-Migration-Guide/
+
+
+* https://zhuanlan.zhihu.com/p/28708259 编码习惯 - 接口定义 我们项目也有类似的做法
+** https://zhuanlan.zhihu.com/p/28717374 编码习惯 - Controller规范 我们项目也有类似的做法
+** https://zhuanlan.zhihu.com/p/28629319 编程习惯 - 日志建议
+** https://zhuanlan.zhihu.com/p/29005176 编码习惯 - 异常处理
+** https://zhuanlan.zhihu.com/p/29129469 编码习惯 - 参数校验和国际化规范
+** https://zhuanlan.zhihu.com/p/29199049 编码习惯 - 工具类规范
+** https://zhuanlan.zhihu.com/p/29191233 编码习惯 - 配置规范
+** https://zhuanlan.zhihu.com/p/29390147 编码习惯 - 函数编写建议
+
+# scala
+
+https://list.youku.com/albumlist/show/id_25837602.html?
+
+
+
+. http://tech.lede.com/2017/03/15/rd/server/SpringCloud0/ Spring Cloud技术分析（序）
+.. http://tech.lede.com/2017/03/15/rd/server/SpringCloud1/ Spring Cloud技术分析（1）——服务治理
+... http://tech.lede.com/2017/03/29/rd/server/SpringCloud1C/ Spring Cloud技术分析（2）—— 服务治理实践
+.... http://tech.lede.com/2017/04/19/rd/server/SpringCloudSleuth/ Spring Cloud技术分析（3）—— 服务跟踪
+..... http://tech.lede.com/2017/05/16/rd/server/SpringCloudZuul/ Spring Cloud技术分析（4）—— 服务网关
+...... http://tech.lede.com/2017/06/12/rd/server/springCloudConfig/ Spring Cloud技术分析（5）—— 配置中心
+
+
+https://ke.qq.com/course/274763 腾讯课堂 rabitmq
+
+# es 手册
+
+https://www.elastic.co/guide/index.html
+
+## 《高级Bash编程指南（abs guide）》读书笔记
+http://www.pythoner.com/122.html
+
+
+## openxml
+
+http://www.officeopenxml.com/
+
+http://www.officeopenxml.com/anatomyofOOXML-pptx.php
+
+
+
+lcn ::
+https://www.txlcn.org/index.html
+
+
+asciidoctor 语法::
+* http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+* http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/
+
+
+image::https://asciidoctor.org/images/sunset.jpg[Sunset,300,200]
+
+image::https://asciidoctor.org/images/sunset.jpg[,300,200]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/docker/1.png?raw=true[ctoedu,300,200]
+image::https://github.com/csy512889371/learnDoc/blob/master/image/2018/docker/1.png?raw=true[ctoedu,400,400]
+
+http://blog.didispace.com/
+
+== scala
+http://new-play.tudou.com/v/319530337.html?spm=a2hzp.8253869.0.0
+
+== codeforge
+
+http://www.codeforge.cn/article/460344
+
+== go
+
+https://gowalker.org/github.com/coocood/qbs
+
+== download
+
+http://www.xdowns.com/app/277320.html
