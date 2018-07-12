@@ -1,0 +1,46 @@
+= nginx空白图片 访问打点
+
+== 概述
+
+用过百度统计的兄弟有没有注意到百度使用1x1的空白图片传递统计参数，自己做异步统计的兄弟是否使用静态文件来传递参数。为什么使用空白图片呢，而不是自己存放一张小图呢，nginx里面的空白图片是保存在内存中的，速度绝对比硬盘上读取的快. 看下如何使用empty_gif生成响应1x1的空白图片吧.
+
+或许哪天ttlsa自己要做统计，咱们也可以使用empty_gif来传递参数，说归说，肯定性还是比较小，能用第三方的统计就用第三方统计。好了，进入正题吧。
+
+nginx默认内置ngx_http_empty_gif_module模块, 如何安装nginx我不在多讲.直接看下empty_gif的用
+
+
+```
+location = /_.gif {
+        empty_gif;
+}
+```
+
+=== nginx配置
+* error_page 405 =200 $request_url; 解决js get请求静态文件
+
+```
+server {
+ 
+        listen       80;
+        server_name  test.ttlsa.com;
+        access_log  /data/logs/nginx/test.ttlsa.com.access.log  main;
+ 
+        index index.html index.php index.html;
+        root /data/site/test.ttlsa.com;
+ 
+        location = /dig
+        {
+            empty_gif;
+            error_page 405 =200 $request_url;
+        }
+}
+```
+
+
+测试empty_gif
+
+* 访问localhost:8080/dig/结果如下
+
+
+
+
