@@ -5,6 +5,12 @@
 . https://golang.google.cn/dl/下载地址
 . https://golang.google.cn/project/ 
 . https://golang.org/dl/ 翻墙地址
+. https://studygolang.com/dl
+
+== 开发工具
+
+* GoLang / liteIDE
+* idea + go 插件
 
 == 安装
 
