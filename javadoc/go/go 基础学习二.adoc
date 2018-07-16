@@ -1,0 +1,213 @@
+= go 基础学习 二
+
+== 概述
+
+
+== 分支代码
+
+```
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+)
+
+func grade(score int) string {
+	g := ""
+	switch {
+	case score < 0 || score > 100:
+		panic(fmt.Sprintf(
+			"Wrong score: %d", score))
+	case score < 60:
+		g = "F"
+	case score < 80:
+		g = "C"
+	case score < 90:
+		g = "B"
+	case score <= 100:
+		g = "A"
+	}
+	return g
+}
+
+func main() {
+	// If "abc.txt" is not found,
+	// please check what current directory is,
+	// and change filename accordingly.
+	const filename = "abc.txt"
+	if contents, err := ioutil.ReadFile(filename); err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Printf("%s\n", contents)
+	}
+
+	//switch
+	fmt.Println(
+		grade(0),
+		grade(59),
+		grade(60),
+		grade(82),
+		grade(99),
+		grade(100),
+		// Uncomment to see it panics.
+		grade(-3),
+	)
+}
+
+```
+
+== 循环
+
+```
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"os"
+	"strconv"
+	"strings"
+)
+
+func convertToBin(n int) string {
+	result := ""
+	for ; n > 0; n /= 2 {
+		lsb := n % 2
+		result = strconv.Itoa(lsb) + result
+	}
+	return result
+}
+
+func printFile(filename string) {
+	file, err := os.Open(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	printFileContents(file)
+}
+
+func printFileContents(reader io.Reader) {
+	scanner := bufio.NewScanner(reader)
+
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
+
+func forever() {
+	for {
+		fmt.Println("abc")
+	}
+}
+
+func main() {
+	fmt.Println("convertToBin results:")
+	fmt.Println(
+		convertToBin(5),  // 101
+		convertToBin(13), // 1101
+		convertToBin(72387885),
+		convertToBin(0),
+	)
+
+	fmt.Println("abc.txt contents:")
+	printFile("basic/branch/abc.txt")
+
+	fmt.Println("printing a string:")
+	s := `abc"d"
+	kkkk
+	123
+
+	p`
+	printFileContents(strings.NewReader(s))
+
+	// Uncomment to see it runs forever
+	// forever()
+}
+
+```
+
+== 函数
+
+```
+package main
+
+import (
+	"fmt"
+	"math"
+	"reflect"
+	"runtime"
+)
+
+func eval(a, b int, op string) (int, error) {
+	switch op {
+	case "+":
+		return a + b, nil
+	case "-":
+		return a - b, nil
+	case "*":
+		return a * b, nil
+	case "/":
+		q, _ := div(a, b)
+		return q, nil
+	default:
+		return 0, fmt.Errorf(
+			"unsupported operation: %s", op)
+	}
+}
+
+func div(a, b int) (q, r int) {
+	return a / b, a % b
+}
+
+func apply(op func(int, int) int, a, b int) int {
+	p := reflect.ValueOf(op).Pointer()
+	opName := runtime.FuncForPC(p).Name()
+	fmt.Printf("Calling function %s with args "+
+		"(%d, %d)\n", opName, a, b)
+
+	return op(a, b)
+}
+
+//可变参数
+func sum(numbers ...int) int {
+	s := 0
+	for i := range numbers {
+		s += numbers[i]
+	}
+	return s
+}
+
+func swap(a, b int) (int, int) {
+	return b, a
+}
+
+func main() {
+	fmt.Println("Error handling")
+	if result, err := eval(3, 4, "x"); err != nil {
+		fmt.Println("Error:", err)
+	} else {
+		fmt.Println(result)
+	}
+	q, r := div(13, 3)
+	fmt.Printf("13 div 3 is %d mod %d\n", q, r)
+
+	// 函数式编程
+	fmt.Println("pow(3, 4) is:", apply(
+		func(a int, b int) int {
+			return int(math.Pow(
+				float64(a), float64(b)))
+		}, 3, 4))
+
+	fmt.Println("1+2+...+5 =", sum(1, 2, 3, 4, 5))
+
+	a, b := 3, 4
+	a, b = swap(a, b)
+	fmt.Println("a, b after swap is:", a, b)
+}
+
+```
+
+
