@@ -1,0 +1,173 @@
+= go 基础学习4 
+
+== 概述
+
+* map key 无序 是hashmap
+* make(map[string]int) 创建map
+* key 不存在，活动value类型的初始值
+* 获取元素 m[key]
+* v, ok := m[key] 判断是否存在key
+* for k, v := range m 遍历，但不保证顺序，手动对key排序。把key加到slice里面
+* map 的key。
+** 必须可以比较相等。除了slice，map，function的内建类型都可以作为key。
+** Struct 类型不包含上述字段，也可作为key。编译是检查
+
+* rune
+** utf8.RuneCountInString(s)) 获取字符数量
+** len(s)字节长度
+** []byte(s) 获得字节
+
+== 代码
+
+```
+package main
+
+import "fmt"
+
+func main() {
+
+	m := map[string]string{
+		"name":    "ccmouse",
+		"course":  "golang",
+		"site":    "imooc",
+		"quality": "notbad",
+	}
+
+	m2 := make(map[string]int) // m2 == empty map
+
+	var m3 map[string]int // m3 == nil
+
+	fmt.Println("m, m2, m3:")
+	fmt.Println(m, m2, m3)
+
+	fmt.Println("Traversing map m")
+	for k, v := range m {
+		fmt.Println(k, v)
+	}
+
+	fmt.Println("Getting values")
+	courseName := m["course"]
+	fmt.Println(`m["course"] =`, courseName)
+
+	//判断key 是否存在
+	if causeName, ok := m["cause"]; ok {
+		fmt.Println(causeName)
+	} else {
+		fmt.Println("key 'cause' does not exist")
+	}
+
+	fmt.Println("Deleting values")
+	name, ok := m["name"]
+	fmt.Printf("m[%q] before delete: %q, %v\n",
+		"name", name, ok)
+
+	//删除
+	delete(m, "name")
+	name, ok = m["name"]
+	fmt.Printf("m[%q] after delete: %q, %v\n",
+		"name", name, ok)
+}
+
+```
+
+== longest-substring-without-repeating-characters
+
+Given a string, find the length of the longest substring without repeating characters. For example, the longest substring without repeating letters for “abcabcbb” is “abc”, which the length is 3. For “bbbbb” the longest substring is “b”, with the length of 1.
+
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+func lengthOfNonRepeatingSubStr(s string) int {
+	lastOccurred := make(map[rune]int)
+	start := 0
+	maxLength := 0
+
+	for i, ch := range []rune(s) {
+		if lastI, ok := lastOccurred[ch]; ok && lastI >= start {
+			start = lastI + 1
+		}
+		if i-start+1 > maxLength {
+			maxLength = i - start + 1
+		}
+		lastOccurred[ch] = i
+	}
+
+	return maxLength
+}
+
+func main() {
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("abcabcbb"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("bbbbb"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("pwwkew"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr(""))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("b"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("abcdef"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("这里是mmm"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr("一二三二一"))
+	fmt.Println(
+		lengthOfNonRepeatingSubStr(
+			"asfasdjljsd;fjlasdj"))
+}
+
+```
+
+== rune
+
+```
+package main
+
+import (
+	"fmt"
+	"unicode/utf8"
+)
+
+func main() {
+	s := "Yes我爱kk!" // UTF-8
+	fmt.Println(s)
+
+	for _, b := range []byte(s) {
+		fmt.Printf("%X ", b)
+	}
+	fmt.Println()
+
+	for i, ch := range s { // ch is a rune
+		fmt.Printf("(%d %X) ", i, ch)
+	}
+	fmt.Println()
+
+	fmt.Println("Rune count:",
+		utf8.RuneCountInString(s))
+
+	bytes := []byte(s)
+	for len(bytes) > 0 {
+		ch, size := utf8.DecodeRune(bytes)
+		bytes = bytes[size:]
+		fmt.Printf("%c ", ch)
+	}
+	fmt.Println()
+
+	for i, ch := range []rune(s) {
+		fmt.Printf("(%d %c) ", i, ch)
+	}
+	fmt.Println()
+}
+
+```
+
+
+
+
+
