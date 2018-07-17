@@ -11,13 +11,22 @@
 
 * GoLang / liteIDE
 * idea + go 插件
+
 * go get 获取第三方库
 ** 使用gopm来获取无法下载的包
-**  go get -v github.com/gpmgo/gopm
+** go get -v github.com/gpmgo/gopm
 ** 安装git
 ** gopm get -g -v -u golang.org/x/tools/cmd/goimports
 ** go build golang.org/x/tools/cmd/goimports 生成在执行命令目录
 ** go install golang.org/x/tools/cmd/goimports 会在gopath下bin中
+
+* go 命令
+** go build 编译
+** go install 产生pkg文件和可执行文件
+** go run 直接编译运行
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/5.png?raw=true[ctoedu,800,450]
 
 == 安装
 
