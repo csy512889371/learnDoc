@@ -1,0 +1,222 @@
+== go 基础学习5
+
+== 概述
+
+* 面向对象
+** go语句仅支持分装，不支持4继承和多态。 面向接口编程
+** go语言没有class 只有struct
+
+* 指针接收者与针接收者的选择
+** 要改变内容必须使用指针接收者
+** 结构过大也考虑使用指针接收者
+** 一致性：如有指针接收者，最好都是指针接收者
+
+* 封装
+** 名字一般使用CamelCase
+** 首字母大写: public
+** 首字母小写: private
+
+* 包
+** 每个目录一个包
+** main包包含执行入口
+** 为结构定义的方法必须放在同一个包内
+** 可以是不同的文件
+
+* 如何扩充系统类型或者别人的类型
+** 定义别名
+** 使用组合
+
+== 代码
+
+
+treeentry\entry.go
+
+
+```
+package main
+
+import (
+	"fmt"
+	"golearn/tree"
+)
+
+type myTreeNode struct {
+	node *tree.Node
+}
+
+func (myNode *myTreeNode) postOrder() {
+	if myNode == nil || myNode.node == nil {
+		return
+	}
+
+	left := myTreeNode{myNode.node.Left}
+	right := myTreeNode{myNode.node.Right}
+
+	left.postOrder()
+	right.postOrder()
+	myNode.node.Print()
+}
+
+func main() {
+	var root tree.Node
+
+	root = tree.Node{Value: 3}
+	root.Left = &tree.Node{}
+	root.Right = &tree.Node{5, nil, nil}
+	root.Right.Left = new(tree.Node)
+	root.Left.Right = tree.CreateNode(2)
+	root.Right.Left.SetValue(4)
+
+	fmt.Print("In-order traversal: ")
+	root.Traverse()
+
+	fmt.Print("My own post-order traversal: ")
+	myRoot := myTreeNode{&root}
+	myRoot.postOrder()
+	fmt.Println()
+
+	nodeCount := 0
+	root.TraverseFunc(func(node *tree.Node) {
+		nodeCount++
+	})
+	fmt.Println("Node count:", nodeCount)
+
+	c := root.TraverseWithChannel()
+	maxNodeValue := 0
+	for node := range c {
+		if node.Value > maxNodeValue {
+			maxNodeValue = node.Value
+		}
+	}
+	fmt.Println("Max node value:", maxNodeValue)
+}
+
+```
+
+node.go
+
+```
+package tree
+
+import "fmt"
+
+type Node struct {
+	Value       int
+	Left, Right *Node
+}
+
+func (node Node) Print() {
+	fmt.Print(node.Value, " ")
+}
+
+func (node *Node) SetValue(value int) {
+	if node == nil {
+		fmt.Println("Setting Value to nil " +
+			"node. Ignored.")
+		return
+	}
+	node.Value = value
+}
+
+func CreateNode(value int) *Node {
+	return &Node{Value: value}
+}
+
+```
+
+traversal.go
+
+```
+package tree
+
+import "fmt"
+
+func (node *Node) Traverse() {
+	node.TraverseFunc(func(n *Node) {
+		n.Print()
+	})
+	fmt.Println()
+}
+
+func (node *Node) TraverseFunc(f func(*Node)) {
+	if node == nil {
+		return
+	}
+
+	node.Left.TraverseFunc(f)
+	f(node)
+	node.Right.TraverseFunc(f)
+}
+
+func (node *Node) TraverseWithChannel() chan *Node {
+	out := make(chan *Node)
+	go func() {
+		node.TraverseFunc(func(node *Node) {
+			out <- node
+		})
+		close(out)
+	}()
+	return out
+}
+
+```
+
+== 封装
+
+* 封装
+** 名字一般使用CamelCase
+** 首字母大写: public
+** 首字母小写: private
+
+
+=== 定义别名
+
+
+```
+package queue
+
+// A FIFO queue.
+type Queue []int
+
+// Pushes the element into the queue.
+// 		e.g. q.Push(123)
+func (q *Queue) Push(v int) {
+	*q = append(*q, v)
+}
+
+// Pops element from head.
+func (q *Queue) Pop() int {
+	head := (*q)[0]
+	*q = (*q)[1:]
+	return head
+}
+
+// Returns if the queue is empty or not.
+func (q *Queue) IsEmpty() bool {
+	return len(*q) == 0
+}
+
+```
+
+
+```
+package main
+
+import (
+	"fmt"
+	"golearn/queue"
+)
+
+func main() {
+	q := queue.Queue{1}
+
+	q.Push(2)
+	q.Push(3)
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.IsEmpty())
+	fmt.Println(q.Pop())
+	fmt.Println(q.IsEmpty())
+}
+
+```
