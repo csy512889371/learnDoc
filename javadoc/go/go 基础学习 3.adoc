@@ -1,0 +1,224 @@
+== go 基础学习 3
+
+
+== 概述
+
+. 值传递
+. 数组
+. 切片
+. 切片操作
+
+
+== go 值传递
+
+* 值传递？ 应用传递？
+
+. 在c++ 中：
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/1.jpg?raw=true[ctoedu,800,450]
+
+. java python 除了基本类型都是引用传递
+. go 值传递一种方式。都拷贝一份。结合指针传递实现类似引用传递：
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/2.png?raw=true[ctoedu,800,450]
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/3.png?raw=true[ctoedu,800,450]
+
+
+
+== 数组
+
+* 数组是值类型。方法传递是拷贝。
+* arr [5]int 与 arr[]int 不同，后面的是切片
+* 可以使用指针进行传递
+* go 语言不直接使用数组，使用切片
+
+```
+package main
+
+import "fmt"
+
+//数组循环
+func printArray(arr [5]int) {
+	arr[0] = 100
+	for i, v := range arr {
+		fmt.Println(i, v)
+	}
+}
+
+func main() {
+
+	//数组定义
+	var arr1 [5]int
+	arr2 := [3]int{1, 3, 5}
+
+	//... 自动指定个数
+	arr3 := [...]int{2, 4, 6, 8, 10}
+	var grid [4][5]int
+
+	fmt.Println("array definitions:")
+	fmt.Println(arr1, arr2, arr3)
+	fmt.Println(grid)
+
+	fmt.Println("printArray(arr1)")
+	printArray(arr1)
+
+	fmt.Println("printArray(arr3)")
+	printArray(arr3)
+
+	fmt.Println("arr1 and arr3")
+	fmt.Println(arr1, arr3)
+
+}
+
+```
+
+== 切片 slice
+
+* slice是数组的视图
+* 改变（slice）视图中的值。原数组的值也改变
+* 可以对slice1进行slice2。都是对同一个array的视图
+* slice 内部结构。ptr 开始位置，len 当前切片的长度， 原数据从切片的ptr后还有多少元素
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/4.png?raw=true[ctoedu,800,450]
+
+* Extending slice 。slice 可以扩展的。不能向后扩展，不可以向前扩展
+* Extending slice 不可以超越len，向后扩展不可以超越底层数组cap
+
+```
+	fmt.Printf("s1=%v, len(s1)=%d, cap(s1)=%d\n", s1, len(s1), cap(s1))
+```
+
+=== slice append
+
+* append 数据，如果超过cap,系统会重新分配更大的底层数组，原来的数组go会进行垃圾回收
+* 由于值传递，必须接appent的返回值。s3 := append(s2, 10)
+
+
+
+== 代码
+
+
+```
+package main
+
+import "fmt"
+
+func updateSlice(s []int) {
+	s[0] = 100
+}
+
+func main() {
+	arr := [...]int{0, 1, 2, 3, 4, 5, 6, 7}
+
+	fmt.Println("arr[2:6] =", arr[2:6])
+	fmt.Println("arr[:6] =", arr[:6])
+	s1 := arr[2:]
+	fmt.Println("s1 =", s1)
+	s2 := arr[:]
+	fmt.Println("s2 =", s2)
+
+	fmt.Println("After updateSlice(s1)")
+	updateSlice(s1)
+	fmt.Println(s1)
+	fmt.Println(arr)
+
+	fmt.Println("After updateSlice(s2)")
+	updateSlice(s2)
+	fmt.Println(s2)
+	fmt.Println(arr)
+
+	fmt.Println("Reslice")
+	fmt.Println(s2)
+	s2 = s2[:5]
+	fmt.Println(s2)
+	s2 = s2[2:]
+	fmt.Println(s2)
+
+	fmt.Println("Extending slice")
+	arr[0], arr[2] = 0, 2
+	fmt.Println("arr =", arr)
+	s1 = arr[2:6]
+	s2 = s1[3:5] // [s1[3], s1[4]]
+	fmt.Printf("s1=%v, len(s1)=%d, cap(s1)=%d\n",
+		s1, len(s1), cap(s1))
+	fmt.Printf("s2=%v, len(s2)=%d, cap(s2)=%d\n",
+		s2, len(s2), cap(s2))
+
+	s3 := append(s2, 10)
+	s4 := append(s3, 11)
+	s5 := append(s4, 12)
+	fmt.Println("s3, s4, s5 =", s3, s4, s5)
+	// s4 and s5 no longer view arr.
+	fmt.Println("arr =", arr)
+
+	// Uncomment to run sliceOps demo.
+	// If we see undefined: sliceOps
+	// please try go run slices.go sliceops.go
+	fmt.Println("Uncomment to see sliceOps demo")
+	// sliceOps()
+}
+
+```
+
+* append 时候如果cap 不够了每次都会扩充cap 的两倍容量
+
+=== 切片操作
+
+```
+package main
+
+import "fmt"
+
+func printSlice(s []int) {
+	fmt.Printf("%v, len=%d, cap=%d\n",
+		s, len(s), cap(s))
+}
+
+func sliceOps() {
+	fmt.Println("Creating slice")
+	var s []int // Zero value for slice is nil
+
+	for i := 0; i < 100; i++ {
+		printSlice(s)
+		s = append(s, 2*i+1)
+	}
+	fmt.Println(s)
+
+	//创建了array 并同时创建slice
+	s1 := []int{2, 4, 6, 8}
+	printSlice(s1)
+
+	//知道多大的slice len(16)
+	s2 := make([]int, 16)
+	//len(10) cap(32)
+	s3 := make([]int, 10, 32)
+	printSlice(s2)
+	printSlice(s3)
+
+	fmt.Println("Copying slice")
+	copy(s2, s1)
+	printSlice(s2)
+
+	fmt.Println("Deleting elements from slice")
+	s2 = append(s2[:3], s2[4:]...)
+	printSlice(s2)
+
+	fmt.Println("Popping from front")
+	front := s2[0]
+	s2 = s2[1:]
+
+	fmt.Println(front)
+	printSlice(s2)
+
+	fmt.Println("Popping from back")
+	tail := s2[len(s2)-1]
+	s2 = s2[:len(s2)-1]
+
+	fmt.Println(tail)
+	printSlice(s2)
+}
+
+```
