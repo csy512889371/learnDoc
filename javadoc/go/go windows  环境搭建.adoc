@@ -11,6 +11,13 @@
 
 * GoLang / liteIDE
 * idea + go 插件
+* go get 获取第三方库
+** 使用gopm来获取无法下载的包
+**  go get -v github.com/gpmgo/gopm
+** 安装git
+** gopm get -g -v -u golang.org/x/tools/cmd/goimports
+** go build golang.org/x/tools/cmd/goimports 生成在执行命令目录
+** go install golang.org/x/tools/cmd/goimports 会在gopath下bin中
 
 == 安装
 
