@@ -1,0 +1,157 @@
+= go 基础学习6- 接口
+
+== 概述
+
+* 使用者定义接口
+
+
+== 代码
+
+```
+package main
+
+import (
+	"fmt"
+
+	"time"
+
+	"golearn/retriever/mock"
+	"golearn/retriever/real"
+)
+
+type Retriever interface {
+	Get(url string) string
+}
+
+type Poster interface {
+	Post(url string,
+		form map[string]string) string
+}
+
+const url = "http://www.baidu.com"
+
+func download(r Retriever) string {
+	return r.Get(url)
+}
+
+func post(poster Poster) {
+	poster.Post(url,
+		map[string]string{
+			"name":   "ccmouse",
+			"course": "golang",
+		})
+}
+
+type RetrieverPoster interface {
+	Retriever
+	Poster
+}
+
+func session(s RetrieverPoster) string {
+	s.Post(url, map[string]string{
+		"contents": "another faked ctoedu.com",
+	})
+	return s.Get(url)
+}
+
+func main() {
+	var r Retriever
+
+	mockRetriever := mock.Retriever{
+		Contents: "this is a fake ctoedu.com"}
+	r = &mockRetriever
+	inspect(r)
+
+	r = &real.Retriever{
+		UserAgent: "Mozilla/5.0",
+		TimeOut:   time.Minute,
+	}
+	inspect(r)
+
+	// Type assertion
+	if mockRetriever, ok := r.(*mock.Retriever); ok {
+		fmt.Println(mockRetriever.Contents)
+	} else {
+		fmt.Println("r is not a mock retriever")
+	}
+
+	fmt.Println(
+		"Try a session with mockRetriever")
+	fmt.Println(session(&mockRetriever))
+}
+
+func inspect(r Retriever) {
+	fmt.Println("Inspecting", r)
+	fmt.Printf(" > Type:%T Value:%v\n", r, r)
+	fmt.Print(" > Type switch: ")
+	switch v := r.(type) {
+	case *mock.Retriever:
+		fmt.Println("Contents:", v.Contents)
+	case *real.Retriever:
+		fmt.Println("UserAgent:", v.UserAgent)
+	}
+	fmt.Println()
+}
+
+```
+
+```
+package mock
+
+import "fmt"
+
+type Retriever struct {
+	Contents string
+}
+
+func (r *Retriever) String() string {
+	return fmt.Sprintf(
+		"Retriever: {Contents=%s}", r.Contents)
+}
+
+func (r *Retriever) Post(url string,
+	form map[string]string) string {
+	r.Contents = form["contents"]
+	return "ok"
+}
+
+func (r *Retriever) Get(url string) string {
+	return r.Contents
+}
+
+```
+
+
+```
+package real
+
+import (
+	"net/http"
+	"net/http/httputil"
+	"time"
+)
+
+type Retriever struct {
+	UserAgent string
+	TimeOut   time.Duration
+}
+
+func (r *Retriever) Get(url string) string {
+	resp, err := http.Get(url)
+	if err != nil {
+		panic(err)
+	}
+
+	result, err := httputil.DumpResponse(
+		resp, true)
+
+	resp.Body.Close()
+
+	if err != nil {
+		panic(err)
+	}
+
+	return string(result)
+}
+
+```
