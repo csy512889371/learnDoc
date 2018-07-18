@@ -1,0 +1,94 @@
+= go 基础7 
+
+== 概述
+* 函数式编程
+** 闭包
+* 资源管理出错处理
+** defer调用 确保在函数结束时调用
+** defer 先入后出
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/7.png?raw=true[ctoedu,800,450]
+
+== 代码
+
+```
+package main
+
+import "fmt"
+
+func adder() func(int) int {
+	sum := 0
+	return func(v int) int {
+		sum += v
+		return sum
+	}
+}
+
+type iAdder func(int) (int, iAdder)
+
+func adder2(base int) iAdder {
+	return func(v int) (int, iAdder) {
+		return base + v, adder2(base + v)
+	}
+}
+
+func main() {
+	// a := adder() is trivial and also works.
+	a := adder2(0)
+	for i := 0; i < 10; i++ {
+		var s int
+		s, a = a(i)
+		fmt.Printf("0 + 1 + ... + %d = %d\n",
+			i, s)
+	}
+}
+
+```
+
+函数实现接口
+
+```
+package main
+
+import (
+	"bufio"
+	"fmt"
+	"io"
+	"strings"
+
+	"golearn/functional/fib"
+)
+
+type intGen func() int
+
+func (g intGen) Read(
+	p []byte) (n int, err error) {
+	next := g()
+	if next > 10000 {
+		return 0, io.EOF
+	}
+	s := fmt.Sprintf("%d\n", next)
+
+	// TODO: incorrect if p is too small!
+	return strings.NewReader(s).Read(p)
+}
+
+func printFileContents(reader io.Reader) {
+	scanner := bufio.NewScanner(reader)
+
+	for scanner.Scan() {
+		fmt.Println(scanner.Text())
+	}
+}
+
+func main() {
+	var f intGen = fib.Fibonacci()
+	printFileContents(f)
+}
+
+```
+
+
+
+
+

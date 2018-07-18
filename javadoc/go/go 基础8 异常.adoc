@@ -1,0 +1,254 @@
+== go 基础8 异常
+
+
+== 概述
+
+* panic
+** 停止当前函数执行
+** 一直向上返回，执行每一层的defer
+** 如果没有遇到recover,程序退出
+
+
+* recover
+** 仅在defer调用中使用
+** 获取panic的值
+** 如果无法处理，可重新panic
+
+== 代码
+
+
+```
+package main
+
+import (
+	"fmt"
+	"os"
+
+	"bufio"
+
+	"golearn/functional/fib"
+)
+
+func tryDefer() {
+	for i := 0; i < 100; i++ {
+		defer fmt.Println(i)
+		if i == 30 {
+			// Uncomment panic to see
+			// how it works with defer
+			// panic("printed too many")
+		}
+	}
+}
+
+func writeFile(filename string) {
+	file, err := os.OpenFile(filename,
+		os.O_EXCL|os.O_CREATE|os.O_WRONLY, 0666)
+
+	if err != nil {
+		if pathError, ok := err.(*os.PathError); !ok {
+			panic(err)
+		} else {
+			fmt.Printf("%s, %s, %s\n",
+				pathError.Op,
+				pathError.Path,
+				pathError.Err)
+		}
+		return
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	defer writer.Flush()
+
+	f := fib.Fibonacci()
+	for i := 0; i < 20; i++ {
+		fmt.Fprintln(writer, f())
+	}
+}
+
+func main() {
+	tryDefer()
+	writeFile("fib.txt")
+}
+
+```
+
+
+==  分装错误处理
+
+```
+package filelisting
+
+import (
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"os"
+	"strings"
+)
+
+const prefix = "/list/"
+
+type userError string
+
+func (e userError) Error() string {
+	return e.Message()
+}
+
+func (e userError) Message() string {
+	return string(e)
+}
+
+func HandleFileList(writer http.ResponseWriter,
+	request *http.Request) error {
+	fmt.Println()
+	if strings.Index(
+		request.URL.Path, prefix) != 0 {
+		return userError(
+			fmt.Sprintf("path %s must start "+
+				"with %s",
+				request.URL.Path, prefix))
+	}
+	path := request.URL.Path[len(prefix):]
+	file, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	all, err := ioutil.ReadAll(file)
+	if err != nil {
+		return err
+	}
+
+	writer.Write(all)
+	return nil
+}
+
+```
+
+```
+package main
+
+import (
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"os"
+
+	"golearn/errhandling/filelistingserver/filelisting"
+)
+
+type appHandler func(writer http.ResponseWriter,
+	request *http.Request) error
+
+func errWrapper(
+	handler appHandler) func(
+	http.ResponseWriter, *http.Request) {
+	return func(writer http.ResponseWriter,
+		request *http.Request) {
+		// panic
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("Panic: %v", r)
+				http.Error(writer,
+					http.StatusText(http.StatusInternalServerError),
+					http.StatusInternalServerError)
+			}
+		}()
+
+		err := handler(writer, request)
+
+		if err != nil {
+			log.Printf("Error occurred "+
+				"handling request: %s",
+				err.Error())
+
+			// user error
+			if userErr, ok := err.(userError); ok {
+				http.Error(writer,
+					userErr.Message(),
+					http.StatusBadRequest)
+				return
+			}
+
+			// system error
+			code := http.StatusOK
+			switch {
+			case os.IsNotExist(err):
+				code = http.StatusNotFound
+			case os.IsPermission(err):
+				code = http.StatusForbidden
+			default:
+				code = http.StatusInternalServerError
+			}
+			http.Error(writer,
+				http.StatusText(code), code)
+		}
+	}
+}
+
+type userError interface {
+	error
+	Message() string
+}
+
+func main() {
+	http.HandleFunc("/",
+		errWrapper(filelisting.HandleFileList))
+
+	err := http.ListenAndServe(":8888", nil)
+	if err != nil {
+		panic(err)
+	}
+}
+
+```
+
+
+
+== recover
+
+```
+package main
+
+import (
+	"fmt"
+)
+
+func tryRecover() {
+	defer func() {
+		r := recover()
+		if r == nil {
+			fmt.Println("Nothing to recover. " +
+				"Please try uncomment errors " +
+				"below.")
+			return
+		}
+		if err, ok := r.(error); ok {
+			fmt.Println("Error occurred:", err)
+		} else {
+			panic(fmt.Sprintf(
+				"I don't know what to do: %v", r))
+		}
+	}()
+
+	// Uncomment each block to see different panic
+	// scenarios.
+	// Normal error
+	//panic(errors.New("this is an error"))
+
+	// Division by zero
+	//b := 0
+	//a := 5 / b
+	//fmt.Println(a)
+
+	// Causes re-panic
+	//panic(123)
+}
+
+func main() {
+	tryRecover()
+}
+
+```
