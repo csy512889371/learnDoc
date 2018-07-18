@@ -3,6 +3,17 @@
 == 概述
 
 * 使用者定义接口
+* 接口中包含类型和值。可以是真实的值也可以是指针，如果是真实值的化是拷贝
+** switch v := r.(type) 可以判断接口中的类型
+** (Type assertion) mockRetriever, ok := r.(*mock.Retriever)
+** 接口变量自带指针
+** 接口变量同样采用值传递，几乎不需要使用接口的指针
+** 指针接收者实现只能以指针方式使用，值接收者都可
+** 任何类型：interface{}
+** 任何类型的值强制转换 head.(int)
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/6.png?raw=true[ctoedu,600,450]
 
 
 == 代码
