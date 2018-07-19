@@ -1,0 +1,243 @@
+== go 基础学习9
+
+== 概述
+
+* 表格测试
+* go test
+* go test -coverprofile=c.out 代码覆盖率
+* go tool cover -html=c.out
+* BenchmarkSubstr(b *testing.B) 做性能测试
+** go test -bench . -cpuprofile cpu.out
+** go tool pprof cpu.out
+** web
+** http://www.graphviz.org/download/ 安装graph
+
+* go doc Queue 查看说明
+** godoc -http :6060
+
+* Example 加入例子
+
+== 代码
+
+```
+package main
+
+import "testing"
+
+func TestTriangle(t *testing.T) {
+	tests := []struct{ a, b, c int }{
+		{3, 4, 5},
+		{5, 12, 13},
+		{8, 15, 17},
+		{12, 35, 37},
+		{30000, 40000, 50000},
+	}
+
+	for _, tt := range tests {
+		if actual := calcTriangle(tt.a, tt.b); actual != tt.c {
+			t.Errorf("calcTriangle(%d, %d); "+
+				"got %d; expected %d",
+				tt.a, tt.b, actual, tt.c)
+		}
+	}
+}
+
+```
+
+
+```
+package main
+
+import "testing"
+
+func TestSubstr(t *testing.T) {
+	tests := []struct {
+		s   string
+		ans int
+	}{
+		// Normal cases
+		{"abcabcbb", 3},
+		{"pwwkew", 3},
+
+		// Edge cases
+		{"", 0},
+		{"b", 1},
+		{"bbbbbbbbb", 1},
+		{"abcabcabcd", 4},
+
+		// Chinese support
+		{"一二三二一", 3},
+	}
+
+	for _, tt := range tests {
+		actual := lengthOfNonRepeatingSubStr(tt.s)
+		if actual != tt.ans {
+			t.Errorf("got %d for input %s; "+
+				"expected %d",
+				actual, tt.s, tt.ans)
+		}
+	}
+}
+
+func BenchmarkSubstr(b *testing.B) {
+	s := "abcabcbb"
+	for i := 0; i < 13; i++ {
+		s = s + s
+	}
+	b.Logf("len(s) = %d", len(s))
+	ans := 3
+	b.ResetTimer()
+
+	for i := 0; i < b.N; i++ {
+		actual := lengthOfNonRepeatingSubStr(s)
+		if actual != ans {
+			b.Errorf("got %d for input %s; "+
+				"expected %d",
+				actual, s, ans)
+		}
+	}
+}
+
+```
+
+== web 
+
+```
+package main
+
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"net/http/httptest"
+	"os"
+	"strings"
+	"testing"
+)
+
+func errPanic(_ http.ResponseWriter,
+	_ *http.Request) error {
+	panic(123)
+}
+
+type testingUserError string
+
+func (e testingUserError) Error() string {
+	return e.Message()
+}
+
+func (e testingUserError) Message() string {
+	return string(e)
+}
+
+func errUserError(_ http.ResponseWriter,
+	_ *http.Request) error {
+	return testingUserError("user error")
+}
+
+func errNotFound(_ http.ResponseWriter,
+	_ *http.Request) error {
+	return os.ErrNotExist
+}
+
+func errNoPermission(_ http.ResponseWriter,
+	_ *http.Request) error {
+	return os.ErrPermission
+}
+
+func errUnknown(_ http.ResponseWriter,
+	_ *http.Request) error {
+	return errors.New("unknown error")
+}
+
+func noError(writer http.ResponseWriter,
+	_ *http.Request) error {
+	fmt.Fprintln(writer, "no error")
+	return nil
+}
+
+
+var tests = []struct {
+	h       appHandler
+	code    int
+	message string
+}{
+	{errPanic, 500, "Internal Server Error"},
+	{errUserError, 400, "user error"},
+	{errNotFound, 404, "Not Found"},
+	{errNoPermission, 403, "Forbidden"},
+	{errUnknown, 500, "Internal Server Error"},
+	{noError, 200, "no error"},
+}
+
+func TestErrWrapper(t *testing.T) {
+	for _, tt := range tests {
+		f := errWrapper(tt.h)
+		response := httptest.NewRecorder()
+		request := httptest.NewRequest(
+			http.MethodGet,
+			"http://www.ctoedu.com", nil)
+		f(response, request)
+
+		verifyResponse(response.Result(),
+			tt.code, tt.message, t)
+	}
+}
+
+func TestErrWrapperInServer(t *testing.T) {
+	for _, tt := range tests {
+		f := errWrapper(tt.h)
+		server := httptest.NewServer(
+			http.HandlerFunc(f))
+		resp, _ := http.Get(server.URL)
+
+		verifyResponse(
+			resp, tt.code, tt.message, t)
+	}
+}
+
+func verifyResponse(resp *http.Response,
+	expectedCode int, expectedMsg string,
+	t *testing.T) {
+	b, _ := ioutil.ReadAll(resp.Body)
+	body := strings.Trim(string(b), "\n")
+	if resp.StatusCode != expectedCode ||
+		body != expectedMsg {
+		t.Errorf("expect (%d, %s); "+
+			"got (%d, %s)",
+			expectedCode, expectedMsg,
+			resp.StatusCode, body)
+	}
+}
+
+```
+
+== 事例代码
+
+
+```
+package queue
+
+import "fmt"
+
+func ExampleQueue_Pop() {
+	q := Queue{1}
+	q.Push(2)
+	q.Push(3)
+	fmt.Println(q.Pop())
+	fmt.Println(q.Pop())
+	fmt.Println(q.IsEmpty())
+
+	fmt.Println(q.Pop())
+	fmt.Println(q.IsEmpty())
+
+	// Output:
+	// 1
+	// 2
+	// false
+	// 3
+	// true
+}
+
+```

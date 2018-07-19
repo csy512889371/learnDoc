@@ -122,6 +122,9 @@ http://www.codeforge.cn/article/460344
 
 https://gowalker.org/github.com/coocood/qbs
 
+godoc -http :6060
+
+
 
 == 光线cms
 
