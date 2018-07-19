@@ -8,7 +8,7 @@ image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/8.pn
 image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/9.png?raw=true[ctoedu,800,450]
 
 * goroutine 可能切换的点
-** 非强占式
+** 非强占式多任务处理，由协程主动交出控制权
 ** I/O ,select
 ** channel
 ** 等待锁
