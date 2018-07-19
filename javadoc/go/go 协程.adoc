@@ -12,6 +12,21 @@ Go协程（Goroutine）是与其他函数或方法同时运行的函数或方法
 
 * Go 协程之间通过信道（channel）进行通信。信道可以防止多个协程访问共享内存时发生竟险（race condition）。信道可以想象成多个协程之间通信的管道。
 
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/8.png?raw=true[ctoedu,800,450]
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/9.png?raw=true[ctoedu,800,450]
+
+* goroutine 可能切换的点
+** 非强占式
+** I/O ,select
+** channel
+** 等待锁
+** 调用函数
+** runtime.Gosched()
+** 只是参考，不能保证切换
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/go/10.png?raw=true[ctoedu,800,450]
+
 == 代码一
 
 ```
