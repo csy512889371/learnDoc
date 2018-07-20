@@ -1,0 +1,174 @@
+== Java NIO通道Channel的原理与获取
+
+== 概述
+
+通道Channel：由java.nio.channels包定义。Channel表示IO源与目标打开的连接。Channel类似于传统的"流"，只不过Channel本身不能直接访问数据，Channel只能与Buffer进行交互。
+
+
+
+=== 传统的数据流：
+
+CPU处理IO，性能损耗太大
+
+改为：
+
+* 内存和IO接口之间加了 DMA(直接存储器)，DMA向CPU申请权限，IO的操作全部由DMA管理。CPU不要干预。
+* 若有大量的IO请求，会造成DMA的走线过多，则也会影响性能。
+
+
+则改DMA为Channel，Channel为完全独立的单元，不需要向CPU申请权限，专门用于IO。
+
+
+```
+package com.expgiga.NIO;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
+/**
+ * 一、Channel:用于源节点与目标节点之间的连接。在Java NIO中，负责缓冲区中数据传输，Channel本身不存储数据，因此需要配合缓冲区进行传输。
+ *
+ * 二、Channel的实现类：
+ *     java.nio.channels.Channel 接口：
+ *     |-- FileChannel
+ *     |-- SocketChannel
+ *     |-- ServerSocketChannel
+ *     |-- DatagramChannel
+ *
+ * 三、获取通道Channel
+ * 1.Java针对支持通道的类提供了getChannel()方法
+ *   本地IO
+ *   FileInputStream/FileOutputStream
+ *   RandomAccessFile
+ *
+ *   网络IO:
+ *   Socket
+ *   ServerSocket
+ *   DatagramSocket
+ *
+ * 2.在jdk1.7中的NIO.2针对各个通道提供了静态方法open()
+ *
+ * 3.在jdk1.7中的NIO.2的Files工具类的newByteChannel()
+ *
+ * 四、通道之间的数据传输
+ * transferFrom()
+ * transferTo()
+ *
+ */
+public class TestChannel {
+
+    public static void main(String[] args) throws IOException {
+
+        /*
+         * 1.利用通道完成文件的复制（非直接缓冲区）
+         */
+        FileInputStream fis = null;
+        FileOutputStream fos = null;
+
+        FileChannel inChannel = null;
+        FileChannel outChannel = null;
+
+        try {
+            fis = new FileInputStream("1.jpg");
+            fos = new FileOutputStream("2.jpg");
+            //1.获取通道
+            inChannel = fis.getChannel();
+            outChannel = fos.getChannel();
+
+            //2.分配指定大小的缓冲区
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+            //3.将通道中的数据缓冲区中
+            while (inChannel.read(buffer) != -1) {
+
+                buffer.flip();//切换成都数据模式
+
+                //4.将缓冲区中的数据写入通道中
+                outChannel.write(buffer);
+                buffer.clear();//清空缓冲区
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (outChannel != null) {
+                try {
+                    outChannel.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (inChannel != null) {
+                try {
+                    inChannel.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+        /*
+         * 2.利用（直接缓冲区）通道完成文件的复制(内存映射文件的方式)
+         */
+
+        long start = System.currentTimeMillis();
+        FileChannel inChannel2 = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+        FileChannel outChannel2 = FileChannel.open(Paths.get("3.jpg"), StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.CREATE);
+
+        //内存映射文件
+        MappedByteBuffer inMappedBuf = inChannel2.map(FileChannel.MapMode.READ_ONLY, 0, inChannel.size());
+        MappedByteBuffer outMappedBuf = outChannel2.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
+
+        //直接对缓冲区进行数据读写操作
+        byte[] dst = new byte[inMappedBuf.limit()];
+        inMappedBuf.get(dst);
+        outMappedBuf.put(dst);
+
+        inChannel2.close();
+        outChannel2.close();
+
+        long end = System.currentTimeMillis();
+        System.out.println("耗费的时间为：" + (end - start));
+
+        /*
+         * 通道之间的数据传输（直接缓冲区）
+         */
+        FileChannel inChannel3 = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
+        FileChannel outChannel3 = FileChannel.open(Paths.get("3.jpg"), StandardOpenOption.WRITE, StandardOpenOption.READ, StandardOpenOption.CREATE);
+
+        inChannel3.transferTo(0, inChannel3.size(), outChannel3);
+        //等价于
+//        outChannel3.transferFrom(inChannel3, 0, inChannel3.size());
+
+        inChannel3.close();
+        outChannel3.close();
+    }
+}
+```
+
+
+
+
