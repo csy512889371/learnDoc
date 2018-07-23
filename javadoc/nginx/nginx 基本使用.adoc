@@ -1,0 +1,425 @@
+= nginx 基本使用
+
+== 概述
+
+* http://nginx.org/en/docs/
+
+
+== nginx 的安装
+
+下载地址: http://nginx.org/download/nginx-1.4.2.tar.gz
+
+安装准备: nginx依赖于pcre库,要先安装pcre
+
+```
+yum install pcre pcre-devel
+ cd /usr/local/src/
+ wget http://nginx.org/download/nginx-1.4.2.tar.gz
+tar zxvf nginx-1.4.2.tar.gz 
+cd nginx-1.4.2
+./configure --prefix=/usr/local/nginx
+make && make install
+```
+
+启动:
+
+cd /ulsr/local/nginx, 看到如下4个目录
+
+```
+./
+ ....conf 配置文件  
+ ... html 网页文件
+ ...logs  日志文件 
+ ...sbin  主要二进制程序
+```
+
+```
+[root@localhost nginx]# ./sbin/nginx 
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+....
+nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
+nginx: [emerg] still could not bind()
+```
+
+=== 不能绑定80端口,80端口已经被占用
+
+(有时是自己装了apache,nginx等,还有更多情况是操作系统自带了apache并作为服务启动)
+
+解决: 把占用80端口的软件或服务关闭即可.
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/1.png?raw=true[ctoedu,600,450]
+
+
+Nginx的信号控制
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/2.png?raw=true[ctoedu,600,450]
+
+
+具体语法:
+
+```
+Kill -信号选项 nginx的主进程号
+Kill -HUP 4873
+
+Kill -信号控制 `cat /xxx/path/log/nginx.pid`
+
+Kil; -USR1 `cat /xxx/path/log/nginx.pid`
+```
+
+== Nginx配置段
+
+```
+// 全局区
+worker_processes 1; // 有1个工作的子进程,可以自行修改,但太大无益,因为要争夺CPU,一般设置为 CPU数*核数
+
+Event {
+// 一般是配置nginx连接的特性
+// 如1个word能同时允许多少连接
+ worker_connections  1024; // 这是指 一个子进程最大允许连1024个连接
+}
+
+http {  //这是配置http服务器的主要段
+     Server1 { // 这是虚拟主机段
+       
+            Location {  //定位,把特殊的路径或文件再次定位 ,如image目录单独处理
+            }             /// 如.php单独处理
+
+     }
+
+     Server2 {
+     }
+}
+
+```
+
+例子1: 基于域名的虚拟主机
+
+ ```
+ server {
+        listen 80;  #监听端口
+        server_name a.com; #监听域名
+
+        location / {
+                root /var/www/a.com;   #根目录定位
+                index index.html;
+        }
+    }
+ ```
+
+例子2: 基于端口的虚拟主机配置
+
+```
+    server {
+        listen 8080;
+        server_name 192.168.1.204;
+
+        location / {
+                root /var/www/html8080;
+                index index.html;
+        }
+    }
+```
+
+
+日志管理
+
+
+我们观察nginx的server段,可以看到如下类似信息
+
+```
+ #access_log  logs/host.access.log  main;
+```
+
+这说明 该server, 它的访问日志的文件是  logs/host.access.log ,
+
+使用的格式”main”格式.
+
+除了main格式,你可以自定义其他格式.
+
+main格式是什么?
+
+```
+log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+```
+
+main格式是我们定义好一种日志的格式,并起个名字,便于引用.
+
+以上面的例子, main类型的日志,记录的 remote_addr.... http_x_forwarded_for等选项.
+
+
+=== 1: 日志格式 是指记录哪些选项
+
+默认的日志格式: main
+```
+
+     log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                            '$status $body_bytes_sent "$http_referer" '
+                            '"$http_user_agent" "$http_x_forwarded_for"';
+```
+
+
+如默认的main日志格式,记录这么几项
+
+远程IP- 远程用户/用户时间 请求方法(如GET/POST) 请求体body长度 referer来源信息
+
+http-user-agent用户代理/蜘蛛 ,被转发的请求的原始IP
+
+http_x_forwarded_for:在经过代理时,代理把你的本来IP加在此头信息中,传输你的原始IP
+
+
+=== 2: 声明一个独特的log_format并命名
+
+```
+    log_format  mylog '$remote_addr- "$request" '
+                     '$status $body_bytes_sent "$http_referer" '
+                        '"$http_user_agent" "$http_x_forwarded_for"';
+```
+
+在下面的server/location,我们就可以引用 mylog
+
+在server段中,这样来声明
+
+Nginx允许针对不同的server做不同的Log ,(有的web服务器不支持,如lighttp)
+
+```
+access_log logs/access_8080.log mylog;   
+声明log   log位置          log格式;
+```
+
+
+实际应用: shell+定时任务+nginx信号管理,完成日志按日期存储
+
+分析思路: 
+
+* 凌晨00:00:01,把昨天的日志重命名,放在相应的目录下
+* 再USR1信息号控制nginx重新生成新的日志文件
+ 
+具体脚本:
+
+```
+#!/bin/bash
+base_path='/usr/local/nginx/logs'
+log_path=$(date -d yesterday +"%Y%m")
+day=$(date -d yesterday +"%d")
+mkdir -p $base_path/$log_path
+mv $base_path/access.log $base_path/$log_path/access_$day.log
+#echo $base_path/$log_path/access_$day.log
+kill -USR1 `cat /usr/local/nginx/logs/nginx.pid`
+```
+
+定时任务
+
+```
+Crontab 编辑定时任务
+01 00 * * * /xxx/path/b.sh  每天0时1分(建议在02-04点之间,系统负载小)
+```
+
+location 语法
+
+location 有”定位”的意思, 根据Uri来进行不同的定位.
+
+在虚拟主机的配置中,是必不可少的,location可以把网站的不同部分,定位到不同的处理方式上.比如, 碰到.php, 如何调用PHP解释器?  --这时就需要location
+
+
+location 的语法
+
+```
+location [=|~|~*|^~] patt {
+}
+```
+
+中括号可以不写任何参数,此时称为一般匹配也可以写参数 因此,大类型可以分为3种
+
+```
+location = patt {} [精准匹配]
+location patt{}  [一般匹配]
+location ~ patt{} [正则匹配]
+```
+
+ 
+如何发挥作用?:
+首先看有没有精准匹配,如果有,则停止匹配过程.
+
+```
+location = patt {
+    config A
+}
+```
+
+如果 $uri == patt,匹配成功，使用configA
+
+```
+   location = / {
+              root   /var/www/html/;
+             index  index.htm index.html;
+        }
+         
+  location / {
+             root   /usr/local/nginx/html;
+            index  index.html index.htm;
+  }
+```
+
+
+如果访问　　http://xxx.com/
+
+定位流程是　
+
+. 精准匹配中　”/”   ,得到index页为　　index.htm
+. 再次访问 /index.htm , 此次内部转跳uri已经是”/index.htm” , 根目录为/usr/local/nginx/html
+. 最终结果,访问了 /usr/local/nginx/html/index.htm
+
+ 
+再来看,正则也来参与.
+
+```
+location / {
+            root   /usr/local/nginx/html;
+            index  index.html index.htm;
+        }
+
+location ~ image {
+           root /var/www/image;
+           index index.html;
+}
+```
+
+. 如果我们访问  http://xx.com/image/logo.png
+. 此时, “/” 与”/image/logo.png” 匹配
+. 同时,”image”正则 与”image/logo.png”也能匹配,谁发挥作用?
+. 正则表达式的成果将会使用.
+
+图片真正会访问 /var/www/image/logo.png 
+
+
+```
+location / {
+             root   /usr/local/nginx/html;
+             index  index.html index.htm;
+         }
+ 
+location /foo {
+            root /var/www/html;
+             index index.html;
+}
+
+```
+
+我们访问 http://xxx.com/foo 对于uri “/foo”,   两个location的patt,都能匹配他们
+即 ‘/’能从左前缀匹配 ‘/foo’, ‘/foo’也能左前缀匹配’/foo’, 此时, 真正访问 /var/www/html/index.html 
+原因:’/foo’匹配的更长,因此使用之.;
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/3.png?raw=true[ctoedu,900,450]
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/4.png?raw=true[ctoedu,600,450]
+
+
+== rewrite 重写
+
+
+```
+
+if  (条件) {}  设定条件,再进行重写 
+set #设置变量
+return #返回状态码 
+break #跳出rewrite
+rewrite #重写
+```
+
+```
+If  语法格式
+If 空格 (条件) {
+    重写模式
+}
+```
+
+
+
+条件又怎么写?
+
+答:3种写法
+
+
+```
+1: “=”来判断相等, 用于字符串比较
+2: “~” 用正则来匹配(此处的正则区分大小写)
+   ~* 不区分大小写的正则
+3: -f -d -e来判断是否为文件,为目录,是否存在.
+```
+
+例子:
+
+```
+            if  ($remote_addr = 192.168.1.100) {
+                return 403;
+            }
+
+
+            if ($http_user_agent ~ MSIE) {
+                           rewrite ^.*$ /ie.htm;
+                           break; #(不break会循环重定向)
+            }
+
+             if (!-e $document_root$fastcgi_script_name) {
+                rewrite ^.*$ /404.html break;
+            } 
+```
+
+
+注, 此处还要加break,
+
+以 xx.com/dsafsd.html这个不存在页面为例,
+我们观察访问日志, 日志中显示的访问路径,依然是GET /dsafsd.html HTTP/1.1
+提示: 服务器内部的rewrite和302跳转不一样. 
+
+跳转的话URL都变了,变成重新http请求404.html, 而内部rewrite, 上下文没变,
+就是说 fastcgi_script_name 仍然是 dsafsd.html,因此 会循环重定向.
+
+set 是设置变量用的, 可以用来达到多条件判断时作标志用.
+达到apache下的 rewrite_condition的效果
+
+如下: 判断IE并重写,且不用break; 我们用set变量来达到目的
+
+```
+if ($http_user_agent ~* msie) {
+                set $isie 1;
+            }
+
+            if ($fastcgi_script_name = ie.html) {
+                set $isie 0;
+            }
+
+            if ($isie 1) {
+                rewrite ^.*$ ie.html;
+            }
+```
+
+ 
+=== Rewrite语法
+
+Rewrite 正则表达式  定向后的位置 模式
+
+```
+Goods-3.html ---->Goods.php?goods_id=3
+goods-([\d]+)\.html ---> goods.php?goods_id =$1  
+```
+
+```
+location /ecshop {
+index index.php;
+rewrite goods-([\d]+)\.html$ /ecshop/goods.php?id=$1;
+rewrite article-([\d]+)\.html$ /ecshop/article.php?id=$1;
+rewrite category-(\d+)-b(\d+)\.html /ecshop/category.php?id=$1&brand=$2;
+
+rewrite category-(\d+)-b(\d+)-min(\d+)-max(\d+)-attr([\d\.]+)\.html /ecshop/category.php?id=$1&brand=$2&price_min=$3&price_max=$4&filter_attr=$5;
+
+rewrite category-(\d+)-b(\d+)-min(\d+)-max(\d+)-attr([\d+\.])-(\d+)-([^-]+)-([^-]+)\.html /ecshop/category.php?id=$1&brand=$2&price_min=$3&price_max=$4&filter_attr=$5&page=$6&sort=$7&order=$8;
+}
+```
+
+注意:用url重写时, 正则里如果有”{}”,正则要用双引号包起来
+
+
