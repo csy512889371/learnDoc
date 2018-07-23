@@ -50,7 +50,7 @@ nginx: [emerg] still could not bind()
 image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/1.png?raw=true[ctoedu,600,450]
 
 
-Nginx的信号控制
+== Nginx的信号控制
 
 image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/2.png?raw=true[ctoedu,600,450]
 
@@ -121,7 +121,7 @@ http {  //这是配置http服务器的主要段
 ```
 
 
-日志管理
+== 日志管理
 
 
 我们观察nginx的server段,可以看到如下类似信息
@@ -216,7 +216,7 @@ Crontab 编辑定时任务
 01 00 * * * /xxx/path/b.sh  每天0时1分(建议在02-04点之间,系统负载小)
 ```
 
-location 语法
+== location 语法
 
 location 有”定位”的意思, 根据Uri来进行不同的定位.
 
