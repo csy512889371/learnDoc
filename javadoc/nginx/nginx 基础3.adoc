@@ -1,0 +1,187 @@
+= nginx 基础3
+
+== 概述
+
+* [nginx 基础1](https://blog.csdn.net/qq_27384769/article/details/81171563)
+* [nginx 基础2](https://blog.csdn.net/qq_27384769/article/details/81186032)
+
+== Nginx具体的压缩配置
+
+常用以下配置
+
+```
+gzip on|off
+gzip_buffers 4K|8K 缓冲(和硬盘块相当)
+gzip_comp_level [1-9] 推荐6
+gzip_disable 正则匹配如User-Agent,针对古老浏览器不压缩
+gzip_min_length 200
+gzip_http_version 1.0|1.1
+gzip_types text/plain , application/xml (各mime之间,一定要加空格,不是逗号)
+gzip_vary on|off
+```
+
+Vary的作用:
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/6.png?raw=true[ctoedu,400,450]
+
+
+Vary是用来标志缓存的依据.
+如上图: 看出,这个新闻页面由
+
+思考:
+
+* 1: 如果2个人,一个浏览器支持gzip,一个浏览器不支持gzip. 2个同时请求同个页面, chinaCache缓存压缩后,还是未压缩的?
+* 2: 如果1人,再次请求页面,chinaCache返回压缩后的缓存内容,还是压缩前的缓存内容?
+
+这个时候 Vary的作用体现出来.
+
+即------缓存的内容受 Accept-Encoding头信息的影响.所以如果
+
+. 请求时,不支持gzip, 缓存服务器将会生成一份未gzip的内容.
+. 请求时,支持gzip, 缓存服务器将会生成一份gzip的内容.
+
+下次再请求时, 缓存服务器会考虑客户端的Accept-Encoding因素,并合理的返回信息
+ 
+Nginx对于图片,js等静态文件的缓存设置
+
+注:这个缓存是指针对浏览器所做的缓存,不是指服务器端的数据缓存.
+
+主要知识点: location expires指令
+
+```
+        location ~ \.(jpg|jpeg|png|gif)$ {
+            expires 1d;
+        }
+        location ~ \.js$ {
+           expires 1h;
+        }
+```
+
+设置并载入新配置文件,用firebug观察,会发现 图片内容,没有再次产生新的请求,原因--利用了本地缓存的效果.
+
+
+注: 在大型的新闻站,或文章站中,图片变动的可能性很小,建议做1周左右的缓存Js,css等小时级的缓存.
+
+
+如果信息流动比较快,也可以不用expires指令,用last_modified, etag功能(主流的web服务器都支持这2个头信息)
+
+原理是:
+
+. 响应: 计算响应内容的签名, etag 和 上次修改时间
+. 请求: 发送 etatg, If-Modified-Since 头信息.
+. 服务器收到后,判断etag是否一致, 最后修改时间是否大于if-Modifiled-Since 
+. 如果监测到服务器的内容有变化,则返回304,
+. 浏览器就知道,内容没变,直接用缓存.
+
+
+* 304 比起上面的expires 指令多了1次请求,但是比200状态,少了传输内容.
+
+
+== Nginx反向代理与负载均衡
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/7.png?raw=true[ctoedu,400,450]
+
+=== 正向代理
+
+具体的负载均衡的方式
+
+注意:负载均衡是一种方案,实现办法有DNS轮询,
+如下图,DNS服务器允许一个域名有多个A记录,
+那么在用户访问时,一般按地域返回一个较近的解析记录.
+这样,全国不同的地区的用户,看到的163的主页,来自不同的服务器
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/8.png?raw=true[ctoedu,400,450]
+
+第二步: 当 解析出结果,比如浏览器连接60.217时,这台主机后面还有N台,也要做负载均衡.
+
+. 1: 硬件上做负载均衡, F5 BIG-IP ,硬件负载均衡(很贵).直接从TCP/IP的底层协议上,直接做数据包的中转.
+. 2: 软件负载均衡, LVS 
+. 3: 反向代理+负载均衡
+ 
+反向代理与keep-alive连接
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/9.png?raw=true[ctoedu,400,450]
+
+=== Nginx反向代理设置
+
+例: 把图片重写到 8080端口(既然能写到8080端口,就意味着可以写到其他独立服务器上)
+
+```
+        location ~ \.(jpg|jpeg|png|gif)$ {
+                proxy_pass http://192.168.1.204:8080;
+                expires 1d;
+        }
+```
+
+集群与均衡-----如果后端的服务器非常多,该如何写? 又如何均匀的分发任务
+ 
+=== nginx 与memcached的组合
+
+. 用法: nginx响应请求时,直接请求memcached,如果没有相应的内容,再回调PHP页面,去查询database,并写入memcached.
+. 分析: memcached是k/v存储, key-->value,nginx请求memecached时,用什么做key?一般用 uri arg 做key,  如 /abc.php?id=3
+
+=== Nginx 第三方模块的安装
+
+以ngx_http_php_memcache_standard_balancer-master为例
+
+1:解压 到 path/ngx_module
+
+
+```
+配置:
+./configure --prefix=/xxx/xxx --add_module=/path/ngx_module
+编译 安装
+Make && make instal
+```
+
+配置memcache集群
+
+
+```
+    upstream memserver {  把用到的memcached节点,声明在一个组里
+        hash_key $request_uri;  // hash计算时的依据,以uri做依据来hash
+        server localhost:11211;
+        server localhost:11212;
+    }
+```
+
+
+Location里
+
+```
+        location / {
+           # root   html;
+           set $memcached_key $uri;
+           memcached_pass memserver;  // memserver为上面的memcache节点的名称
+           error_page 404 /writemem.php;
+           index  index.php index.html index.htm;
+        }
+```
+
+在nginx中做集群与负载均衡,步骤都是一样的 Upstream {}模块 把多台服务器加入到一个组然后 memcached_pass, fastcgi_pass, proxy_pass ==> upstream组
+
+默认的负载均衡的算法:
+是设置计数器,轮流请求N台服务器.可以安装第3方模式,来利用uri做hash等等.
+
+如http://wiki.nginx.org/NginxHttpUpstreamConsistentHash 
+
+这个模块就是用一致性hash来请求后端结节,并且其算法,与PHP中的memcache模块的一致性hash算法,兼容.
+
+安装该模块后:
+
+Nginx.conf中
+
+```
+    upstream memserver {
+        consistent_hash $request_uri;
+        server localhost:11211;
+        server localhost:11212;
+    }
+```
+
+在PHP.ini中,如下配置
+
+memcache.hash_strategy = consistent
+
+这样: nginx与PHP即可完成对memcached的集群与负载均衡算法.

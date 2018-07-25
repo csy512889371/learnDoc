@@ -1,0 +1,265 @@
+= nginx 基础  优化
+
+== 概述
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/15.png?raw=true[ctoedu,800,450]
+
+== 高性能的服务器的架设
+
+对于高性能网站 ,请求量大,如何支撑?
+
+* 1方面,要减少请求 
+** 对于开发人员----合并css, 背景图片, 减少mysql查询等.
+
+* 2: 对于运维 nginx的expires ,利用浏览器缓存等,减少查询.
+* 3: 利用cdn来响应请求
+* 4: 最终剩下的,不可避免的请求----服务器集群+负载均衡来支撑.
+
+所以,来到第4步后,就不要再考虑减少请求这个方向了.而是思考如何更好的响应高并发请求.
+
+大的认识-------既然响应是不可避免的,我们要做的是把工作内容”平均”分给每台服务器.最理想的状态 每台服务器的性能都被充分利用.
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/10.png?raw=true[ctoedu,800,450]
+
+
+服务器介绍:
+
+```
+服务器IP:
+A  192.168.1.201
+B  192.168.1.202
+C 203
+D204
+
+Root: ctoedu.cn
+```
+
+
+```
+1台 A
+RAM: 2G
+HD: 500G
+```
+
+
+```
+3台 B, C, D
+RAM: 8G 
+Hd  : 200G
+```
+
+
+步骤:
+
+* 1:A号服务器 
+** 1.1安装 mysql
+** 1.2并导入数据.
+
+注意:先把表中的索引去掉,加快导入速度
+
+* 2: C号服务器:
+** 2.1: 编译PHP 注意: enbale-fpm , with-mysql=mysqlnd   (编译成独立fpm进程,支持mysql,)
+** 2.2: 下载第3方的memcached扩展 编译进来
+
+* 3: D号服:
+** 3.1 编译 memcached
+
+* 4: B号服:
+
+编译nginx ,并配置
+
+```
+Cd /app/pcre-8.12
+./configure
+Make && make install
+```
+
+```
+Cd nginx-1.2.7
+./configure --prefix=/usr/local/nginx --add-module=/app/ngx_http_consistent_hash-master
+```
+
+注:红线部分是nginx的第3方模块,需要自己下载.
+
+
+安装统计模块,便于观察nginx的状态
+```
+./configure --prefix=/usr/local/nginx/ --add-module=/app/ngx_http_consistent_hash-master --with-http_stub_status_module
+```
+
+
+Php 安装配置
+```
+1 tar -xzvf  /path/’
+2 cd /path/
+3 .configure --prefix=/usr/local/php --
+```
+
+服务器集群与负载均衡搭建完毕
+
+* 1:问题  C-->A 的mysql连接很慢
+
+解决: my.cnf中的[mysqld]节点中,添加
+skip-name-resolve   // 这句话使mysql连接时忽略解析域名,在制定Mysql权限时,只能根据IP限制,不能根据域名限制.
+
+* 2: 问题  当memcache中没有相应的数据,从后台回调数据时,http的状态码是404,(虽然内容正常),这样不利于SEO
+
+解决: nginx/conf/nginx.conf
+
+```
+ error_page 404  =200 /callback.php;  // 这样 404被改写成200来响应中
+```
+
+
+=== 压力测试:
+
+模拟 前0-10万是热数据,10-20万是冷门数据
+
+请求热数据 0-10,请求9次
+
+请求准予数据 请求1次,     -----100万次的请求.
+
+
+=== 优化思路:
+
+nginx响应请求
+* 1:建立socket连接
+* 2: 打开文件,并沿socket返回.
+
+排查问题,也要注意观察这两点,主要从系统的dmesg ,和nginx的error.log来观察
+
+
+=== 优化过程
+
+
+* 1:判断nginx的瓶颈
+
+* 1.1: 首先把ab测试端的性能提高,使之能高并发的请求.
+
+** 易出问题: too many open files
+** 原因 :  ab在压力测试时,打开的socket过多
+** 解决: ulimit -n 30000 (重启失效)
+** 观察结果: nginx 不需要特殊优化的情况下, 5000个连接,1秒内响应. 
+** 满足要求,但 wating状态的连接过多.
+
+* 1.2: 解决waiting进程过多的问题.
+** 解决办法: keepalive_timeout = 0;  
+** 即: 请求结果后,不保留tcp连接. 
+** 在高并发的情况下, keepalive会占据大量的socket连接.
+** 结果: waiting状态的连接明显减少.
+
+* 1.3: 解决服务端 too many open files
+分析: nginx要响应,  1是要建立socket连接, 2 是要读本地文件. 这两个者限制.
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/11.png?raw=true[ctoedu,800,450]
+
+由上图可看出,nginx的问题容易出在2点上:
+
+* 1: nginx接受的tcp连接多,能否建立起来?
+* 2: nginx响应过程,要打开许多文件 ,能否打开?
+
+第1个问题: 在内核层面(见下)
+第2个问题 (见下)
+
+
+系统内核层面:
+
+```
+net.core.somaxconn = 4096 允许等待中的监听
+net.ipv4.tcp_tw_recycle = 1  tcp连接快速回收
+net.ipv4.tcp_tw_reuse = 1    tcp连接重用   
+net.ipv4.tcp_syncookies = 0  不抵御洪水攻击
+ulimit -n 30000
+```
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/14.png?raw=true[ctoedu,800,450]
+
+
+Nginx层面:
+```
+解决: nginx.conf 下面: work_connection 加大
+worker_connections  10240;
+Worker_rlimit_nofiles 10000;
+Keepalive_timeout 0;
+```
+
+Nginx---->php-fpm之间的优化
+
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/12.png?raw=true[ctoedu,800,450]
+
+如上图,在很多个nginx来访问fpm时, fpm的进程要是不够用, 会生成子进程.
+
+生成子进程需要内核来调度,比较耗时,
+如果网站并发比较大, 
+我们可以用静态方式一次性生成若干子进程,保持在内存中.
+
+方法 -- 修改php-fpm.conf
+```
+Pm = static  让fpm进程始终保持,不要动态生成
+Pm.max_children= 32  始终保持的子进程数量
+```
+ 
+Php-mysql的优化
+
+Linux机器下 ,php 通过IP连接其他mysql服务器时,容易出的问题能ping能,但connect不到.
+
+image::https://github.com/csy512889371/learnDoc/blob/master/image/201816/nginx/13.png?raw=true[ctoedu,800,450]
+
+
+一般是由:mysql服务器的防火墙影响的.
+
+并发1万连接,响应时间过长.
+
+优化思路: 同上的nginx
+
+* 1: 内核层面,加大连接数,并加快tcp回收
+* 2: mysql层面,增大连接数
+* 3: php层面,用长连接,节省连接数
+* 4: 用memcached缓存,减轻mysql负担
+
+具体:
+* 1.1  , PHP服务器增大 ulimint -n选项
+* 1.2 mysql服务器内核配置
+添加或修改如下选项
+
+```
+net.ipv4.tcp_tw_recycle = 1
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_syncookies = 0
+```
+
+# syscttl -p 使修改立即生效
+
+2.1  修改mysql.cnf
+
+```
+Vi  /etc/my.conf
+# service mysqld restart 重启mysql
+```
+
+3.1 PHP层面 ,用长连接
+
+```
+
+Mysql_connect ---> mysql_pconnect
+注: pconnect 在PHP以apache模块的形式存在时,无效果.
+ 
+Nginx+phjp+mysql+nginx
+在引入memcached后,性能提升不明显,甚至还略有下降
+
+```
+
+memcached使50%的请求变快了,但是一部分,反倒慢了.
+原因在于--PHP->memcached也要建立tcp连接,代价挺高,
+但缓存了数据之后,就省去了mysql的查询时间.
+
+总结: memcached适合存复杂的sql,尤其是连接查询/模糊查询的sql结果
+
+Memcached服务器的优化(集中在内核的ipv4设置上,不再重复)
+
+
+
+
