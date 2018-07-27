@@ -127,7 +127,7 @@ godoc -http :6060
 == 其他
 
 https://www.taobao.com/robots.txt
-http://www.cnblogs.com/hwlong/p/6069207.html
+
 
 
 == 光线cms
@@ -150,3 +150,6 @@ https://hc.jiandaoyun.com/doc/9000
 http://tengine.taobao.org/document_cn/http_upstream_consistent_hash_cn.html
 
 
+== 其他博客
+
+http://www.cnblogs.com/hwlong/p/6069207.html
