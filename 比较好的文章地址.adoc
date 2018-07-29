@@ -127,7 +127,7 @@ godoc -http :6060
 == 其他
 
 https://www.taobao.com/robots.txt
-
+http://openresty.org/cn/
 
 
 == 光线cms
