@@ -153,3 +153,4 @@ http://tengine.taobao.org/document_cn/http_upstream_consistent_hash_cn.html
 == 其他博客
 
 http://www.cnblogs.com/hwlong/p/6069207.html
+https://www.cnblogs.com/dannylinux/p/8033318.html
