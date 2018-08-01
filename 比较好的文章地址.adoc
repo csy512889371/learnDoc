@@ -154,3 +154,25 @@ http://tengine.taobao.org/document_cn/http_upstream_consistent_hash_cn.html
 
 http://www.cnblogs.com/hwlong/p/6069207.html
 https://www.cnblogs.com/dannylinux/p/8033318.html
+
+== 域名
+
+* https://sg.godaddy.com/zh
+* http://www.juming.com/?t=bb_1505
+* https://wanwang.aliyun.com/?utm_content=se_1000301943
+
+== 主机
+
+* 国外
+** aws
+** linode
+** DigitOcean/Heroku
+
+* 国内
+** 阿里ECS
+** 青云/UCloud/百度云
+
+
+* 域名解析
+** DNSPOD
+** https://www.dnspod.cn/
