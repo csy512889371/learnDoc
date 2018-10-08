@@ -193,5 +193,6 @@ google 镜像链接
 * android
 
 ** http://www.androiddevtools.cn/
+** http://www.genymotion.net/
 
 
