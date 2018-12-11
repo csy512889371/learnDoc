@@ -195,6 +195,14 @@ google 镜像链接
 ** http://www.androiddevtools.cn/
 ** http://www.genymotion.net/
 
+```
+hbuilder android
+
+weex
+```
+
+
+
 * 物连网
 ** https://ruff.io/
 
