@@ -200,7 +200,7 @@ hbuilder android
 
 weex
 ```
-
+http://www.pushbt1.com/
 
 
 * 物连网
@@ -208,3 +208,9 @@ weex
 
 --
 mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.2.0.2.0 -Dpackaging=jar -Dfile=D:\ojdbc14-10.2.0.2.0.jar
+
+
+* 预售许可证查询
+
+** http://www.mhxfdc.com/
+** http://bdcdj.fuzhou.gov.cn/
