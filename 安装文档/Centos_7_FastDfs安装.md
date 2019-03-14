@@ -224,6 +224,17 @@ ps -ef | grep fdfs
 /etc/init.d/fdfs_storaged stop
 ```
 
+设置 FastDFS 存储器开机启动：
+
+```
+ vi /etc/rc.d/rc.local
+```
+
+```
+## FastDFS Storage
+/etc/init.d/fdfs_storaged start
+```
+```
 
 ## 文件上传测试 192.168.111.119
 
