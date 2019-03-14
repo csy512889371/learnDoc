@@ -183,6 +183,8 @@ vi /etc/rc.d/rc.local
 # 配置 FastDFS 存储 192.168.111.123
 
 ```
+cd /etc/fdfs/
+cp storage.conf.sample storage.conf
 vi /etc/fdfs/storage.conf
 ```
 
