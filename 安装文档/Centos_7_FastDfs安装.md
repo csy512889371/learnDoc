@@ -263,9 +263,18 @@ cd /fastdfs/storage
 # tar -zxvf fastdfs-nginx-module_v1.16.tar.gz
 ```
 
+```
+# cd fastdfs-nginx-module/src
+# vi config
+```
 修改 fastdfs-nginx-module 的 config 配置文件
 
 ```
+CORE_INCS="$CORE_INCS /usr/local/include/fastdfs /usr/local/include/fastcommon/"
+
+改成：
+
+
 CORE_INCS="$CORE_INCS /usr/include/fastdfs /usr/include/fastcommon/"
 ```
 
@@ -274,8 +283,12 @@ CORE_INCS="$CORE_INCS /usr/include/fastdfs /usr/include/fastcommon/"
 上传到/usr/local/src 目录
 
 ```
+# yum install gcc gcc-c++ make automake autoconf libtool pcre* zlib openssl openssl-devel
+```
+
+```
 # cd /usr/local/src/
-# tar -zxvf nginx-nginx-1.12.2.tar.gz
+# tar -zxvf nginx-1.12.2.tar.gz
 # cd nginx-1.12.2
 # ./configure --add-module=/usr/local/src/fastdfs-nginx-module/src
 # make && make install
