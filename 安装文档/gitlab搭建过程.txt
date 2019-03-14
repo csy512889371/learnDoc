@@ -1,0 +1,47 @@
+1，新建 /etc/yum.repos.d/gitlab_gitlab-ce.repo文件
+文件内容：
+    [gitlab-ce]
+    name=Gitlab CE Repository
+    baseurl=https://mirrors.tuna.tsinghua.edu.cn/gitlab-ce/yum/el$releasever/
+    gpgcheck=0
+    enabled=1
+
+安装依赖
+    sudo yum install curl openssh-server openssh-clients postfix cronie
+    sudo service postfix start # 启动postfix 
+    sudo chkconfig postfix on # 设置开机启动postfix 
+
+
+--未执行，关于防火墙的还没出来
+--sudo lokkit -s http -s ssh
+
+执行
+   sudo yum makecache
+    sudo yum install gitlab-ce
+    sudo gitlab-ctl reconfigure  
+
+执行 
+sudo systemctl enable sshd  #启动sshd  
+sudo systemctl start sshd # 设置开机启动sshd 
+#为防火墙添加服务，并重新加载使生效
+sudo firewall-cmd –permanent –add-service=http
+sudo systemctl reload firewalld
+
+修改
+ /etc/gitlab/gitlab.rb文件
+ 把 external_url修改为 ‘http://192.168.111.123’
+
+
+----------------------
+进入gitlab控制台界面命令：
+gitlab-rails console production
+
+
+
+执行
+#这个操作会重置gitlab的所有配置，搭建后不要使用
+gitlab-ctl reconfigure
+
+
+
+
