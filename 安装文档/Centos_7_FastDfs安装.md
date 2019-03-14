@@ -234,7 +234,7 @@ ps -ef | grep fdfs
 ## FastDFS Storage
 /etc/init.d/fdfs_storaged start
 ```
-```
+
 
 ## 文件上传测试 192.168.111.119
 
