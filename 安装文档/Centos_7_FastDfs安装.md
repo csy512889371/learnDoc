@@ -382,3 +382,35 @@ service firewalld restart
 /etc/init.d/fdfs_trackerd stop
 /etc/init.d/fdfs_trackerd start
 ```
+
+
+## 文件名
+
+然后在url后面增加一个参数，指定原始文件名
+
+```
+http://192.168.111.123:8888/group1/M00/00/00/wKhve1yIslaAHg1gAABSlAD3VCM170_big.jpg?attname=filename.jpg
+```
+
+```
+    server {
+        listen       8888;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location ~/group([0-9])/M00{#alias/fastdfs/storage/data;
+            if ($arg_attname ~ "^(.*)") {
+                add_header Content-Disposition "attachment;filename=$arg_attname";
+            }
+            ngx_fastdfs_module;
+        }
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+            root html;
+        }
+    }
+
+```
