@@ -214,3 +214,8 @@ mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.
 
 ** http://www.mhxfdc.com/
 ** http://bdcdj.fuzhou.gov.cn/
+
+# activity
+
+https://github.com/huangxianyuan/hxyFrame
+http://118.24.146.49:8080 hyx/a
