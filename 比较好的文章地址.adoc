@@ -219,3 +219,19 @@ mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc14 -Dversion=10.
 
 https://github.com/huangxianyuan/hxyFrame
 http://118.24.146.49:8080 hyx/a
+
+https://www.jiandaoyun.com/dashboard#/app/5b556cc5d0adf51a79935030/edit
+简道云的账号：18050178915 密码:abcd@1234
+
+#
+http://www.12371.cn/zgrjxz/
+
+# ntko 录制Word宏，并将Word宏代码转换为Javascript代码的方法
+
+http://dev.ntko .com:8000/admin/support.nsf/vwWebBSDocsPubDefault/A1CDFB65065822CF482572760046BA70?opendocument&tdsourcetag=s_pcqq_aiomsg
+
+# Apache Ignite
+
+https://www.zybuluo.com/liyuj/note/230739
+
+
