@@ -58,6 +58,8 @@ vue -V
 
 ```
 
+如果提示 不是系统。。。则做以下操作
+
 ```
 vue.cmd
 
@@ -88,5 +90,8 @@ yarn add axios 等
 ```
 npm install
 npm run serve
+
+yarn install
+yarn serve
 ```
 
