@@ -46,4 +46,207 @@ export default {
 
 文档地址： https://vuex.vuejs.org/zh/
 
-image::vuex.png[vuex,700,800]
+image::vuex.png[vuex,700,600]
+
+```
+yarn add vuex
+
+import Vuex from 'vuex'
+```
+
+> Store 及基本使用
+
+严格来说，Store 的概念并不是 vuex 的直接子集属性，每个 vuex 的核心就是 Store，也可以称之为仓库，而这个 Store 就是一个单一状态管理容器。
+
+Store 中可以配置 State、getter、mutation 等属性，而Store 的属性涵盖了对一个数据的初始化、获取及更新操作。
+
+Store 维护了一套响应式的状态存储机制，也就是当 Store 的数据发生变化是，会通知 Vue 组件，进行响应式的更新。
+
+一个 Store 会有一些约定好的属性，因此定义一个 Store 的过程基本如下：
+
+引入 Vue 及 Vuex，并启用 Vuex:
+
+```
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+```
+
+定义 Store 的 state：
+
+```
+const state = {
+  count: 0
+}
+```
+
+定义 Store 的 getters：（如果需要）
+
+```
+const getters = {
+  getCount(state) {
+    return state.count;
+  }
+}
+```
+
+这样可以不通过 this.$store.state.count 的形式访问，而是可以通过 this.$store.getters.getCount 的形式访问（当然还有更简洁方式），出了访问方式变动之外，可以在函数中进行一系列操作，然后在返回数据。
+
+定义 Store 的 mutations:
+
+```
+const mutations = {
+  increment(state){
+    state.count ++ ;
+  }
+}
+```
+
+getters 是获取数据，而 mutations 则是显示的对数据进行更改。 Store 的 state 是不允许通过 this.$store.state.count = 2 的形式去修改的，必须显示的提交修改才能去执行修改。
+
+提交修改的方式是 this.$store.commit(mutationName)。
+
+将 state、getters 以及 mutations 作为初始化内容传入 new Vuex.Store({}):
+
+
+```
+const store = new Vuex.Store({
+ state,
+ getters,
+ mutations
+});
+
+export default store;
+```
+
+最后将 store 导出，然后在 new Vue({}) 的地方引入，挂载到 store 属性下即可。
+
+```
+import store from './store';
+
+new Vue({
+  el: '#app',
+  router,
+  store,
+  render: (c) => {return c(App)}
+});
+```
+
+=== state
+
+Vuex 是一个单一的状态树来管理状态，而 Store 则是Vuex 的存储仓库，每个 Store 中真实表示数据或者状态的则是 Store 的 state 属性。
+
+如果熟悉 React 则就无需强调什么是 state 了， 所有的数据初始化定义都应该在 state 中定义，并且获取数据也可以从 state 中取，只是无法直接去更改某个 state 的值。
+
+比如在模板中读取某个 state 的值的方式：
+
+```
+
+<p>count is: {{this.$store.state.count}}</p>
+```
+
+而在如果你没有使用 getters 的话，一般也会推荐将 state 的值初始化给组件computed 的某个属性，能够简化很多 this.$store.state.xxx 的代码。
+
+比如我将state.count 赋值给 computed 中的 count：
+
+```
+ computed: {
+      count() {
+        return this.$store.state.count
+      }
+    },
+```
+
+这样在模板中我可以直接使用 count:
+
+```
+<p>count is: {{count}}</p>
+```
+
+=== mapState
+
+使用 mapState 需要首先从 vuex 中引入
+
+```
+ import {mapState} from 'vuex';
+```
+即使每次初始化 computed，也需要写大量的 this.$store.state.xx 因此 vuex 暴露一个 mapState 的属性，用来边界开发，尤其是将 state 的值初始化给 computed 的时候：
+
+```
+computed: mapState({
+    // 箭头函数可使代码更简练
+    count: state => state.count,
+
+    // 传字符串参数 'count' 等同于 `state => state.count`
+    countAlias: 'count',
+
+    // 为了能够使用 `this` 获取局部状态，必须使用常规函数
+    countPlusLocalState (state) {
+      return state.count + this.localCount
+    }
+  })
+}
+```
+
+=== Getters
+
+getters 只是为了更加方便的获取数据，比如一个 count state，如果不同的组件需要不同结果的 count，则一般都是由业务组件去做这个事情，而 store 也可以把这个事情给做掉。
+
+> getter 的定义及基本使用
+
+getter 的定义也很简单，定义某个属性，方法中形参是 state
+
+```
+getters: {
+    doneTodos: state => {
+      return state.todos.filter(todo => todo.done)
+    }
+  }
+```
+通过传入的 state 参数，可以访问当前 store 的状态，进行一系列的判断过滤等。
+
+
+> 多个 getter 配合
+
+```
+getters: {
+  doneTodos: state => {
+      return state.todos.filter(todo => todo.done)
+  },
+  doneTodosCount: (state, getters) => {
+    return getters.doneTodos.length
+  }
+}
+```
+
+> getter 传参
+
+```
+getters: {
+  getTodoById: (state) => (id) => {
+    return state.todos.find(todo => todo.id === id)
+  }
+}
+```
+
+> mapGetter
+
+```
+computed: mapGetter({
+    // 箭头函数可使代码更简练
+    count: getters=> getters.getCount,
+
+    // 传字符串参数 'count' 等同于 `getters=> getters.getCount`
+    countAlias: 'getCount',
+
+    // 为了能够使用 `this` 获取局部状态，必须使用常规函数
+    countPlusLocalState (getters) {
+      return getters.getCount+ this.localCount
+    }
+  })
+}
+```
+
+
+
