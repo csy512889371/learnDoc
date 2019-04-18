@@ -1,0 +1,49 @@
+
+> BUS
+
+bus.js
+
+```
+import Vue from 'vue'
+const Bus = new Vue()
+export default Bus
+```
+
+
+```
+export default {
+  methods: {
+    handleClick () {
+      this.$bus.$emit('on-click', 'hello')
+    }
+  }
+}
+```
+
+```
+export default {
+  data () {
+    return {
+      message: ''
+    }
+  },
+  mounted () {
+    this.$bus.$on('on-click', mes => {
+      this.message = mes
+    })
+  }
+}
+```
+
+```
+// 在B组件页面中添加以下语句，在组件beforeDestory的时候销毁。
+  beforeDestroy () {
+    bus.$off('get', this.myhandle)
+  },
+```
+
+== vuex
+
+文档地址： https://vuex.vuejs.org/zh/
+
+image::vuex.png[,300,200]
