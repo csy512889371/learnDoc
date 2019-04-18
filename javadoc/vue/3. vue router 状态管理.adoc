@@ -46,4 +46,4 @@ export default {
 
 文档地址： https://vuex.vuejs.org/zh/
 
-image::vuex.png[,300,200]
+image::vuex.png[vuex,700,800]
