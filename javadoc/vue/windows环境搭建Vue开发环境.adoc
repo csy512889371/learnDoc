@@ -32,7 +32,10 @@ yarn global list
 yarn global dir
 ```
 
-
+c 盘搜索
+```
+vue.cmd
+```
 
 == 2、安装Vue
 
@@ -58,33 +61,13 @@ vue -V
 
 ```
 
-```
-vue.cmd
-
-c 盘搜索
-
-PATH中加入:  C:\Users\Administrator\AppData\Local\Yarn\Data\global\node_modules\.bin
-```
-
 > 初始化 vue ui
 
 ```
 vue ui
 ```
-* 如果你已经安装了yarn，vue ui的默认包管理器是yarn
-* Babel,Router,Vuex,Linter这四项
 
-* 第一个是问你router的mode要不要设成history模式，一般正式项目都会设成这种模式的
-* 第二个问你选用哪种Eslint风格，从vue-cli@2.x似乎就是standard选的多一些。
-* 第三个是表示当你保存/提交时自动做Lint
 
-> 增加包
 
-```
-yarn add axios 等
-```
 
-```
-npm run serve
-```
 
