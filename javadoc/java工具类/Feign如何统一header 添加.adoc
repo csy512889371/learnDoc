@@ -1,0 +1,66 @@
+
+== Feign如何统一设置验证token
+
+```
+@Configuration
+public class FeignConfiguration {
+    /**
+     * 日志级别
+     * @return
+     */
+    @Bean  
+    Logger.Level feignLoggerLevel() {  
+        return Logger.Level.FULL;  
+    }
+
+    /**
+     * 创建Feign请求拦截器，在发送请求前设置认证的token,各个微服务将token设置到环境变量中来达到通用
+     * @return
+     */
+    @Bean
+    public FeignBasicAuthRequestInterceptor basicAuthRequestInterceptor() {
+        return new FeignBasicAuthRequestInterceptor();
+    }
+
+}
+
+/**
+ * Feign请求拦截器
+ * @author yinjihuan
+ * @create 2017-11-10 17:25
+ **/
+public class FeignBasicAuthRequestInterceptor  implements RequestInterceptor {
+
+    public FeignBasicAuthRequestInterceptor() {
+
+    }
+
+    @Override
+    public void apply(RequestTemplate template) {
+        template.header("Authorization", System.getProperty("fangjia.auth.token"));
+    }
+}
+```
+
+== 例子二
+
+```
+public class HmilyFeignInterceptor implements RequestInterceptor {
+
+    @Override
+    public void apply(final RequestTemplate requestTemplate) {
+        RpcMediator.getInstance().transmit(requestTemplate::header, HmilyTransactionContextLocal.getInstance().get());
+    }
+
+}
+```
+
+```
+    public void transmit(final RpcTransmit rpcTransmit, final HmilyTransactionContext context) {
+        if (context.getRole() == HmilyRoleEnum.LOCAL.getCode()) {
+            context.setRole(HmilyRoleEnum.INLINE.getCode());
+        }
+        rpcTransmit.transmit(CommonConstant.HMILY_TRANSACTION_CONTEXT,
+                GsonUtils.getInstance().toJson(context));
+    }
+```

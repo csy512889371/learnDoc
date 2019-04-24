@@ -1,0 +1,24 @@
+== spring容器加载完毕做一件事情（利用ContextRefreshedEvent事件）
+
+应用场景：很多时候我们想要在某个类加载完毕时干某件事情，但是使用了spring管理对象，我们这个类引用了其他类（可能是更复杂的关联），所以当我们去使用这个类做事情时发现包空指针错误，这是因为我们这个类有可能已经初始化完成，但是引用的其他类不一定初始化完成，所以发生了空指针错误
+
+
+== 例子
+```
+@Component
+public class TransactionSelfRecoveryScheduled implements ApplicationListener<ContextRefreshedEvent> {
+
+
+	/** 
+	* 当一个ApplicationContext被初始化或刷新触发 
+	*/ 
+    @Override
+    public void onApplicationEvent(final ContextRefreshedEvent event) {
+        CoordinatorRepository = SpringBeanUtils.getInstance().getBean(CoordinatorRepository.class);
+
+    }
+
+}
+```
+
+

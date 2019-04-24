@@ -1,0 +1,187 @@
+
+== ambda表达式用于替换函数式接口，方法引用也是如此，方法引用可以使代码更加简单和便捷
+
+方法引用主要有如下三种使用情况
+
+* 类：：实例方法
+* 类：：静态方法
+* 对象：：实例方法
+其中后两种情况等同于提供方法参数的lambda表达式，如
+
+```
+System.out::println 等同于(x)->System.out.println(x),
+
+Math::pow 等同于(x,y)->Math.pow(x,y).
+```
+第一种中，第一个参数会成为执行方法的对象
+
+```
+String::compareToIgnoreCase)等同于(x,y)->x.compareToIgnoreCase(y)
+```
+此外，方法引用还可以使用this::methodName及super::methodName表示该对象或者其父类对象中的方法
+
+
+=== 例子一
+```
+
+public static void test1_() {
+    List<String> strLst = new ArrayList<String>() {
+        {
+            add("adfkjsdkfjdskjfkds");
+            add("asdfasdfafgfgf");
+            add("public static void main");
+        }
+    };
+    Collections.sort(strLst, String::compareToIgnoreCase);
+    System.out.println(strLst);
+}
+```
+
+== 例子二
+
+
+接口 RpcAcquire
+
+```
+public interface RpcAcquire {
+
+    /**
+     * Acquire string.
+     *
+     * @param key the key
+     * @return the string
+     */
+    String acquire(String key);
+}
+```
+
+接口 RpcTransmit
+
+```
+public interface RpcTransmit {
+
+    /**
+     * Transmit.
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    void transmit(String key, String value);
+
+}
+```
+
+
+
+```
+public class RpcMediator {
+
+    private static final RpcMediator RPC_MEDIATOR = new RpcMediator();
+
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
+    public static RpcMediator getInstance() {
+        return RPC_MEDIATOR;
+    }
+
+
+    /**
+     * Transmit.
+     *
+     * @param rpcTransmit the rpc mediator
+     * @param context     the context
+     */
+    public void transmit(final RpcTransmit rpcTransmit, final HmilyTransactionContext context) {
+        System.out.println("RpcMediator.transmit" + rpcTransmit );
+        System.out.println("RpcMediator.transmit" + context );
+        if (context.getRole() == HmilyRoleEnum.LOCAL.getCode()) {
+            context.setRole(HmilyRoleEnum.INLINE.getCode());
+        }
+        rpcTransmit.transmit(CommonConstant.HMILY_TRANSACTION_CONTEXT,
+                GsonUtils.getInstance().toJson(context));
+    }
+
+    /**
+     * Acquire hmily transaction context.
+     *
+     * @param rpcAcquire the rpc acquire
+     * @return the hmily transaction context
+     */
+    public HmilyTransactionContext acquire(RpcAcquire rpcAcquire) {
+        System.out.println("RpcMediator.acquire" + rpcAcquire );
+        HmilyTransactionContext hmilyTransactionContext = null;
+        final String context = rpcAcquire.acquire(CommonConstant.HMILY_TRANSACTION_CONTEXT);
+        if (StringUtils.isNoneBlank(context)) {
+            hmilyTransactionContext = GsonUtils.getInstance().fromJson(context, HmilyTransactionContext.class);
+        }
+        return hmilyTransactionContext;
+    }
+}
+```
+
+> 调用
+
+```
+        RpcMediator.getInstance().transmit(requestTemplate::header, HmilyTransactionContextLocal.getInstance().get());
+```
+
+```
+RpcMediator.getInstance().acquire(RpcContext.getContext()::getAttachment);
+```
+
+
+== Supplier
+
+java.util.function中 Function, Supplier, Consumer, Predicate和其他函数式接口广泛用在支持lambda表达式的API中。这些接口有一个抽象方法，会被lambda表达式的定义所覆盖。
+
+```
+@FunctionalInterface
+public interface Supplier<T> {
+
+    T get();
+}
+
+```
+
+顾名思义, Supplier是用来提供一个对象,至于提供的对象的构造则由其来定义.
+
+其核心方法:
+
+* T get();
+
+> 获取提供的对象实例
+
+
+== 实例测试
+
+随机获取一个double类型的值
+
+get() 随机获取一个double类型的值
+
+```
+Supplier <Double>  supplier = () -> Math.random();
+ System.out.println(supplier.get());
+```
+
+== 与Supplier <T>相关的接口
+
+
+* BooleanSupplier 提供一个boolean类型的对象
+* DoubleSupplier 提供一个double类型的对象
+* IntSupplier 提供一个int类型的对象
+* LongSupplier 提供一个long类型的对象
+
+== 例子
+
+    public static void warn(Logger logger, Supplier<Object> supplier) {
+        if (logger.isWarnEnabled()) {
+            logger.warn(Objects.toString(supplier.get()));
+        }
+    }
+
+    LogUtil.warn(LOGGER, () -> "can not acquire request info:" + ex.getLocalizedMessage());
+
+

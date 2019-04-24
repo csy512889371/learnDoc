@@ -235,3 +235,7 @@ http://dev.ntko .com:8000/admin/support.nsf/vwWebBSDocsPubDefault/A1CDFB65065822
 https://www.zybuluo.com/liyuj/note/230739
 
 
+# 分布式事务
+
+https://dromara.org/website/zh-cn/
+http://www.txlcn.org/zh-cn/docs/preface.html

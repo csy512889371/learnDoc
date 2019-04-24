@@ -1,0 +1,101 @@
+
+== 扩展点加载机制 - ExtensionLoader
+
+
+== 例子
+
+```
+        @Bean
+        public ObjectSerializer objectSerializer() {
+            return ExtensionLoader.getExtensionLoader(ObjectSerializer.class)
+                    .getActivateExtension(env.getProperty("recover.serializer.support"));
+        }
+```
+
+
+```
+public final class ExtensionLoader<T> {
+
+    private Class<T> type;
+
+    private ExtensionLoader(final Class<T> type) {
+        this.type = type;
+    }
+
+    private static <T> boolean withExtensionAnnotation(final Class<T> type) {
+        return type.isAnnotationPresent(NickSPI.class);
+    }
+
+    /**
+     * Gets extension loader.
+     *
+     * @param <T>  the type parameter
+     * @param type the type
+     * @return the extension loader
+     */
+    public static <T> ExtensionLoader<T> getExtensionLoader(final Class<T> type) {
+        if (type == null) {
+            throw new NickException("type == null");
+        }
+        if (!type.isInterface()) {
+            throw new NickException("Extension type(" + type + ") not interface!");
+        }
+        if (!withExtensionAnnotation(type)) {
+            throw new NickException("type" + type.getName() + "not exist");
+        }
+        return new ExtensionLoader<>(type);
+    }
+
+    /**
+     * Gets activate extension.
+     *
+     * @param value the value
+     * @return the activate extension
+     */
+    public T getActivateExtension(final String value) {
+        ServiceLoader<T> loader = ServiceBootstrap.loadAll(type);
+        return StreamSupport.stream(loader.spliterator(), false)
+                .filter(e -> Objects.equals(e.getClass()
+                        .getAnnotation(NickSPI.class).value(), value))
+                .findFirst().orElseThrow(() -> new NickException("Please check your configuration"));
+    }
+
+}
+```
+
+
+
+```
+public class ServiceBootstrap {
+
+    /**
+     * Load first s.
+     *
+     * @param <S>   the type parameter
+     * @param clazz the clazz
+     * @return the s
+     */
+    public static <S> S loadFirst(final Class<S> clazz) {
+        final ServiceLoader<S> loader = loadAll(clazz);
+        final Iterator<S> iterator = loader.iterator();
+        if (!iterator.hasNext()) {
+            throw new IllegalStateException(String.format(
+                    "No implementation defined in /META-INF/services/%s, please check whether the file exists and has the right implementation class!",
+                    clazz.getName()));
+        }
+        return iterator.next();
+    }
+
+    /**
+     * Load all service loader.
+     *
+     * @param <S>   the type parameter
+     * @param clazz the clazz
+     * @return the service loader
+     */
+    public static <S> ServiceLoader<S> loadAll(final Class<S> clazz) {
+        return ServiceLoader.load(clazz);
+    }
+
+}
+```
