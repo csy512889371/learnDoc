@@ -239,3 +239,13 @@ https://www.zybuluo.com/liyuj/note/230739
 
 https://dromara.org/website/zh-cn/
 http://www.txlcn.org/zh-cn/docs/preface.html
+
+
+# idea licence
+
+http://idea.lanyus.com/
+
+# Hmily、SkyWalking、Sharding-Sphere 
+
+
+
