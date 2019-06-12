@@ -184,7 +184,8 @@ google 镜像链接
 ** https://g.codery.ga/
 ** https://rain.likeso.ml/
 ** https://coderschool.2345.ga/
-
+** https://hkjss.cn
+** https://github.com/shadowsocks/shadowsocks-windows
 
 * 民政部
 

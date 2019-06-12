@@ -1,0 +1,14 @@
+= SkyWalking
+
+== 编译 SkyWalking
+
+* git submodule init ，初始化子模块。
+* git submodule update ，更新子模块。
+* mvn package -Dmaven.test.skip=true
+
+注释掉以下插件
+
+```
+apm-webapp/pom.xml 下的 frontend-maven-plugin
+oap-server/server-library/library-client/docker-maven-plugin
+```
