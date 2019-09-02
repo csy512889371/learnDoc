@@ -257,3 +257,8 @@ http://mirrors.163.com/centos/
 # 石墨文档
 
 https://shimo.im/
+
+# 软考
+
+http://soft.feitc.org.cn/soft/authorize/view/frame/index.default.html
+
