@@ -119,8 +119,6 @@ rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
 # 安装完成后检查 /boot/grub2/grub.cfg 中对应内核 menuentry 中是否包含 initrd16 配置，如果没有，再安装
 一次！
 yum --enablerepo=elrepo-kernel install -y kernel-lt
-# 设置开机从新内核启动
-grub2-set-default 'CentOS Linux (4.4.189-1.el7.elrepo.x86_64) 7 (Core)'
 
 ```
 
