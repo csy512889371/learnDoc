@@ -1,4 +1,4 @@
- 
+
 kube-proxy开启ipvs的前置条件
 
 ```
@@ -54,6 +54,20 @@ systemctl daemon-reload && systemctl restart docker && systemctl enable docker
 docker version
 
 ```
+
+备注：centos 8 安装docker报错 containerd 版本太低
+
+```
+yum list docker-ce --showduplicates | sort -r
+
+
+wget https://download.docker.com/linux/centos/7/x86_64/edge/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+yum -y install containerd.io-1.2.6-3.3.el7.x86_64.rpm
+
+```
+
+
+
 
 
 安装 Kubeadm （主从配置）

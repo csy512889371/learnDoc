@@ -20,6 +20,19 @@ docker-compose version
 ```
 
 
+
+2020-1-4最新。可从 https://github.com/docker/compose/releases 获取最新
+
+```
+curl -L https://github.com/docker/compose/releases/download/1.25.0/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+chmod a+x /usr/local/bin/docker-compose
+```
+
+
+
+
+
 二、Harbor 安装：Harbor 官方地址：https://github.com/vmware/harbor/releases
 
 1、解压软件包：tar xvf harbor-offline-installer-<version>.tgz
@@ -124,7 +137,7 @@ https://reg.yourdomain.com 的管理员门户（将reg.yourdomain.com更改为�
 ```
 
 6、上传镜像进行上传测试
- 
+
 a、指定镜像仓库地址
 
 ```
@@ -242,7 +255,7 @@ Docker link的形式连接在一起，在容器之间通过容器名字互相访
 a、基于角色控制：用户和仓库都是基于项目进行组织的， 而用户基于项目可以拥有不同的权限b、基于镜像的复制策略：镜像可以在多个Harbor实例之间进行复制c、支持LDAP：Harbor的用户授权可以使用已经存在LDAP用户
 
 d、镜像删除 & 垃圾回收：Image可以被删除并且回收Image占用的空间，绝大部分的用户操作API， 方便用户对系统进行扩展
- 
+
 e、用户UI：用户可以轻松的浏览、搜索镜像仓库以及对项目进行管理
 
 f、轻松的部署功能：Harbor提供了online、offline安装，除此之外还提供了virtualappliance安装
@@ -287,7 +300,7 @@ d、 当C的请求发送给ngnix以后，ngnix会根据配置的认证地址将�
 serivces。
 
 e、 coreservices获取用户名和密码以后对用户信息进行认证(自己的数据库或者介入LDAP都可以)。成功以后，返回认证成功的信息
- 
+
 Harbor认证流程
 
 

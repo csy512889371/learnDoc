@@ -16,7 +16,18 @@ yum install -y conntrack ntpdate ntp ipvsadm ipset jq iptables curl sysstat libs
 
 ```
 
+centos8:问题
+
+```
+ntpdate ntp 没有了
+```
+
+
+
+
+
 文件上传
+
 ```
 yum -y install lrzsz
 
@@ -64,6 +75,18 @@ cp kubernetes.conf /etc/sysctl.d/kubernetes.conf
 sysctl -p /etc/sysctl.d/kubernetes.conf
 ```
 
+备注：centos8遇到问题
+
+```
+1:  modprobe br_netfilter
+2:  Linux 从4.12内核版本开始移除了 tcp_tw_recycle 配置。
+
+```
+
+
+
+
+
 调整系统时区
 
 ```
@@ -76,12 +99,15 @@ systemctl restart rsyslog
 systemctl restart crond
 ```
 
-关闭系统不需要服务
+关闭系统不需要(postfix)服务
 ```
 systemctl stop postfix && systemctl disable postfix
 ```
 
+
+
 设置 rsyslogd 和 systemd journald
+
 ```
 mkdir /var/log/journal # 持久化保存日志的目录
 
@@ -113,7 +139,7 @@ systemctl restart systemd-journald
 CentOS 7.x 系统自带的 3.10.x 内核存在一些 Bugs，导致运行的 Docker、Kubernetes 不稳定，例如： rpm -Uvh
 http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
 
- 
+
 ```
 rpm -Uvh http://www.elrepo.org/elrepo-release-7.0-3.el7.elrepo.noarch.rpm
 # 安装完成后检查 /boot/grub2/grub.cfg 中对应内核 menuentry 中是否包含 initrd16 配置，如果没有，再安装
