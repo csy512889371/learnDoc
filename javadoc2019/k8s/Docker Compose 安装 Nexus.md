@@ -17,6 +17,14 @@ services:
 
 注： 启动时如果出现权限问题可以使用：`chmod 777 /usr/local/docker/nexus/data`赋予数据卷目录可读可写的权限
 
+注：默认挂在卷位置
+
+```
+/var/lib/docker/volumes/mmmmm
+```
+
+
+
 # 登录控制台验证安装
 
 地址：`http://ip:port/`用户名：`admin`密码：`admin123`
@@ -31,13 +39,13 @@ services:
 <server>
   <id>nexus-releases</id>
   <username>admin</username>
-  <password>admin123</password>
+  <password>adminloit</password>
 </server>
 
 <server>
   <id>nexus-snapshots</id>
   <username>admin</username>
-  <password>admin123</password>
+  <password>adminloit</password>
 </server>
 ```
 
@@ -50,12 +58,12 @@ services:
   <repository>  
     <id>nexus-releases</id>  
     <name>Nexus Release Repository</name>  
-    <url>http://127.0.0.1:8081/repository/maven-releases/</url>  
+    <url>http://192.168.66.40:8082/repository/maven-releases/</url>  
   </repository>  
   <snapshotRepository>  
     <id>nexus-snapshots</id>  
     <name>Nexus Snapshot Repository</name>  
-    <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>  
+    <url>http://192.168.66.40:8082/repository/maven-snapshots/</url>  
   </snapshotRepository>  
 </distributionManagement> 
 ```
@@ -72,7 +80,7 @@ services:
     <repository>
         <id>nexus</id>
         <name>Nexus Repository</name>
-        <url>http://127.0.0.1:8081/repository/maven-public/</url>
+        <url>http://192.168.66.40:8082/repository/maven-public/</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
@@ -85,7 +93,7 @@ services:
     <pluginRepository>
         <id>nexus</id>
         <name>Nexus Plugin Repository</name>
-        <url>http://127.0.0.1:8081/repository/maven-public/</url>
+        <url>http://192.168.66.40:8082/repository/maven-public/</url>
         <snapshots>
             <enabled>true</enabled>
         </snapshots>
@@ -95,3 +103,30 @@ services:
     </pluginRepository>
 </pluginRepositories>
 ```
+
+
+
+## repository
+
+```
+http://maven.aliyun.com/nexus/content/groups/public/
+https://repo.spring.io/libs-milestone-local
+https://repo.spring.io/libs-snapshot-local
+
+maven-releases 设置成 maven-releases
+https://repo.spring.io/milestone
+https://repo.spring.io/release
+https://repo.spring.io/snapshot
+http://unidal.org/nexus/content/repositories/releases/
+
+
+```
+
+
+
+nexus 3 Anonymous 用户权限。勾选上 Allow anonymous users to access the server
+
+
+
+## idea maven设置 勾选 Always update snapshots
+
