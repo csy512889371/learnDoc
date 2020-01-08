@@ -126,6 +126,8 @@ http://unidal.org/nexus/content/repositories/releases/
 
 nexus 3 Anonymous 用户权限。勾选上 Allow anonymous users to access the server
 
+推荐设置查看账号 https://blog.csdn.net/zhuwei_clark/article/details/90522174
+
 
 
 ## idea maven设置 勾选 Always update snapshots
