@@ -1,9 +1,9 @@
-GITLAB
+# GITLAB
 
 
 
 ```
-version: '2'
+version: '3.0'
 services:
     gitlab:
       image: 'twang2218/gitlab-ce-zh:11.1.4'
@@ -29,9 +29,9 @@ services:
           # gitlab_rails['smtp_tls'] = true
           # gitlab_rails['gitlab_email_from'] = 'xxxx@xx.com'
       ports:
-        - '80:80'
-        - '443:443'
-        - '2222:22'
+        - '9080:80'
+        - '9443:443'
+        - '9222:22'
       volumes:
         - ./config:/etc/gitlab
         - ./data:/var/opt/gitlab

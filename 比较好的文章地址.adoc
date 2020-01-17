@@ -271,3 +271,6 @@ https://www.funtl.com/
 https://tool.lu/tables/
 
 # 程序员必备神器（Typora）
+
+# TCC分布式事务
+https://tech.antfin.com/community/live/462/data/736

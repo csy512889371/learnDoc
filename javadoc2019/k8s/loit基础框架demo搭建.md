@@ -4,6 +4,8 @@
 
 Group: com.timeloit.project
 
+Group: com.timeloit.cloud
+
 Artifact: loit-seata-storage-example
 
 Type: maven
