@@ -9,11 +9,15 @@ Jenkins 是一个开源软件项目，是基于 Java 开发的一种持续集成
 # 基于 Docker 安装 Jenkins
 
 
-## docker-compose
+
+
+## 安装方式一
+
+docker-compose.yml
 
 Jenkins 是一个简单易用的持续集成软件平台，我们依然采用 Docker 的方式部署，`docker-compose.yml` 配置文件如下：
 
-```text
+```
 version: '3.1'
 services:
   jenkins:
@@ -22,24 +26,92 @@ services:
     container_name: jenkins
     ports:
       # 发布端口
-      - 8080:8080
+      - 8088:8080
       # 基于 JNLP 的 Jenkins 代理通过 TCP 端口 50000 与 Jenkins master 进行通信
       - 50000:50000
     environment:
       TZ: Asia/Shanghai
     volumes:
       - ./data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - ./opt:/opt
+
 ```
 
 安装过程中会出现 `Docker 数据卷` 权限问题，用以下命令解决：
 
 ```text
 chown -R 1000 /usr/local/docker/jenkins/data
+chmod 777 /var/run/docker.sock
+```
+
+* 容器没有docker 和maven 环境的支持
+
+
+
+## 安装方式二
+
+在docker 安装 jdk maven
+
+```
+cat>/usr/local/docker/jenkinsv1/environment/Dockerfile <<EOF
+FROM jenkinsci/jenkins
+USER root
+RUN apt-get update && apt-get install -y libltdl7.*
+RUN apt-get install vim* -y
+
+ADD apache-maven-3.5.4-bin.tar.gz /usr/local/
+
+ARG dockerGid=999
+RUN echo "docker:x:${dockerGid}:jenkins" >> /etc/group
+RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+RUN echo "# set jdk、jre" >> /etc/profile
+RUN echo "export JAVA_HOME=/docker-java-home/" >> /etc/profile
+RUN echo "export JRE_HOME=/docker-java-home/" >> /etc/profile
+RUN echo "export CLASSPATH=.:/docker-java-home/jre/lib/rt.jar:/docker-java-home/lib/dt.jar:/docker-java-home/lib/tools.jar" >> /etc/profile
+RUN echo "export PATH=$PATH:/docker-java-home/bin" >> /etc/profile
+RUN /bin/bash -c "source /etc/profile"
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+RUN source /etc/profile
+
+RUN echo "#set maven environment" >> /etc/profile
+RUN echo "export MAVEN_HOME=/usr/local/apache-maven-3.5.4/" >> /etc/profile
+RUN echo "export PATH=/usr/local/apache-maven-3.5.4/bin:/docker-java-home/jre/bin:/usr/local/apache-maven-3.5.4/bin:$PATH" >> /etc/profile
+RUN /bin/bash -c "source /etc/profile"
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+RUN source /etc/profile
+EOF
 ```
 
 
 
-## 解锁 Jenkins
+docker-compose.yml
+
+```
+
+version: '3.1'
+services:
+  jenkins:
+    build: environment
+    restart: always
+    container_name: jenkins
+    privileged: true
+    volumes:
+      - ./data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - ./opt:/opt
+```
+
+## 安装方式三
+
+使用宿主机的
+
+
+
+# 解锁 Jenkins
 
 Jenkins 第一次启动时需要输入一个初始密码用以解锁安装流程，使用 `docker logs jenkins` 即可方便的查看到初始密码
 
