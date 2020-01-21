@@ -3,15 +3,15 @@
  
 
 ```
-├── spring-cloud-timeloit                 --timeloit spring cloud 组件封装
+spring-cloud-timeloit                                  --timeloit spring cloud 组件封装
 ├── spring-cloud-starter-timeloit                
 │   ├── spring-cloud-starter-timeloit-nacos-discovery      --服务注册与发现组件Starter
 │   ├── spring-cloud-starter-timeloit-sentinel             --服务限流组件组件Starter
 ├── spring-cloud-timeloit-dependencies                     --统一依赖版本
 ├── spring-cloud-timeloit-examples                         --timeloit组件使用例子
-│   │   ├── seata-example                                  --分布式事务例子
-│   │   │   ├── loit-seata-order-example                   --分布式事务例子-订单
-│   │   │   ├── loit-seata-storage-example                 --分布式事务例子-库存
+│   ├── seata-example                                      --分布式事务例子
+│   │   ├── loit-seata-order-example                       --分布式事务例子-订单
+│   │   ├── loit-seata-storage-example                     --分布式事务例子-库存
 ├── spring-cloud-timeloit-nacos-config                     --配置中心组件封装
 ├── spring-cloud-timeloit-nacos-discovery                  --服务注册与发现组件
 ├── spring-cloud-timeloit-seata                            --分布式事务组件封装
@@ -36,7 +36,6 @@ C:\Users\nick\.m2\settings.xml
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
-  
   <localRepository>E:\1maven_repo_jycj</localRepository>
 
   <pluginGroups>
@@ -74,44 +73,44 @@ pom.xml
 
 ```
 	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<name>Nexus Release Repository</name>
-			<url>http://113.208.119.11:9101/repository/maven-releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<name>Nexus Snapshot Repository</name>
-			<url>http://113.208.119.11:9101/repository/maven-snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <name>Nexus Release Repository</name>
+            <url>http://39.100.254.140:12010/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <name>Nexus Snapshot Repository</name>
+            <url>http://39.100.254.140:12010/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>nexus-loit-dev</id>
-			<name>Nexus Repository</name>
-			<url>http://113.208.119.11:9101/repository/maven-public/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<id>nexus-loit-dev</id>
-			<name>Nexus Plugin Repository</name>
-			<url>http://113.208.119.11:9101/repository/maven-public/</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</pluginRepository>
-	</pluginRepositories>
+    <repositories>
+        <repository>
+            <id>nexus-loit-dev</id>
+            <name>Nexus Repository</name>
+            <url>http://39.100.254.140:12010/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>nexus-loit-dev</id>
+            <name>Nexus Plugin Repository</name>
+            <url>http://39.100.254.140:12010/repository/maven-public/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
 
 ```
 
@@ -215,7 +214,7 @@ spring:
     nacos:
       discovery:
         # Nacos 注册中心地址
-        server-addr: 192.168.66.40:8848
+        server-addr: 39.100.254.140:8103
 ```
 
 Application添加注解 @EnableDiscoveryClient
