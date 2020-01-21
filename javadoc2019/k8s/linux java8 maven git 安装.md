@@ -26,18 +26,27 @@ wget http://mirrors.tuna.tsinghua.edu.cn/apache/maven/maven-3/3.6.2/binaries/apa
 
 # 解压 tar.gz
 ```
-tar -xvf apache-maven-3.6.2-bin.tar.gz
+tar -xvf apache-maven-3.6.3-bin.tar.gz
 ```
 
-
 以root身份在 master 节点上执行 vim /root/.bash_profile 修改 .bash_profile 文件，向 PATH= 所在行的行尾增加 :/root/apache-maven-3.6.2/bin 如下所示：
+
+
+
+```
+mv apache-maven-3.6.3 /var/local/apache-maven-3.6.3
+```
 
 ```
 # User specific environment and startup programs
 
-PATH=$PATH:$HOME/bin:/root/apache-maven-3.6.2/bin
+PATH=$PATH:$HOME/bin:/var/local/apache-maven-3.6.3/bin
 
 export PATH
+```
+
+```
+source .bash_profile
 ```
 
 > TIP 

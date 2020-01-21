@@ -9,7 +9,7 @@ sudo mkdir /var/local/jenkins
 ```
 FROM jenkins/jenkins:2.138.4
 USER root
-ARG dockerGid=999 
+ARG dockerGid=999
 RUN echo "docker:x:${dockerGid}:jenkins" >> /etc/group
 RUN apt-get update && apt-get install -y sudo && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y libltdl7 && apt-get update

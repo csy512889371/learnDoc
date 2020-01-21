@@ -32,6 +32,46 @@ docker-compose down
 
 
 
+## root 访问容器
+
+```
+docker exec -it -u root
+```
+
+
+
+## 拷贝文件
+
+拷贝出来
+
+```
+ docker cp wiki_confluence:/opt/atlassian/confluence/confluence/WEB-INF/lib/atlassian-extras-decoder-v2-3.4.1.jar /opt/docker/mysql
+```
+
+拷贝进去
+
+```
+  docker cp atlassian-extras-decoder-v2-3.4.1.jar wiki_confluence:/opt/atlassian/confluence/confluence/WEB-INF/lib/atlassian-extras-decoder-v2-3.4.1.jar 
+```
+
+
+
+# Docker保存修改后的镜像
+
+```
+docker commit afcaf46e8305 centos-vim
+
+查看镜像centos-vim
+docker images | grep centos-vim
+
+查看镜像的详细信息：
+docker inspect centos-vim:afcaf46e8305
+```
+
+
+
+
+
 ## 配置 Docker 镜像站
 
 

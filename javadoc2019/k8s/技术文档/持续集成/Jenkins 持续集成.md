@@ -109,7 +109,84 @@ services:
 
 使用宿主机的
 
+```
+sudo mkdir /usr/local/docker/jenkinsv2
+```
 
+
+
+# 安装方式四
+
+使用 jenkins/jenkins:centos
+
+
+
+docker-compose.yml
+
+Jenkins 是一个简单易用的持续集成软件平台，我们依然采用 Docker 的方式部署，`docker-compose.yml` 配置文件如下：
+
+```
+version: '3.1'
+services:
+  jenkins:
+    restart: always
+    image: jenkins/jenkins:centos
+    container_name: jenkins
+    ports:
+      # 发布端口
+      - 8088:8080
+      # 基于 JNLP 的 Jenkins 代理通过 TCP 端口 50000 与 Jenkins master 进行通信
+      - 50000:50000
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      - ./data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+      - /var/local/apache-maven-3.6.3:/var/local/apache-maven-3.6.3
+
+```
+
+安装过程中会出现 `Docker 数据卷` 权限问题，用以下命令解决：
+
+```text
+chown -R 1000 /usr/local/docker/jenkins/data
+chmod 777 /var/run/docker.sock
+```
+
+* 容器没有docker 和maven 环境的支持
+
+```
+vi .bash_profile
+
+```
+
+
+
+```
+PATH=$PATH:$HOME/bin:/var/local/apache-maven-3.6.3/bin
+
+export PATH
+
+```
+
+
+
+```
+source .bash_profile
+```
+
+
+
+### 重新保存镜像
+
+```
+ docker commit 378258b456a5 jenkins/jenkins:centos.v1
+```
+
+
+
+修改 docker-compose.yml 
 
 # 解锁 Jenkins
 
