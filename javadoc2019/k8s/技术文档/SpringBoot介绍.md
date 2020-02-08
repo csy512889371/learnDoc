@@ -300,9 +300,6 @@ server.port=9090
 server.context-path=/boot
 ```
 
-1
-2
-
 或在 application.yml 中添加：
 
 ```text

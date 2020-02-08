@@ -178,7 +178,11 @@ $git log
 $git status
 ```
 
-git 生命周期 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitlife.png)](https://github.com/csyeva/eva/blob/master/img/github/gitlife.png)
+git 生命周期 
+
+![image-20200205161337439](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161337439.png)
+
+
 
 演示一下一个文件的改变过程
 
@@ -199,7 +203,17 @@ git 生命周期 [![image](https://github.com/csyeva/eva/raw/master/img/github/g
 
 > - remote repository--远程仓库 远程仓库，我们用Git进行操作，为了防止数据在自己电脑上丢失，比如错误删除，病毒攻击等原因造成了数据丢失，我们需要备份到远程的服务器上，这个服务器可以理解为远程仓库。
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitgn.png)](https://github.com/csyeva/eva/blob/master/img/github/gitgn.png) [![image](https://github.com/csyeva/eva/raw/master/img/github/gitgn2.png)](https://github.com/csyeva/eva/blob/master/img/github/gitgn2.png) [![image](https://github.com/csyeva/eva/raw/master/img/github/gitgn3.png)](https://github.com/csyeva/eva/blob/master/img/github/gitgn3.png)
+![image-20200205161402581](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161402581.png)
+
+
+
+![image-20200205161431658](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161431658.png)
+
+
+
+![image-20200205161501123](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161501123.png)
+
+
 
 #### 三、Git分支
 
@@ -218,7 +232,13 @@ git commit –m “initial commit of my project”
 > - 当使用git commit 新建一个提交对象前，Git 会先计算每一个子目录（本例中就是项目根目录mybranch目录）的校验和，然后在Git 仓库中将这些目录保存为树（tree）对象。之后Git 创建的提交对象，除了包含相关提交信息以外，还包含着指向这个树对象（项目根目录）的指针，如此它就可以在将来需要的时候，重现此次快照的内容了。
 > - 这个就是git保存数据的原理，用文件快照的方式。
 
-作些修改后再次提交，那么这次的提交对象会包含一个指向上次提交对象的指针（即下图中的parent 对象）。两次提交后，仓库历史会变成图: [![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm.png)
+作些修改后再次提交，那么这次的提交对象会包含一个指向上次提交对象的指针（即下图中的parent 对象）。两次提交后，仓库历史会变成图:
+
+![image-20200205161528430](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161528430.png) 
+
+
+
+
 
 ```
 git status
@@ -231,39 +251,53 @@ git checkout testing
 nano index.html
 ```
 
-作些修改后再次提交，那么这次的提交对象会包含一个指向上次提交对象的指针（即下图中的parent 对象）。两次提交后，仓库历史会变成: [![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm1.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm1.png)
+作些修改后再次提交，那么这次的提交对象会包含一个指向上次提交对象的指针（即下图中的parent 对象）。两次提交后，仓库历史会变成: 
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm2.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm2.png)
+![image-20200205161547904](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161547904.png)
+
+![image-20200205161607800](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161607800.png)
+
+
 
 ##### 深刻理解分支
 
 > - Git 中的分支，其实本质上仅仅是个指向commit 对象的可变指针。Git
 > - 会使用master 作为分支的默认名字。在若干次提交后，你其实已经有了一个指向最后一次提交对象commit的master 分支，它在每次提交的时候都会自动向前移动。
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm3.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm3.png)
+![image-20200205161632361](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161632361.png)
+
+
+
+
 
 ##### 创建分支
 
 $git branch testing //这会在当前commit 对象上新建一个分支指针
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm4.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm4.png)
+![image-20200205161650889](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161650889.png)
+
+
 
 ##### Git 是如何知道你当前在哪个分支上工作
 
 > - Git保存着一个名为HEAD 的特别指针。请注意它的HEAD和其他版本控制系统（如SVN或CVS）里的HEAD 概念大不相同。
 > - 在Git 中，它是一个指向你正在工作中的本地分支的指针。
-> - 运行git branch 命令，仅仅是建立了一个新的分支，但不会自动切换到这个分支中去，所以在这个例子中，我们依然还在master 分支里工作。 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm5.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm5.png)
+> - 运行git branch 命令，仅仅是建立了一个新的分支，但不会自动切换到这个分支中去，所以在这个例子中，我们依然还在master 分支里工作。 
+
+![image-20200205161717547](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161717547.png)
 
 ##### 如何切换到其他分支
 
-$ git checkout testing //转换到新建的testing分支 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm6.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm6.png)
+$ git checkout testing //转换到新建的testing分支 
+
+![image-20200205161950653](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205161950653.png)
 
 ```
 $ nano index.html
 $ git commit -a -m ‘在index.html中增加No.4功能‘
 ```
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm7.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm7.png)
+![image-20200205162052400](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162052400.png)
 
 ```
 git checkout master
@@ -273,7 +307,7 @@ git checkout master
 > - 也就是说，现在开始所做的改动，将始于本项目中一个较老的版本。
 > - 它的主要作用是将testing 分支里作出的修改暂时取消，这样你就可以向另一个方向进行开发
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm8.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm8.png)
+![image-20200205162107373](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162107373.png)
 
 我们作些修改后再次提交
 
@@ -284,7 +318,7 @@ $ git commit -a -m ‘在index.html中增加No.5功能’
 
 > - 现在我们的项目提交历史产生了分叉，因为刚才我们创建了一个分支，转换到其中进行了一些工作，然后又回到原来的主分支进行了另外一些工作。
 > - 这些改变分别孤立在不同的分支里：我们可以在不同分支里反复切换，并在时机成熟时把它们合并到一起。
-> - 而所有这些工作，仅仅需要branch 和checkout 这两条命令就可以完成。 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitsm9.png)](https://github.com/csyeva/eva/blob/master/img/github/gitsm9.png)
+> - 而所有这些工作，仅仅需要branch 和checkout 这两条命令就可以完成。 [![image]![image-20200205162120645](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162120645.png)
 
 ##### 总结
 
@@ -306,7 +340,7 @@ $ git commit -a -m ‘在index.html中增加No.5功能’
 > - git add (解决合并冲突之后，用add命令标记为已经解决了)
 > - git stash
 
-1. 工程师在项目中工作，并且提交了几次更新 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge.png)
+1. 工程师在项目中工作，并且提交了几次更新 ![image-20200205162134520](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162134520.png)
 2. 工程师修补错误跟踪系统上的编号为53号错误
 
 ```
@@ -319,7 +353,7 @@ $ git checkout iss53
 
 执行的结果，如图
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge1.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge1.png)
+![image-20200205162145746](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162145746.png)
 
 1. 修补问题跟踪系统上的#53问题
 
@@ -328,7 +362,7 @@ $ nano index.html //孙悟空修补了index.html代码
 $ git commit -a -m “fix issue53”
 ```
 
-执行的结果，如图 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge2.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge2.png)
+执行的结果，如图![image-20200205162156727](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162156727.png)
 
 > - 工程师接到项目负责人唐僧的电话，要求修补已经发布的项目错误，也就是C2版本的出现的突然发现的错误。
 > - 这个错误不是错误跟踪系统编号为53号的已知错误。
@@ -352,7 +386,7 @@ $ git commit -a -m 'fixed the broken email address'
 1 files changed, 0 insertions(+), 1 deletions(-)
 ```
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge3.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge3.png)
+![image-20200205162212486](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162212486.png)
 
 1. 提交之前应该做测试，确保修补是成功的，然后把它合并到master 分支并发布到生产服务器。用git merge 命令来进行合并：【如何合并git分支？】
 
@@ -366,8 +400,20 @@ README | 1 -
 ```
 
 > - 请注意，合并时出现了“Fast forward”（快进）提示。
+>
 > - 由于当前master 分支所在的commit 是要并入的hotfix 分支的直接上游，Git 只需把指针直接右移。
-> - 换句话说，如果顺着一个分支走下去可以到达另一个分支，那么Git 在合并两者时，只会简单地把指针前移，因为没有什么分歧需要解决，所以这个过程叫做快进（Fast forward）。 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge4.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge4.png)
+>
+> - 换句话说，如果顺着一个分支走下去可以到达另一个分支，那么Git 在合并两者时，只会简单地把指针前移，因为没有什么分歧需要解决，所以这个过程叫做快进（Fast forward）。
+>
+
+
+![image-20200205162235931](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162235931.png)
+
+
+
+
+
+
 
 1. 在那个超级重要的修补发布以后，工程师想要回到被打扰之前的工作。因为现在hotfix 分支和master 指向相同的提交，现在没什么用了，可以先删掉它。使用git branch 的-d 选项表示删除：
 
@@ -383,7 +429,7 @@ $ git commit -a -m 'finished the new footer [issue 53]'
 1 files changed, 1 insertions(+), 0 deletions(-)
 ```
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge5.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge5.png)
+![image-20200205162248569](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162248569.png)
 
 **合并解释**
 
@@ -394,9 +440,19 @@ $ git commit -a -m 'finished the new footer [issue 53]'
 > - Git 没有简单地把分支指针右移，而是对三方合并的结果作一新的快照，并自动创建一个指向它的commit（C6）。
 > - 我们把这个特殊的commit 称作合并提交（mergecommit），因为它的祖先不止一个。
 > - 值得一提的是Git 可以自己裁决哪个共同祖先才是最佳合并基础；这和CVS 或Subversion（1.5 以后的版本）不同，它们需要开发者手工指定合并基础。
-> - 所以此特性让Git 的合并操作比其他系统都要简单不少。 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge6.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge6.png)
+> - 所以此特性让Git 的合并操作比其他系统都要简单不少。 
 
-合并解释 Git合并的结果如图。 [![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge7.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge7.png)
+
+
+![image-20200205162301414](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162301414.png)
+
+
+
+
+
+合并解释 Git合并的结果如图。
+
+![image-20200205162311570](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162311570.png)
 
 1. 既然你的工作成果已经合并了，iss53 也就没用了。你可以就此删除它，并在问题追踪系统里把该问题关闭。
 
@@ -435,13 +491,15 @@ $git commit –m “分支feature1和feature2冲突已经解决”
 > - 这个时候在对两个分支合并，git不会产生冲突，因为两个分支是修改同一文件的不同位置。
 > - git自动合并成功。不管是git自动合并成功，还是在人工解决冲突下合并成功，提交之前，都要对代码进行测试。
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge8.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge8.png)
+
+
+![image-20200205162330417](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162330417.png)
 
 ```
 9. git stash命令
 ```
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitmerge9.png)](https://github.com/csyeva/eva/blob/master/img/github/gitmerge9.png)
+![image-20200205162341321](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162341321.png)
 
 > - 当你正在进行项目中某一部分的工作，里面的东西处于一个比较杂乱的状态，而你想转到其他分支上进行一些工作。
 > - 问题是，你不想提交进行了一半的工作，否则以后你无法回到这个工作点。解决这个问题的办法就是git stash命令。
@@ -460,4 +518,9 @@ git stash apply 储藏的名字 （回到原来的分支之后，如何恢复到
 > - 当然并不是说一定要绝对稳定，不过一旦进入某种稳定状态，便可以把它合并到master 里。
 > - 还有在工作中，把开发任务分解为各个功能或者模块，用topic（topic branch主题分支，有又成为feature branch特性分支），实现之后并测试稳定之后，可以合并到其他分支。
 
-[![image](https://github.com/csyeva/eva/raw/master/img/github/gitfz.png)](https://github.com/csyeva/eva/blob/master/img/github/gitfz.png) [![image](https://github.com/csyeva/eva/raw/master/img/github/gitfz1.png)](https://github.com/csyeva/eva/blob/master/img/github/gitfz1.png)
+
+
+![image-20200205162352238](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162352238.png)
+
+
+![image-20200205162403664](F:\3GitHub\learnDoc\javadoc2019\k8s\技术文档\gitlab入门使用一 - 副本.assets\image-20200205162403664.png)

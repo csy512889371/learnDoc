@@ -1,4 +1,4 @@
-# 一、组件库说明
+#### 一、组件库说明
 
  
 
@@ -22,9 +22,7 @@ spring-cloud-timeloit                                  --timeloit spring cloud �
 
 
 
-
-
-# 一、maven 配置
+#### 一、maven 配置
 
 C:\Users\nick\.m2\settings.xml
 
@@ -121,9 +119,9 @@ clean install -Dmaven.test.skip=true
 
 
 
-# 二、配置中心
+#### 二、配置中心
 
-## 1、引入依赖:
+##### 1、引入依赖:
 
 ```
 	  <dependency>
@@ -138,7 +136,7 @@ clean install -Dmaven.test.skip=true
 	  </dependency>
 ```
 
-## 2、创建文件 resources/bootstrap.properties
+##### 2、创建文件 resources/bootstrap.properties
 
 ```
 spring.profiles.active=devnacos
@@ -153,7 +151,7 @@ spring.cloud.nacos.config.file-extension=yaml
 spring.cloud.nacos.config.namespace=e15d31e9-88f3-4f8d-be57-916992ea757c
 ```
 
-## 3、配置属性说明
+##### 3、配置属性说明
 
 * **spring.cloud.nacos.config.namespace **
 * * 命名空间
@@ -168,7 +166,7 @@ spring.cloud.nacos.config.namespace=e15d31e9-88f3-4f8d-be57-916992ea757c
 
 
 
-## 4、配置自动刷新
+##### 4、配置自动刷新
 
 * 增加属性 @RefreshScope
 
@@ -193,7 +191,7 @@ public class CasServerLoginValidateController {
 
 
 
-# 三、服务发现
+#### 三、服务发现
 
 pom 添加
 
@@ -230,11 +228,11 @@ public class NacosProviderApplication {
 
 
 
-# 四、熔断器
+#### 四、熔断器
 
 
 
-### feign 熔断
+###### feign 熔断
 
 ```
 <!-- 熔断器 -->
@@ -282,9 +280,9 @@ public class EchoServiceFallback implements StorageFeignClient{
 }
 ```
 
-# 五、流控
+#### 五、流控
 
-### dashboard
+###### dashboard
 
 ```
 java -jar -Xms250m -Xmx250m -Dserver.port=8090 -Dcsp.sentinel.dashboard.server=localhost:8090 E:\2service\sentinel\sentinel-dashboard-1.6.3.jar
@@ -302,7 +300,7 @@ java -jar -Xms250m -Xmx250m -Dserver.port=8090 -Dcsp.sentinel.dashboard.server=l
 
 
 
-### 项目配置
+###### 项目配置
 
 ```
    
@@ -372,7 +370,7 @@ spring.cloud.sentinel.datasource.ds.nacos.rule-type=flow
 - controlBehavior：流量控制效果（直接拒绝、Warm Up、匀速排队）
 - clusterMode：是否为集群模式
 
-### 注意
+###### 注意
 
 在完成了上面的整合之后，对于接口流控规则的修改就存在两个地方了：Sentinel控制台、Nacos控制台。
 
@@ -381,7 +379,7 @@ spring.cloud.sentinel.datasource.ds.nacos.rule-type=flow
 - Sentinel控制台中修改规则：仅存在于服务的内存中，不会修改Nacos中的配置值，重启后恢复原来的值。
 - Nacos控制台中修改规则：服务的内存中规则会更新，Nacos中持久化规则也会更新，重启后依然保持。
 
-# 六、 链路监控
+#### 六、 链路监控
 
 client端
 
@@ -393,9 +391,7 @@ service_name: 具体项目名称
 
 
 
-# 七、 网关gateway
-
-
+#### 七、 网关gateway
 
 pom
 
@@ -469,17 +465,17 @@ pom
   
   
 
-# 八、 分布式事务
+#### 八、 分布式事务
 
 
 
-## 1、Seata 
+##### 1、Seata 
 
 Seata 是一款开源的分布式事务解决方案，致力于提供高性能和简单易用的分布式事务服务。Seata 将为用户提供了 AT、TCC、SAGA 和 XA 事务模式，为用户打造一站式的分布式解决方案。
 
 
 
-## 2、部署 Server
+##### 2、部署 Server
 
 Server支持多种方式部署：直接部署，使用 Docker, 使用 Docker-Compose, 使用 Kubernetes, 使用 Helm.
 
@@ -586,7 +582,7 @@ CREATE TABLE IF NOT EXISTS `undo_log`
 
 
 
-## 3、项目配置
+##### 3、项目配置
 
 pom
 
@@ -849,10 +845,10 @@ config {
 
 
 
-## 4、常见问题一
+##### 4、常见问题一
 
 
-### 使用Seata框架，来保证事务的隔离性？
+###### 使用Seata框架，来保证事务的隔离性？
 
 因seata一阶段本地事务已提交，为防止其他事务脏读脏写需要加强隔离。
 
@@ -862,11 +858,11 @@ config {
 
 
 
-# 九、 分布式任务器
+#### 九、 分布式任务器
 
 
 
-# 十、常见问题
+#### 十、常见问题
 
 1、nacos 服务停了，客户端启动会出现如下错误：
 
@@ -877,7 +873,7 @@ ava.lang.IllegalStateException: failed to req API:/nacos/v1/ns/instance/list aft
 
 解决：确认nacos运行状态
 
-2、seata server 未启动，客户端错误如下：
+2、seata server 未启动\事务分组设置错误会提示，客户端错误如下：
 
 ```
 2020-01-10 09:39:26.276 ERROR 7128 --- [imeoutChecker_1] i.s.c.r.netty.NettyClientChannelManager  : no available service 'default' found, please make sure registry config correct

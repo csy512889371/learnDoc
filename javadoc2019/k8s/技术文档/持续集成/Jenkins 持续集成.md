@@ -138,7 +138,8 @@ services:
       # 基于 JNLP 的 Jenkins 代理通过 TCP 端口 50000 与 Jenkins master 进行通信
       - 50000:50000
     environment:
-      TZ: Asia/Shanghai
+      - "TZ=Asia/Shanghai"
+      - "PATH=$PATH:$HOME/bin:/var/local/apache-maven-3.6.3/bin"
     volumes:
       - ./data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
@@ -175,6 +176,43 @@ export PATH
 ```
 source .bash_profile
 ```
+
+
+
+### 将上面的导出镜像
+
+
+
+```
+yum -y install wget
+
+```
+
+Dockerfile
+
+```
+FROM jenkins/jenkins:centos.v1
+USER root
+RUN source /root/.bash_profile
+```
+
+docker-compose.yml
+
+```
+version: '3.1'
+services:
+  jenkins:
+    build: environment
+    restart: always
+    container_name: jenkins
+    privileged: true
+    volumes:
+      - ./data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/usr/bin/docker
+```
+
+
 
 
 
@@ -276,3 +314,30 @@ docker-compose up -d
 **注意：** 请留意需要下载插件的警告信息，如果不满足安装条件，Jenkins 是会拒绝安装的。如下图：
 
 ![img](https://www.funtl.com/assets/Lusifer_20181029021640.png)
+
+
+
+# jdk
+
+JAVA_HOME
+
+```
+/usr/lib/jvm/java-1.8.0-openjdk
+```
+
+
+
+MAVEN_HOME
+
+```
+/var/local/apache-maven-3.6.3
+```
+
+
+
+setting.xml
+
+```
+/var/local/apache-maven-3.6.3/conf/settings.xml
+```
+
