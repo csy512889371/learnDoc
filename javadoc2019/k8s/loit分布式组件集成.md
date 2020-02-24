@@ -189,6 +189,21 @@ public class CasServerLoginValidateController {
 
 
 
+5、
+
+```
+@NacosPropertySource(dataId = "example", autoRefreshed = true)
+```
+
+
+
+```
+    @NacosValue(value = "${useLocalCache:false}", autoRefreshed = true)
+    private boolean useLocalCache;
+```
+
+
+
 
 
 #### 三、服务发现
@@ -229,6 +244,11 @@ public class NacosProviderApplication {
 
 
 #### 四、熔断器
+
+
+
+\# 改为如下即可
+feign.sentinel.enabled: true
 
 
 
@@ -279,6 +299,45 @@ public class EchoServiceFallback implements StorageFeignClient{
 
 }
 ```
+
+
+
+二
+
+
+
+```
+@Configuration
+public class SentinelAspectConfiguration {
+    @Bean
+    public SentinelResourceAspect sentinelResourceAspect() {
+        return new SentinelResourceAspect();
+    }
+}
+
+```
+
+
+
+```
+    @Override
+    @SentinelResource(value = "test",blockHandler = "blockHandlerException",fallback = "fallbackException")
+    public String test() {
+        return "正常数据";
+    }
+
+    public String blockHandlerException(BlockException exception){
+        return "BlockException...";
+    }
+
+    public String fallbackException(){
+        return "fallbackException...";
+    }
+```
+
+
+
+
 
 #### 五、流控
 
@@ -841,6 +900,12 @@ config {
   }
 }
 
+```
+
+
+
+```
+@GlobalTransactional(timeoutMills = 300000, name = "dubbo-demo-tx")
 ```
 
 
