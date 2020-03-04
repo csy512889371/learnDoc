@@ -22,7 +22,7 @@ order_id: 1234644839161659450
 
 * 注意：由于提高发号并发效率，有将号码按照step存储在内存中，重启发号器会出现断号（其中一些id 没有被使用），为了减少断号最好是单独部署个发号器微服务。(待优化)
 
-###### 项目整合使用leaf
+###### 项目整合使用leaf（Jar方式）
 
 * 使用发号器可以引用jar和微服务调用的方式，下面先介绍使用**jar方式**
 
@@ -141,12 +141,54 @@ LEAF_SNOWFLAKE:
 
 
 
+###### 项目整合使用leaf（Feign 接口方式）
+
+leaf 发号器微服务代码 LoitKeyGenerate 地址如下
+
+http://39.100.254.140:12011/loit-Infrastructure/LoitKeyGenerate
+
+1、启动LoitKeyGenerate  微服务
+
+2、编写feign 调用
+
+```
+@FeignClient(name = "loit-keygen-server")
+public interface KeyGenApiService {
+
+    @RequestMapping(value = "/api/segment/get/{key}")
+    public String getSegmentId(@PathVariable("key") String key);
+
+    @RequestMapping(value = "/api/snowflake/get/{key}")
+    public String getSnowflakeId(@PathVariable("key") String key);
+}
+
+```
+
+
+
+```
+    @Autowired
+    private KeyGenApiService keyGenApiService;
+
+
+    @GetMapping("/keyGenFeign")
+    public void keyGenFeign() {
+        String segId = keyGenApiService.getSegmentId("t_order");
+        log.info(segId);
+        String snowId = keyGenApiService.getSnowflakeId("t_order");
+        log.info(snowId);
+    }
+```
+
+
+
+
 
 ##### 二、shardingsphere使用分布式ID
 
 * 分表分库中使用分布式id 可参照例子demo: sharding-leaf-mybatis-example
 
-  
+
 ###### 项目整合分布式id
 
 **1、引入pom**
