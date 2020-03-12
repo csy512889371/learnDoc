@@ -38,9 +38,9 @@ chmod a+x /usr/local/bin/docker-compose
 1、解压软件包：tar xvf harbor-offline-installer-<version>.tgz
 
 ```
-https://github.com/vmware/harbor/releases/download/v1.2.0/harbor-offline-installer-v1.2.0.tgz
+https://github.com/goharbor/harbor/releases/download/v1.10.1/harbor-offline-installer-v1.10.1.tgz
 
-tar -zxvf harbor-offline-installer-v1.2.0.tgz
+tar -zxvf harbor-offline-installer-v1.10.1.tgz
 
 mv harbor /usr/local
 
@@ -55,7 +55,7 @@ vim harbor.cfg
 a、必选参数
 
 ```
-hostname：目标的主机名或者完全限定域名 hub.rjsoft.com
+hostname：目标的主机名或者完全限定域名 hub.timeloit.com
 
 ui_url_protocol：http或https。默认为http
 
@@ -68,7 +68,7 @@ customize_crt：（on或off。默认为on）当此属性打开时，prepare脚�
 ```
 
 ```
-echo "192.168.66.100 hub.rjsoft.com" >> /etc/hosts
+echo "192.168.66.100 hub.timeloit.com" >> /etc/hosts
 ```
 
 建私钥和根证书
@@ -113,7 +113,7 @@ State or Province Name (full name) []:FJ
 Locality Name (eg, city) [Default City]:FZ
 Organization Name (eg, company) [Default Company Ltd]:rj
 Organizational Unit Name (eg, section) []:rj
-Common Name (eg, your name or your server's hostname) []:hub.rjsoft.com
+Common Name (eg, your name or your server's hostname) []:hub.timeloit.com
 Email Address []:512889371@qq.com
 
 Please enter the following 'extra' attributes
@@ -145,7 +145,7 @@ vim /etc/docker/daemon.json
 
 {
 
-"insecure-registries": ["https://hub.rjsoft.com"]
+"insecure-registries": ["https://hub.timeloit.com"]
 }
 
 systemctl restart docker
@@ -168,18 +168,18 @@ d、登录进行上传
 ```
 docker login serverip
 
-docker login https://hub.rjsoft.com
+docker login https://hub.timeloit.com
 
-docker login -u admin -p Harbor12345 https://hub.rjsoft.com
+docker login -u admin -p Harbor12345 https://hub.timeloit.com
 
 
-docker logout https://hub.rjsoft.com
+docker logout https://hub.timeloit.com
 ```
 
 如果遇到证书问题
 
 ```
-mkdir -p /etc/docker/certs.d/hub.rjsoft.com
+mkdir -p /etc/docker/certs.d/hub.timeloit.com
 systemctl restart docker
 
 
@@ -210,8 +210,8 @@ docker pull serverip/hello-world:latest
 
 推送镜像
 ```
-docker tag wangyanglinux/myapp:v1 hub.rjsoft.com/library/myapp:v1
-docker push hub.rjsoft.com/library/myapp:v1
+docker tag wangyanglinux/myapp:v1 hub.timeloit.com/library/myapp:v1
+docker push hub.timeloit.com/library/myapp:v1
 ```
 
 删除镜像

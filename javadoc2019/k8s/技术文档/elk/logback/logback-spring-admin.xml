@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <springProfile name="dev">
+        <property resource="application-dev.yml"></property>
+    </springProfile>
+    <springProfile name="test">
+        <property resource="application-test.yml"></property>
+    </springProfile>
+    <springProfile name="adminProd">
+        <property resource="application-adminProd.yml"></property>
+    </springProfile>
+
+    <springProperty name="log.path" source="log.path" defaultValue="F:/logs" />
+    <springProperty name="log.file" source="log.file" defaultValue="rjsoft-jycj" />
+    <springProperty name="log.level" source="log.level" defaultValue="ERROR" />
+
+
+    <!-- 滚动记录文件，先将日志记录到指定文件，当符合某个条件时，将日志记录到其它文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--被写入的文件名，如果目录不存在会自动创建-->
+        <file>${log.path}/${log.file}.log</file>
+        <!--日志是否被追加到文件末尾-->
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--%d后加指定时间格式，不加默认{yyyy-MM-dd}-->
+            <fileNamePattern>${log.path}/${log.file}-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!--活动文件的大小，如果超过此大小会触发文件滚动-->
+            <maxFileSize>100MB</maxFileSize>
+            <!--控制保留的归档文件的最大数量,超出就删除旧文件-->
+            <maxHistory>7</maxHistory>
+            <!--所有归档文件的总大小，当超过该值将异步删除最老的归档文件-->
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+        <!--对记录事件进行格式化，一是把日志信息转换成字节数组，二是把字节数组写入到输出流-->
+        <encoder>
+            <ImmediateFlush>false</ImmediateFlush>
+            <!--设置日志输入格式-->
+            <pattern>[%thread] [%date{yyyy-MM-dd HH:mm:ss}] [%-5level] [%logger:%line] --%mdc{client} %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <!--异步日志，提高日志记录性能-->
+    <appender name="asyncFile" class="ch.qos.logback.classic.AsyncAppender">
+        <!--不丢失日志，默认如果队列的80%已满，则会丢弃TRACE、DEBUG、INFO级别的日志-->
+        <discardingThreshold>0</discardingThreshold>
+        <!--队列深度，默认256-->
+        <queueSize>5000</queueSize>
+        <!--添加附加的appender，最多只能添加一个-->
+        <appender-ref ref="FILE"/>
+    </appender>
+    <!-- 日志输出到控制台 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                [%thread] [ %-5level] [%date{yyyy-MM-dd HH:mm:ss}] %logger{96} [%line] - %msg%n
+            </pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <root level="${log.level}">
+        <appender-ref ref="asyncFile"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <!--用来设置某一个包或具体某一个类的日志打印级别,additivity为false不向上级传递打印信息-->
+    <logger name="org.springframework" level="${log.level}" additivity="false"/>
+    <logger name="com.netflix" level="${log.level}" additivity="false"/>
+    <logger name="org.apache.http" level="${log.level}" additivity="false"/>
+</configuration>
