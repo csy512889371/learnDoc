@@ -12,7 +12,7 @@
 docker-compose [-f=<arg>...] [options] [COMMAND] [ARGS...]
 ```
 
-1
+
 
 ## 命令选项
 
@@ -71,7 +71,7 @@ docker-compose [-f=<arg>...] [options] [COMMAND] [ARGS...]
 $ docker-compose kill -s SIGINT
 ```
 
-1
+
 
 ## `logs`
 

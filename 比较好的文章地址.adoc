@@ -275,3 +275,18 @@ https://tool.lu/tables/
 # TCC分布式事务
 https://tech.antfin.com/community/live/462/data/736
 https://tech.antfin.com/community/live/1076
+
+
+# 物联网平台
+https://github.com/thingsboard/thingsboard
+
+# 黑马教程
+http://yun.itheima.com/course/index/p/2.html?a5
+
+
+
+--------------------------------------
+
+jwt
+
+https://www.cnblogs.com/xieqing/p/6519907.html
